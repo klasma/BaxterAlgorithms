@@ -1,0 +1,7 @@
+Cell type: Drosophila melanogaster embryo
+Contrast technique: Nuclear fluorescence
+Magnification: 16x
+Time between images: 30 sec
+Voxel size: 0.406 x 0.406 x 2.03 microns
+Camera bits: 12
+Origin: Cell Tracking Challenge III (2015)

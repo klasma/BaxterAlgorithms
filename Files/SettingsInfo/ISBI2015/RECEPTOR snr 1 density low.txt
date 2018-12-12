@@ -1,0 +1,8 @@
+Particle type: Simulated receptor
+Contrast technique: Fluorescence
+Motion model: Switching between directed and Brownian
+Number of particles per image: ~100
+SNR: 1
+Pixel size: 67 nm
+Camera bits: 8
+Origin: ISBI 2012 Particle Tracking Challenge

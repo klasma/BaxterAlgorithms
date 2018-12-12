@@ -1,0 +1,7 @@
+Cell type: Pancreatic stem cells
+Contrast technique: Phase contrast
+Magnification: 4x
+Time between images: 10 min
+Pixel size: 1.6 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge II (2014)

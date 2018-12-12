@@ -1,0 +1,7 @@
+Cell type: C. elegans embryo
+Contrast technique: Nuclear fluorescence
+Magnification: 63x
+Time between images: 1 min
+Voxel size: 0.09 x 0.09 x 1.0 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge II (2014)

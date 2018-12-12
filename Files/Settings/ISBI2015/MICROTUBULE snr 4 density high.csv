@@ -1,0 +1,144 @@
+setting,MICROTUBULE snr 4 density high
+use,1
+timelapse,Microtubule
+condition,SNR4
+minWellR,NaN
+maxWellR,NaN
+bits,8
+pixelsize,1
+magnification,1
+dT,1
+startT,0
+countClassifier,MICROTUBULE snr 4 density high_weight.mat
+splitClassifier,none
+deathClassifier,none
+pCnt0,0.5
+pCnt1,0.5
+pCnt2,0
+pSplit,0
+pDeath,0
+maxClones,inf
+makePairs,0
+cutBeginning,0
+imageWidth,512
+imageHeight,512
+SegAlgorithm,Segment_precondPSF
+SegChannel,Ch1
+SegMediaChanges,
+SegBgSubAlgorithm,none
+SegBgSubAtten,0.5
+SegBgSubSvdRank,4
+SegFillHoles,0
+SegMinArea,0
+SegMaxArea,Inf
+SegSmooth,0
+SegWatershed,intermediate
+SegWSmooth,0
+SegWHMax,0
+LVSegRegionSize,2
+LVSegThreshold,2
+LVSegErodeSize,3
+LVSegRegionShape,square
+LVSegErodeShape,square
+TSegThreshold,0.2
+OSegThreshold,1
+EBSegSmooth,1
+EBSegThreshold,2
+sequenceLength,
+minPlotT,
+maxPlotT,
+restartFolders,
+authorStr,
+SaveTrack CellData1,BaxterAlgorithm 02/17/2012 10:31:56.517 100
+SegWThresh,0
+SegWLocMaxCentroids,1
+PCSegPSF,MICROTUBULE_symmetric.mat
+PCSegBeta,44.0487
+PCSegThreshold,2.4832e-05
+TrackPAppear,0.082172
+TrackPDisappear,0.082528
+TrackCellDensity,0.0026571
+TrackXSpeedStd,4.0045
+TrackYSpeedStd,4.0045
+SaveTrack CellDataBigTest41,BaxterAlgorithm 04/02/2012 05:46:56.341 100
+numZ,1
+SaveTrack CellDataBigTest42,
+TrackPReAppear,0
+TrackPMissing,0.00040182
+TrackCentroidOffset,1.7992
+SaveTrack CellData_test1413,
+SaveTrack CellData_test1438,
+SaveTrack CellData_multiPenalty1517,
+SaveTrack CellData_mutlipenatlySmall1529,
+SaveTrack CellData_multiPenalty2,
+SaveTrack CellDatamultipenalty3,
+SaveTrack CellDatamultipenalty10,
+SaveTrack CellDatamultipenalty30,
+SaveTrack CellDatamultipenalty10BP,
+voxelHeight,1
+pCntExtrap,0
+TrackSaveIterations,0
+TrackMigLogLikeList,MigLogLikeList_PHD_ISBI_tracks
+TrackMigInOut,0
+TrackZSpeedStd,12
+TrackMaxMigDist,Inf
+TrackBipartiteMatch,0
+TrackMergeWatersheds,0
+TrackMergeOverlapMaxIter,0
+TrackMergeOverlapThresh,0
+TrackMergeOverlapDeltaT,1
+TrackFalsePos,0
+TrackNumNeighbours,3
+TrackSingleIdleState,1
+TrackMaxMigScore,1000
+TrackGMpS,0.9108
+TrackGMpD,0.96005
+TrackGMkappa,0.00013729
+TrackGMgamma,0.00023388
+TrackGMn,696.83
+TrackGMModel,ConstantVelocity
+TrackGMw_thresh,0.001
+TrackGMmahal_thresh,5
+TrackGMJmax,2500
+channelNames,Ch1
+channelTags,.*
+foiErosion,0
+zStacked,0
+channelColors,1 1 1
+channelMin,0
+channelMax,1
+SegOldVersion,none
+SegSave,1
+SegLightCorrect,none
+SegMinHoleArea,Inf
+SegMinSumIntensity,0
+SegClipping,1
+SegClippingBelow,0
+SegMedFilt,1
+SegWatershed2,none
+SegCellMorphOp,none
+PCSegIterations,10
+PCSegPSFSizeXY,20
+PCSegPSFSizeZ,0
+migClassifier,none
+TrackPMig,0.01
+TrackPMigDet,0.8
+TrackMotionModel,none
+TrackGMSamples,10000
+TrackGMReductionMethod,GMMmergeKLdiv
+TrackDeathShift,2e-05
+TrackMaxDeathProb,1
+TrackSaveFPAsCells,0
+TrackMergeBrokenMaxArea,0
+TrackMergeBrokenRatio,0.75
+TrackComputeAllFeatures,1
+TrackSavePTC,1
+TrackSaveCTC,0
+TrackGMKLdiv_thresh,2
+TrackGMStdX,2
+TrackGMStdV,4
+TrackGMr,1
+TrackGMq,0.6
+SegTopHatRadius,Inf
+TrackEvaluateCTC,0
+TrackSelectFromGT,0

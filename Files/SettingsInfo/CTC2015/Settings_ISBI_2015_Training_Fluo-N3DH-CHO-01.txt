@@ -1,0 +1,7 @@
+Cell type: Chinese hamster ovarian (CHO) cells
+Contrast technique: Nuclear fluorescence
+Magnification: 63x
+Time between images: 9.5 min
+Voxel size: 0.202 x 0.202 x 1 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge I (2013)

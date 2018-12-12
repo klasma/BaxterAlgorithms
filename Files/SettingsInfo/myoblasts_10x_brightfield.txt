@@ -1,0 +1,7 @@
+Cell type: Murine myoblasts
+Contrast technique: Bright field
+Magnification: 10x
+Time between images: 3 min
+Pixel size: 0.645 microns
+Camera bits: 8
+Origin: Blau lab, Stanford

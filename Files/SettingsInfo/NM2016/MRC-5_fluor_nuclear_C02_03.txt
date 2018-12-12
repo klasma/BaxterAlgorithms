@@ -1,0 +1,7 @@
+Cell type: MRC-5
+Contrast technique: Nuclear fluorescence
+Magnification: 10x
+Time between images: 15 min
+Pixel size: 0.645 microns
+Camera bits: 8
+Origin: Blau lab, Stanford

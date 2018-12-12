@@ -1,0 +1,5 @@
+Classifier trained on primary murine myoblasts, imaged in 10x bright field microscopy with an imaging frequency of one frame every 3 minutes.
+
+This is a logistic regression classifier trained on the image sequence "10X 3min acquistion BF__C04_02.tif_Files" in the dataset "2012_04_11_Penney_myoblasts_10x_5min_For Klas journal viterbi paper". The classifier was used in [1] and uses the feature set called TransmissionFeatures. The classifier used to be called 131029_myoblasts_watershedsMnrPca and the feature set used to be called TheriaultAlmostExtendedFeatures. The feature 'CenterDistance' was not used, as the dataset has no microwell.
+
+[1] Magnusson, K. E. G.; Jaldén, J.; Gilbert, P. M. & Blau, H. M. Global linking of cell tracks using the Viterbi algorithm IEEE Trans. Med. Imag., 2015, 34, 1-19

@@ -1,0 +1,7 @@
+Cell type: Simulated HL60 cells
+Contrast technique: Nuclear fluorescence
+Magnification: 40x
+Time between images: 29 min
+Pixel size: 0.125 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge II (2014)

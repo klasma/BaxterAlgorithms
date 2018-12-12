@@ -1,0 +1,8 @@
+Particle type: Simulated vesicle
+Contrast technique: Fluorescence
+Motion model: Brownian
+Number of particles per image: ~1000
+SNR: 2
+Pixel size: 67 nm
+Camera bits: 8
+Origin: ISBI 2012 Particle Tracking Challenge

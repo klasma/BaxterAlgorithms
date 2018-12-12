@@ -1,0 +1,7 @@
+Cell type: Rat mesenchymal stem cells
+Contrast technique: Cytoplasmic fluorescence
+Magnification: 10x
+Time between images: 20 min
+Pixel size: 0.3 microns
+Camera bits: 16
+Origin: Cell Tracking Challenge I (2013)

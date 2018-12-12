@@ -1,0 +1,34 @@
+﻿\begin{longtable}{lX}
+\caption{Controls used for correction of cell tracks.}
+\label{tab:track-correction-controls}\\ \hline
+
+Track Tool & Allows you to change the track links drawn between detections. To change a link in a track, first click on the small filled circle in one end of the line and then click on the large filled circle that you want to connect it to. \\[5pt] \hline
+
+Single Frame Track Tool & Allows you to move a single detection in a cell track. You can move it to another blob or you can place it in the background where there are no blobs, but then a new point blob without an outline will be created. Moving a cell inside the same blob has no effect. \\[5pt] \hline
+
+Add Point & This tool adds a new cell with a point blob to a single image. \\[5pt] \hline
+
+Continuously Add Points & This tool lets you create a new track by clicking where the cell should be in each frame. When you have clicked in one frame, the player will go to the next frame in the sequence automatically, so that you can generate an entire track through a sequence of clicks. If you click on a cell region, the cell is added to that region. If you click in the background, a point blob is created where you clicked. To extend an existing track, you can click on a small filled dot with the Track Tool selected and then switch to the Continuously Add Points tool.\\[5pt] \hline
+
+Split & Copies an entire cell track. This will create a new cell that appears in the same blob as the copied cell in all frames where the copied cell is present. The blob of the original cell will then be split between the two cells. \\[5pt] \hline
+
+Track Split & This tool lets you extend an existing track by copying a part of another track. You first click on the small filled circle of the cell that you want to extend and then on the large filled circle of the track that you want to copy a part of. The tool will copy the second cell that you click on from the current frame to the end of the track in the same way as the \control{Split} tool. The copied part of the track is then connected to the end of the first cell that you clicked on. \\[5pt] \hline
+
+Set Children & Allows you to specify the parent-child relationships between cells. First click on the small filled circle of the parent cell and then click  on the large filled circles of the two child cells. You have to specify two children.\\[5pt] \hline
+
+Set Split Children & This tool lets you specify parent-child relationships and at the same time create the child cells by copying parts of other tracks. The copy mechanism works in the same way as it does in the \control{Track Split} tool. \\[5pt] \hline
+
+Mark Leaving Cell & This tool toggles the fate of a cell between dying and leaving the field of view. You click on the large filled circle of the cell in any image. \\[5pt] \hline
+
+Move Mitosis & Moves a mitotic event associated with a clicked cell to the current image. If there are multiple mitotic events, the one closest in time to the current image will be moved. If the clicked cell is the parent cell in the closest mitotic event, the two child cells will both follow the track of the parent cell between the time points of the new and the old miotic events. If the clicked cell is one of the child cells in the mitotic event, the parent cell will follow the track of the clicked child cell between the time points of the new and the old mitotic events. The track of the other child cell will be turned into a false positive track between the same time points. \\[5pt] \hline
+
+Delete & Right-clicking on a cell will turn the whole cell into a false positive cell. This will also break the connection to the parent of the cell, and turn all children of the cell into false positive cells. Left-clicking on a cell will instead kill the cell in the current frame and keep all prior time points. This will also turn all children into false positive cells. Right-clicking or left-clicking a false positive track will turn the entire track or all subsequent frames into a real cell. All children will also be turned into real cells. \\[5pt] \hline
+
+Edit/Draw Segments & Turns editing of blob segments on, so that the blobs can be edited as in a drawing program. This tool is explained further in Section \ref{sec:correcting-outlines} \\[5pt] \hline
+
+Remove FP & Pressing this button will remove all false positive blobs which do not have outlines associated with them. False positive track fragments with outlines will be kept. \\[5pt] \hline
+
+Jump & Moves to the next image where the number of cells changes. \\[5pt] \hline
+
+Save & Opens a dialog box for saving of the corrected tracking result. This tool is explained further in Section \ref{sec:saving-corrected-data}. \\[5pt] \hline
+\end{longtable}

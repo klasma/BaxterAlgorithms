@@ -1,0 +1,7 @@
+Cell type: Simulated
+Contrast technique: Nuclear fluorescence
+Magnification: unknown
+Time between images: unknown
+Pixel size: 0.125 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge I (2013)

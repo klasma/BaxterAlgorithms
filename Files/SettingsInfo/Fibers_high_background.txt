@@ -1,0 +1,7 @@
+Tissue: Murine muscle
+Contrast technique: Cell membrane fluorescence
+Magnification: 10x
+Pixel size: 0.645 microns
+Camera bits: 8
+Origin: Blau lab, Stanford
+Comments: These settings are suitable for wide field microscopy.

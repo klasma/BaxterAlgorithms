@@ -1,0 +1,7 @@
+Cell type: Glioblastoma-astrocytoma U373 cells
+Contrast technique: Phase contrast
+Magnification: 20x
+Time between images: unknown
+Pixel size: 0.65 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge II (2014)

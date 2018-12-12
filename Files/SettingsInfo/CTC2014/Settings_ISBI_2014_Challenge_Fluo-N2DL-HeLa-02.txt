@@ -1,0 +1,7 @@
+Cell type: HeLa
+Contrast technique: Nuclear fluorescence
+Magnification: 10x
+Time between images: 30 min
+Pixel size: 0.645 microns
+Camera bits: 16
+Origin: Cell Tracking Challenge I (2013)

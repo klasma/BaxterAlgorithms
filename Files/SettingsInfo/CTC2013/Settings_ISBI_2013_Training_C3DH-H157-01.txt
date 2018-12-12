@@ -1,0 +1,7 @@
+Cell type: H157 Lung Cancer cells
+Contrast technique: Cytoplasmic fluorescence
+Magnification: 63x
+Time between images: 2 min
+Voxel size: 0.126 x 0.126 x 0.5 microns
+Camera bits: 12
+Origin: Cell Tracking Challenge I (2013)

@@ -1,0 +1,8 @@
+Cell type: Any
+Contrast technique: Cytoplasmic or nuclear fluorescence
+Magnification: Any
+Time between images: Any
+Pixel size: Any
+Camera bits: 8
+Origin: The displayed image is from the GOWT1 dataset of the Cell Tracking Challenges.
+Comments: The settings should work reasonably well for most 2D fluorescence datasets.

@@ -1,0 +1,5 @@
+Classifier trained on murine muscle stem cells (MuSCs), imaged in 10x bright field microscopy with an imaging frequency of one frame every 3 minutes. The cells were cultured in a hydrogel microwell with a diameter of 600 micrometers.
+
+This is a logistic regression classifier trained on the dataset 2009_10_21_Penney_MuSC_10x_3min_GelPlastic. The feature set (not the classifier) was used in [1] and is called TransmissionFeatures.
+
+[1] Magnusson, K. E. G.; Jaldén, J.; Gilbert, P. M. & Blau, H. M. Global linking of cell tracks using the Viterbi algorithm IEEE Trans. Med. Imag., 2015, 34, 1-19

@@ -1,0 +1,8 @@
+Particle type: Simulated virus
+Contrast technique: Fluorescence
+Motion model: Switching between directed and Brownian
+Number of particles per image: ~500
+SNR: 4
+Voxel size: 67 x 67 x 300 nm
+Camera bits: 8
+Origin: ISBI 2012 Particle Tracking Challenge

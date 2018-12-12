@@ -1,0 +1,7 @@
+Cell type: HeLa
+Contrast technique: DIC
+Magnification: 63x
+Time between images: 10 min
+Pixel size: 0.19 microns
+Camera bits: 8
+Origin: Cell Tracking Challenge II (2014)

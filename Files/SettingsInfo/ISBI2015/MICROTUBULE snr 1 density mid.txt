@@ -1,0 +1,8 @@
+Particle type: Simulated microtubule
+Contrast technique: Fluorescence
+Motion model: Directed
+Number of particles per image: ~400
+SNR: 1
+Pixel size: 50 nm
+Camera bits: 8
+Origin: ISBI 2012 Particle Tracking Challenge

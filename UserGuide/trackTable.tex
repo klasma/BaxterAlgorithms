@@ -1,0 +1,58 @@
+﻿\begin{longtable}{lX}
+\caption{Settings associated with track linking.}
+\label{tab:tracking-settings}\\ \hline
+
+countClassifier & Classifier used to estimate the number of cells in segmented regions. \\[5pt] \hline
+
+splitClassifier & Classifier used to estimate the probability of mitosis in segmented regions. \\[5pt] \hline
+
+deathClassifier & Classifier used to estimate the probability of apoptosis in segmented regions. \\[5pt] \hline
+
+pCnt0 & Fixed probability that segmented regions contain 0 cells, used only if countClassifier is set to \setting{none}. \\[5pt] \hline
+
+pCnt1 & Fixed probability that segmented regions contain 1 cell, used only if countClassifier is set to \setting{none}. \\[5pt] \hline
+
+pCnt2 & Fixed probability that segmented regions contain 2 or more cells, used only if countClassifier is set to \setting{none}. \\[5pt] \hline
+
+pCntExtrap & Factor by which the probability is decreased when a cell is added to a region containing 2 or more cells. \\[5pt] \hline
+
+pSplit & Fixed probability of mitosis in segmented regions, used only if splitClassifier is set to \setting{none}. \\[5pt] \hline
+
+pDeath & Fixed probability of apoptosis in segmented regions, used only if deathClassifier is set to \setting{none}. \\[5pt] \hline
+
+%TrackSaveIterations & Set this to 1 to save intermediate tracking information for debug purposes. This should normally be set to \setting{0}. \\[5pt] \hline
+
+%TrackMigLogLikeList & Algorithm used for estimation of probabilities of migration between segmented regions. \setting{MigLogLikeList\_uniform} will normally work well. \\[5pt] \hline
+
+TrackPAppear & Fixed probability for a cell region to contain a cell that randomly appeared in the current time step. Cells can appear randomly by going out of suspension in the beginning of the experiment or by detaching from the substrate and getting washed into the field of view later in the experiment. \\[5pt] \hline
+
+TrackPDisappear & Fixed probability for a cell region to contain a cell which will disappear randomly before the next image. \\[5pt] \hline
+
+TrackMigInOut & If this is set to 1, cells are allowed to enter and leave the field of view through migration. \\[5pt] \hline
+
+TrackXSpeedStd & Standard deviation, in pixels/voxels per frame, for the cell displacement between two images, in the $x$- and $y$-directions. \\[5pt] \hline
+
+TrackZSpeedStd & Standard deviation, in voxel widths per frame, for the cell displacement between two images, in the $z$-direction of a 3D image sequence. The setting is specified in voxel widths, so if the motion is isotropic, the value should be equal to TrackXSpeedStd, even if the voxel height is different from the voxel width.\\[5pt] \hline
+
+%TrackMaxMigDist & Maximum allowed migration distance in pixels. Tracks with migrations that are longer will be broken into multiple tracks. Set this to \setting{inf} to allow arbitrarily long migrations. \\[5pt] \hline
+
+%TrackBipartiteMatch & If this is set to 1, there will be an additional optimization step after the track linking, where existing track links can be swaped. The computation will take additional time, especially if there are a lot of cells, but usually it is worth doing. \\[5pt] \hline
+
+%TrackMergeWatersheds & If this is set to 1, regions without cells will be merged into adjacent regions with cells after the track linking step. This is a good way of getting rid of over segmentation caused by the watershed transforms described in Section \ref{sec:watersheds}. \\[5pt] \hline
+
+%TrackMergeOverlapMaxIter & The number of iterations of overlapping region merging that will be executed. \\[5pt] \hline
+
+%TrackMergeOverlapThresh & The overlap threshold above which regions will be merged in overlapping region merging. \\[5pt] \hline
+
+%TrackMergeOverlapDeltaT & The maximum time difference in frames across which overlaps are computed in overlapping region merging. \\[5pt] \hline
+
+%TrackFalsePos & If this is set to 1, regions that don't have cells in them after the track linking step will be linked into false positive tracks. This allows entire tracks of cells that have been missed by the tracking algorithm to be added to the lineage tree in a single click during manual correction. \\[5pt] \hline
+
+%TrackNumNeighbors & The number of neighboring detections that are considered for each detection during track linking. Considering 3 neighbors is usually sufficient and increasing this value will increase the run time. \\[5pt] \hline
+
+%TrackSingleState & If this is set to 1, the track linking algorithm is allowed to add multiple track fragments, in different parts of the image sequence, in the same iteration. This seems to increase the performance when there is a lot of random appearance and disappearance of tracks, but normally it decreases the performance. \\[5pt] \hline
+
+%TrackMaxMigScore & This is a threshold on how much the addition of a migration is allowed to increase the score associated with a set of tracks. This is usually set to 0, to avoid creation of tracks for stationary debris. \\[5pt] \hline
+
+%foiErosion & Width of a pixel border around the image where cells will be removed from the tracking results. This has been used only for the ISBI 2013 Cell Tracking Challenge. \\[5pt] \hline
+\end{longtable}

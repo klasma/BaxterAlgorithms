@@ -1,0 +1,7 @@
+Cell type: MDA231 human breast carcinoma cells
+Contrast technique: Cytoplasmic fluorescence
+Magnification: 20x
+Time between images: 80 min
+Voxel size: 1.242 x 1.242 x 6 microns
+Camera bits: 12
+Origin: Cell Tracking Challenge I (2013)

@@ -1,0 +1,160 @@
+setting,01
+use,1
+timelapse,Unnamed
+condition,Unspecified
+minWellR,NaN
+maxWellR,NaN
+numZ,1
+bits,8
+pixelsize,1
+magnification,1
+dT,1
+startT,0
+countClassifier,none
+splitClassifier,none
+deathClassifier,none
+migClassifier,none
+pCnt0,0.1
+pCnt1,0.8
+pCnt2,0.1
+pSplit,0.01
+pDeath,0
+maxClones,inf
+makePairs,0
+cutBeginning,0
+TrackMaxCellCnt,4
+TrackPAppear,0.001
+TrackPDisappear,0.001
+TrackPReAppear,0.00020367
+TrackPMissing,0.00020333
+TrackMigInOut,1
+TrackCellDensity,1e-005
+TrackXSpeedStd,15
+TrackYSpeedStd,3.336
+TrackNumNeighbours,3
+TrackMaxMigDist,Inf
+TrackBipartiteMatch,1
+TrackFalsePos,1
+TrackMotionModel,none
+TrackCentroidOffset,0
+TrackSingleIdleState,0
+TrackMaxMigScore,1000
+TrackMergeWatersheds,1
+TrackCountDecay,-1.3863
+TrackMigrationWeight,1
+TrackMitosisWeight,1
+TrackApoptosisWeight,1
+TrackCountOffset1,0
+TrackCountOffset2,0
+TrackMigrationOffset,0
+TrackMitosisOffset,0
+TrackApoptosisOffset,-10.8198
+channelNames,Ch1
+channelTags,.*
+sequenceLength,
+minPlotT,
+maxPlotT,
+authorStr,
+SegOldVersion,none
+SegAlgorithm,Segment_bandpass
+SegChannel,Ch1
+SegLightCorrect,none
+SegMediaChanges,
+SegBgSubAlgorithm,none
+SegBgSubAtten,0.5
+SegBgSubSvdRank,4
+SegFillHoles,0
+SegMinArea,0
+SegMaxArea,Inf
+SegMaxCount,2000
+SegSmooth,0
+SegWatershed,shape
+SegWSmooth,0
+SegWHMax,3
+SegWThresh,-Inf
+SegWLocMaxCentroids,0
+LVSegRegionSize,8
+LVSegThreshold,3.3
+LVSegErodeSize,3
+LVSegRegionShape,square
+LVSegErodeShape,square
+TSegThreshold,0.3
+TSegDarkOrBright,bright
+OSegThreshold,1
+EBSegSmooth,1
+EBSegThreshold,5
+TMSegTemplate,HSC_10x_bf_21x21.mat
+TMSegThreshold,0.11
+TMSegComplimentAlg,Segment_localvariance
+TMComplimentErode,7
+PCSegPSF,BRIGHTFIELD.mat
+PCSegBeta,30
+PCSegThreshold,0.01
+PCSegIterations,10
+PCSegPSFSizeXY,20
+PCSegPSFSizeZ,9
+SaveTrack CellData_130130,BaxterAlgorithm 01/31/2013 14:40:28.884 50
+voxelHeight,1
+SaveTrack CellData_130131,BaxterAlgorithm 02/01/2013 14:15:06.208 50
+SaveTrack CellData_130131b,BaxterAlgorithm 02/01/2013 20:58:50.542 50
+SaveTrack CellData_130204,BaxterAlgorithm 02/05/2013 16:05:59.731 56
+SaveTrack CellData_130207,BaxterAlgorithm 02/07/2013 22:52:45.384 56
+pCntExtrap,0.25
+SaveTrack CellData_130208,BaxterAlgorithm 02/09/2013 17:05:10.995 50
+foiErosion,0
+TrackMigLogLikeAlg,MigLogLikeMatrix_uniformClutter
+TrackMigLogLikeList,MigLogLikeList_uniformClutter
+SegMinSumIntensity,2
+FibSegBGThreshold,0
+FibSegMergeThreshold,3
+RelWSegEdgeMergeThresh,0.8
+RelWSegRegMergeThresh,1.5
+RelWSegBgAreaThresh,100000
+RelWSegPerimRatio,0.33
+BPSegHightStd,100
+BPSegLowStd,3
+BPSegBgFactor,1.05
+BPSegThreshold,0.001
+SaveTrack CellData_130307_2D,BaxterAlgorithm 03/07/2013 01:17:25.913 50
+SaveTrack CellData_130307_small_regions,BaxterAlgorithm 03/07/2013 19:11:56.689 50
+SaveTrack CellData_130307_small_regions2,BaxterAlgorithm 03/07/2013 20:07:37.246 50
+SaveTrack CellData_130307_dilation,
+SaveTrack CellData_130308_all,BaxterAlgorithm 03/08/2013 01:10:45.628 50
+SaveTrack CellData_130310_twochildren,BaxterAlgorithm 03/10/2013 16:40:02.134 50
+SaveTrack CellData_130310,BaxterAlgorithm 03/11/2013 15:16:01.697 56
+SaveTrack CellData_130310_noiterators,
+FlPcSegSmoothing,100
+FlPcSegL1Penalty,20
+FlPcSegThreshold,1
+TrackMergeOverlapThresh,0.5
+TrackZSpeedStd,15
+TrackMergeOverlapMaxIter,1
+TrackSaveIterations,0
+TrackMergeOverlapDeltaT,1
+TrackDeathPriorChange,0
+TrackSplitPriorChange,0
+TrackPMig,0.01
+TrackPMigDet,0.8
+TrackMaxDeathProb,1
+TrackDeathShift,2e-05
+TrackComputeAllFeatures,0
+zStacked,0
+channelColors,1 1 1
+channelMin,0
+channelMax,1
+SegSave,1
+SegMinHoleArea,Inf
+SegClipping,1
+SegClippingBelow,0
+SegMedFilt,1
+SegWatershed2,none
+SegCellMorphOp,none
+BPSegHighStd,100
+BPSegDarkOrBright,bright
+TrackSaveFPAsCells,0
+TrackMergeBrokenMaxArea,0
+TrackMergeBrokenRatio,0.75
+TrackSavePTC,0
+TrackSaveCTC,0
+TrackEvaluateCTC,0
+TrackSelectFromGT,0
