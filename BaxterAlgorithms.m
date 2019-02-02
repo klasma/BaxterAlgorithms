@@ -1015,7 +1015,17 @@ InfoDialog('InfoBaxterAlgorithms', 'Main GUI',...
     function OpenUserGuide(~, ~)
         % Opens the User guide pdf when the user presses Help->User Guide.
         
-        open('UserGuide.pdf')
+        if ~isdeployed
+            open('UserGuide.pdf')
+        else
+            % The command "open" does not work in deployed programs.
+            if ispc
+                winopen('UserGuide.pdf');
+            else
+                % This works on Mac but not on linux.
+                unix('open "UserGuide.pdf" &');
+            end
+        end
     end
 
     function OpenOrAddExperiment(aExPaths, aOp)
