@@ -288,10 +288,13 @@ classdef SettingsPanel < handle
             end
             
             % Let the user select a directory.
-            selectedPath = uigetdir(startPath);
+            selectedPath = UiGetMultipleDirs(...
+                'Title', 'Select a directory',...
+                'Path', startPath,...
+                'MultiSelect', false);
             
-            % Chagne to the selected directory.
-            if ~isequal(selectedPath, 0)
+            % Change to the selected directory.
+            if ~isempty(selectedPath)
                 this.SetParameter(aLabel, selectedPath)
                 this.SetVisible(this.shownCategories, this.shownLevels);
             end

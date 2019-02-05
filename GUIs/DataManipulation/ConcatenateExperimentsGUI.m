@@ -136,11 +136,14 @@ InfoDialog('InfoMergeExperimentsGUI', 'Concatenate experiments',...
     function Cb_ChooseDestinationGUI(~, ~)
         % Opens a dialog box for selection of destination folder.
         
-        tmpExPath = uigetdir(fileparts(unmergedExperiments{1}),...
-            'Select Output Folder For Merged Experiments');
+        tmpExPath = UiGetMultipleDirs(...
+            'Title', 'Select Output Folder For Merged Experiments',...
+            'Path', fileparts(unmergedExperiments{1}),...
+            'MultiSelect', false);
+        
         % Check to make sure a folder is selected, and that it is not
         % one of the experiment folders selected for merging.
-        if ischar(tmpExPath)
+        if ~isempty(tmpExPath)
             if ~any(strcmpi(unmergedExperiments, tmpExPath))
                 SetDestinationDir(tmpExPath)
             else

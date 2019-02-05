@@ -31,10 +31,12 @@ else
 end
 
 % Open dialog to specify a directory where the csv files will be saved.
-saveDir = uigetdir(fileparts(fullfile(fileparts(aSeqPaths{1}), 'Analysis')),...
-    'Export statistics');
+saveDir = UiGetMultipleDirs(...
+    'Title', 'Export statistics',...
+    'Path', fileparts(fullfile(fileparts(aSeqPaths{1}), 'Analysis')),...
+    'MultiSelect', false);
 
-if isequal(saveDir, 0)
+if isempty(saveDir)
     % The user canceled the file saving dialog.
     return
 end

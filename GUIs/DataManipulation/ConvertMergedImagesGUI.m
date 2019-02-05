@@ -182,18 +182,22 @@ processStatus = uicontrol('Style', 'text',...
         setptr(mainFigure, 'watch')
         drawnow()
         
-        % If a folder was selected previously, uigetdir will begin in that
-        % directory.
+        % If a folder was selected previously, UiGetMultipleDirs will begin
+        % in that directory.
         if isempty(experimentFolder)
-            tmpExPath = uigetdir('Select Folder with Images');
+            tmpExPath = UiGetMultipleDirs(...
+                'Title', 'Select Folder with Images',...
+                'MultiSelect', false);
         else
-            tmpExPath = uigetdir(fileparts(experimentFolder),...
-                'Select Folder with Images');
+            tmpExPath = UiGetMultipleDirs(...
+                'Title', 'Select Folder with Images',...
+                'Path', fileparts(experimentFolder),...
+                'MultiSelect', false);
         end
         
         % Display the experiment directory path and enable the process
         % button if selecting the experiment folder was successful.
-        if ischar(tmpExPath)
+        if ~isempty(tmpExPath)
             experimentFolder = tmpExPath;
             set(experimentDir, 'String', experimentFolder)
             set(processButton, 'Enable', 'on')
