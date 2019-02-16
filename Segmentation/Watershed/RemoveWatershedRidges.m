@@ -62,6 +62,14 @@ for i = 1:length(indices)
     
     % Pick out the indices which correspond to label voxels.
     neighborIndices = neighborIndices(~aRidges(neighborIndices));
+    if isempty(neighborIndices)
+        % Ridge pixels without adjacent cells are assigned to the
+        % background.
+        oLabels(indices(i)) = 0;
+        aRidges(indices(i)) = false;
+        continue
+    end
+    
     % Get labels and voxel values of the neighboring label voxels.
     neighborLabels = oLabels(neighborIndices);
     neighborLandscape = aLandscape(neighborIndices);
