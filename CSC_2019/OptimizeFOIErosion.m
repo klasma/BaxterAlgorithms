@@ -1,42 +1,49 @@
-function OptimizeFOIErosion(aSeqPaths, aVersion)
+function OptimizeFOIErosion(aExPath, aVersion, aMinErosion, aMaxErosion, aOriginalErosion)
 
-maxErosion = 100;
-SEG = nan(maxErosion + 1, length(aSeqPaths));
-TRA = nan(maxErosion + 1, length(aSeqPaths));
+seqDirs = GetSeqDirs(aExPath);
+erosions = aMinErosion : aMaxErosion;
+SEG = nan(length(seqDirs), length(erosions));
+TRA = nan(length(seqDirs), length(erosions));
 
-for i = 1:length(aSeqPaths)
-    seqPath = aSeqPaths{i};
+for i = 1:length(seqDirs)
+    seqPath = fullfile(aExPath, seqDirs{i});
     imData = ImageData(seqPath);
-    for erosion = 0:maxErosion
-        fprintf('Testing FOI erosion %d / %d\n', erosion, maxErosion)
+    for j = 1:length(erosions)
+        fprintf('Testing FOI erosion %d\n', erosions(j))
         cells = LoadCells(seqPath, aVersion);
-        erodedVersion = sprintf('%s_eroded_%03d', aVersion, erosion);
+        erodedVersion = sprintf('%s_eroded_%03d', aVersion, erosions(j));
         if ~HasVersion(seqPath, erodedVersion)
-            erodedCells = ErodeFOI(cells, erosion, imData);
+            erodedCells = ErodeFOI(cells, erosions(j), imData);
             SaveCells(erodedCells, seqPath, erodedVersion)
         end
-        SEG(erosion+1) = PerformanceSEG(seqPath, erodedVersion, false);
-        TRA(erosion+1) = PerformanceTRA(seqPath, erodedVersion);
+        SEG(i,j) = PerformanceSEG(seqPath, erodedVersion, false);
+        TRA(i,j) = PerformanceTRA(seqPath, erodedVersion);
     end
 end
 
-meanTRA = mean(TRA,2);
-meanSEG = mean(SEG,2);
+meanTRA = mean(TRA,1);
+meanSEG = mean(SEG,1);
 
 meanOP = (meanTRA+meanSEG)/2;
 
-bestErosion = find(meanOP == max(meanOP), 1, 'last') - 1;
-fprintf('The best erosion is %d\n', bestErosion)
+bestErosion = erosions(find(meanOP == max(meanOP), 1, 'last'));
 
-for i = 1:length(aSeqPaths)
-    WriteSeqSettings(aSeqPaths{i}, 'foiErosion', bestErosion)
+for i = 1:length(seqDirs)
+    seqPath = fullfile(aExPath, seqDirs{i});
+    WriteSeqSettings(seqPath, 'foiErosion', num2str(bestErosion))
 end
 
-figure
-plot(0:maxErosion, meanSEG)
+fprintf('%s', aExPath)
+fprintf('Best erosion = %d\n', bestErosion)
+performanceGain = meanOP(erosions == bestErosion) - meanOP(erosions == aOriginalErosion);
+fprintf('Performance gain = %d\n\n', performanceGain)
+
+[~, exDir] = fileparts(aExPath);
+figure('Name', exDir)
+plot(erosions, meanSEG)
 hold all
-plot(0:maxErosion, meanTRA)
-plot(0:maxErosion, meanOP)
+plot(erosions, meanTRA)
+plot(erosions, meanOP)
 
 xlabel('Erosion')
 ylabel('Performance')
