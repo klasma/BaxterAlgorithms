@@ -1,6 +1,5 @@
 # Files associated with the deployed verison of the program.
 BaxterAlgorithms/
-BaxterAlgorithms_resources/
 
 # File that changes when the user opens experiments.
 variables.mat
