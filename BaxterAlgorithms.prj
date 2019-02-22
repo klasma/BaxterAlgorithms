@@ -23,7 +23,9 @@
 
 During execution, the program will produce text output with progress indications, results, and error messages. In order to see the output on Mac, you need to start the program from the terminal, using a shell script which is located inside the .app-folder associated with the program. The command for running the shell script is [Path of shell script] [MCR root]. If you installed both the Baxter Algorithms and the Matlab Compiler Runtime (MCR) in the default locations, the command is:
 
- /Applications/BaxterAlgorithms/application/run_BaxterAlgorithms.sh /Applications/MATLAB/MATLAB_Compiler_Runtime/v95/
+ /Applications/BaxterAlgorithms/application/run_BaxterAlgorithms.sh /Applications/MATLAB/MATLAB_Compiler_Runtime/v[version]/
+
+In the above command, [version] is the version number (without dots) of the Matlab Compiler Runtime. For Matlab 2018a, [version] is 94 for Matlab Compiler Runtime 9.4.
 
 You can find more instructions on how to run the program in the user guide which is found under the Help menu in the main window of the program.</param.install.notes>
     <param.target.install.notes />
