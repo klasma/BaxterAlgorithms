@@ -78,7 +78,7 @@ dT,1
 startT,0
 authorStr,
 SegWSmooth,2
-SegWHMax,0
+SegWHMax,0.001
 SegWThresh,-Inf
 SegWUpSampling,2
 SegWatershed2,anisotropicshape
