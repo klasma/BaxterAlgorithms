@@ -10,9 +10,9 @@ for i = 1:length(seqDirs)
     imData = ImageData(seqPath);
     for j = 1:length(erosions)
         fprintf('Testing FOI erosion %d\n', erosions(j))
-        cells = LoadCells(seqPath, aVersion);
         erodedVersion = sprintf('%s_eroded_%03d', aVersion, erosions(j));
         if ~HasVersion(seqPath, erodedVersion)
+            cells = LoadCells(seqPath, aVersion);
             erodedCells = ErodeFOI(cells, erosions(j), imData);
             SaveCells(erodedCells, seqPath, erodedVersion)
         end
@@ -33,7 +33,7 @@ for i = 1:length(seqDirs)
     WriteSeqSettings(seqPath, 'foiErosion', num2str(bestErosion))
 end
 
-fprintf('%s', aExPath)
+fprintf('%s\n', aExPath)
 fprintf('Best erosion = %d\n', bestErosion)
 performanceGain = meanOP(erosions == bestErosion) - meanOP(erosions == aOriginalErosion);
 fprintf('Performance gain = %d\n\n', performanceGain)
