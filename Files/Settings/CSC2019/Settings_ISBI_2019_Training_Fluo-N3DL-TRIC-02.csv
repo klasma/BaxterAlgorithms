@@ -80,13 +80,13 @@ authorStr,
 SegWSmooth,2
 SegWHMax,0
 SegWThresh,-Inf
-SegWUpSampling,3
+SegWUpSampling,2
 SegWatershed2,anisotropicshape
 SegWLocMaxCentroids,0
 SegWSmooth2,0.5
 SegWHMax2,0.5
 SegWThresh2,-Inf
-SegWUpSampling2,3
+SegWUpSampling2,2
 TrackMaxCellCnt,4
 TrackPReAppear,0
 TrackPMissing,0
