@@ -87,7 +87,7 @@ function WriteCellsTif(aImData, aCells, aPath, aSaveDeaths)
 % aSaveDeaths - If this is true, information about dead cells will be
 %               saved to deaths.txt.
 
-if exist(aPath, 'file')
+if exist(aPath, 'dir')
     % Remove old files.
     rmdir(aPath, 's')
 end
