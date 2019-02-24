@@ -57,8 +57,12 @@ for i = 1:length(gtFiles)
     % Load the corresponding label image with computer generated results.
     resName = regexpi(resFiles, ['mask0*' num2str(frame) '.tif'],...
         'match', 'once');
-    resName = resName{~cellfun(@isempty, resName)};
-    resIm = imread(fullfile(aResPath, resName), slice+1);
+    if all(cellfun(@isempty, resName))
+        resIm = zeros(size(gtIm));
+    else
+        resName = resName{~cellfun(@isempty, resName)};
+        resIm = imread(fullfile(aResPath, resName), slice+1);
+    end
     
     % Compute the Jaccard indices for all ground truth regions.
     jaccard_i = JSI(resIm, gtIm, aRelaxed);

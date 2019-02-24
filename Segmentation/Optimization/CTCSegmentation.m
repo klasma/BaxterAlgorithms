@@ -1,12 +1,12 @@
 function CTCSegmentation(aSeqPath, aVer, varargin)
-% Saves segmentation results with cells in frames with manual segmentation.
+% Saves segmentation results in frames with manual segmentation.
 %
 % The function segments only the images which have a segmentation ground
-% truth, and generates cells with a single time point for each segmented
-% blob. This can be useful for testing of segmentation parameters in cases
-% where it takes a long time to produce complete tracking results. The
-% segmentation results are saved in the format used in the ISBI Cell
-% Tracking Challenges.
+% truth, and saves label images to a faked tracking result in format of the
+% ISBI Cell Tracking Challenges. No empty images are saved for un-segmented
+% frames and no text file with track information is created. This can be
+% useful for testing of segmentation parameters in cases where it takes a
+% long time to produce complete tracking results.
 %
 % Inputs:
 % aSeqPath - Full path of the image sequence.
@@ -111,35 +111,49 @@ switch aScoringFunction
         error('Unknown scoring function %s', aScoringFunction)
 end
 
-cells = cell(1,length(gtFrames));
+resPath = fullfile(....
+    imData.GetCellDataDir('Version', aVer),...
+    'RES',...
+    [seqDir, '_RES']);
+
+if exist(resPath, 'dir')
+    % Remove old files.
+    rmdir(resPath, 's')
+end
+mkdir(resPath)
+
+if imData.sequenceLength <= 1000
+    fmt = 'mask%03d.tif';
+else
+    digits = ceil(log10(imData.sequenceLength));
+    fmt = ['mask%0' num2str(digits) 'd.tif'];
+end
+
 parfor i = 1:length(gtFrames)
     fprintf('Segmenting frame %d / %d\n', i, length(gtFrames))
     t = gtFrames(i);
     
     % Perform segmentation.
-    if imData.GetDim() == 2 %#ok<PFBNS>
+    if imData.GetDim() == 2
         blobs = Segment_generic(imData, t);
     else  % 3D
         blobs = Segment_generic3D(imData, t);
     end
     
-    % Generate cells for all segmented blobs.
-    for j = 1:length(blobs)
-        c = Cell(...
-            'imageData', imData,...
-            'firstFrame', t,...
-            'blob', [],...
-            'disappeared', true);
-        c.AddFrame(blobs(j).CreateSub());
-        cells{i} = [cells{i} c];
+    % Write label images to a tracking result folder.
+    imPath = fullfile(resPath, sprintf(fmt, t-1));
+    imageSize = [imData.imageHeight, imData.imageWidth, imData.numZ];
+    im = ReconstructSegmentsBlob(blobs, imageSize);
+    if size(im,3) == 1  % 2D data.
+        imwrite(uint16(im), imPath, 'Compression', 'lzw')
+    else  % 3D data.
+        for slice = 1:size(im,3)
+            imwrite(uint16(squeeze(im(:,:,slice))), imPath,...
+                'WriteMode', 'append',...
+                'Compression', 'lzw')
+        end
     end
 end
-cells = [cells{:}];
 
 fprintf('Done segmenting frames\n')
-
-% Save the cells in the format used in the ISBI Cell Tracking Challenges.
-SaveCellsTif(imData, cells, aVer, false);
-
-fprintf('Done saving segmentation\n')
 end
