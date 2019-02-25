@@ -74,7 +74,11 @@ end
 
 % Link the blobs into cell trajectories.
 numCells = max(cellfun(@length,blobSeq));
-oCells(numCells) = Cell();  % Pre-allocation.
+if numCells > 0
+    oCells(numCells) = Cell();  % Pre-allocation.
+else
+    oCells = [];
+end
 for t = 1:imData.sequenceLength
     waitbar((t-1)/labelImData.sequenceLength, wbar, 'Creating cells')
     
