@@ -73,6 +73,9 @@ volume = aImData.imageWidth * aImData.imageHeight * aImData.numZ;
 
 oList = [];
 for t = 1:length(aBlobSeq)-1
+    fprintf('Computing migration scores for image %d / %d.\n',...
+        t, length(aBlobSeq)-1)
+    
     % Compute the covariance matrix, which may depend on t.
     if ~strcmpi(aImData.Get('TrackMotionModel'), 'none')
         % Saved covariance matrix.

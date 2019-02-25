@@ -66,6 +66,8 @@ end
 
 oList = [];
 for t = 1:length(aBlobSeq)-1
+    fprintf('Computing migration scores for image %d / %d.\n',...
+        t, length(aBlobSeq)-1)
     
     tBlobs1 = aBlobSeq{t};  % Blobs in current image.
     tBlobs2 = aBlobSeq{t+1};  % Blobs in next image.
