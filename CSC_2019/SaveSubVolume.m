@@ -1,9 +1,10 @@
 function SaveSubVolume(aSeqPath, aNewSeqPath, aX, aY, aZ, aT)
 % Saves a z-stack with a small portion of a z-stack sequence.
 
-if ~exist(aNewSeqPath, 'dir')
-    mkdir(aNewSeqPath)
+if exist(aNewSeqPath, 'dir')
+    rmdir(aNewSeqPath, 's')
 end
+mkdir(aNewSeqPath)
 
 tifs = GetNames(aSeqPath, 'tif');
 for t = aT(1):aT(2)
