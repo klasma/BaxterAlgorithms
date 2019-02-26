@@ -7,10 +7,10 @@ subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','d
 addpath(subdirs{1}{:});
 
 basePath = 'C:\CellData\Training';
-exPath = fullfile(basePath, 'Fluo-N3DL-TRIC');
+exPath = fullfile(basePath, 'Fluo-N3DL-TRIC-cropped');
 
 optimizer = SEGOptimizerEx(exPath,...
-    {'SegClipping'
+    {'SegTopHatRadius'
     'BPSegHighStd'
     'BPSegLowStd'
     'BPSegBgFactor'
