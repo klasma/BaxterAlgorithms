@@ -29,6 +29,10 @@ for seq = 1:length(seqDirs)
     
     imData = ImageData(seqPath);  % Image data for the image sequence.
     gtImData = ImageData(gtPath);  % Image data with manually labeled pixels.
+    if strcmp(FileEnd(aExPath), 'Fluo-C3DH-A549')
+        gtImData.Set('numZ', imData.numZ);
+        gtImData.Set('zStacked', imData.Get('zStacked'));
+    end
     % Not all frames have a ground truth segmentation, but the ImageData
     % objects do not know about this. gtImData can therefore have a shorter
     % sequenceLength.
@@ -54,9 +58,9 @@ for seq = 1:length(seqDirs)
             mask = gtImData.GetZStack(t);
         else  % 3D data where only one z-plane is segmented.
             frame = str2double(regexp(gtImData.filenames{1}{t},...
-                '(?<=man_seg_*)\d+(?=_\d+.tif)', 'match', 'once')) + 1;
+                '(?<=man_seg_)\d+(?=_\d+.tif)', 'match', 'once')) + 1;
             zIndex = str2double(regexp(gtImData.filenames{1}{t},...
-                '(?<=man_seg_*\d+_)\d+(?=.tif)', 'match', 'once')) + 1;
+                '(?<=man_seg_\d+_)\d+(?=.tif)', 'match', 'once')) + 1;
             mask = zeros(imData.imageHeight, imData.imageWidth, imData.numZ);
             mask(:,:,zIndex) = gtImData.GetImage(t);
         end
@@ -78,15 +82,9 @@ for seq = 1:length(seqDirs)
         blobSeq{frame} = [tblobs{:}];  % Avoids creating dummy Blobs for missing labels.
     end
     
+    gtCells = LoadCells(seqPath, 'GT');
     if imData.numZ > 1 && gtImData.numZ == 1
-        % Use my segmentation if a single z-plane in a 3D image sequence
-        % has been segmented. If the tracking grount truth is used, it is
-        % likely to have segments in other z-planes, so that the blobs
-        % don't overlap.
-        %         gtCells = LoadCells(seqPath, 'GT_myseg_130208');
-        gtCells = LoadCells(seqPath, 'GT_myseg_140114');
-    else
-        gtCells = LoadCells(seqPath, 'GT');
+        ExpandCellsInZDirection(gtCells, imData);
     end
     cells = SwitchSegmentation(imData, gtCells, blobSeq);
     

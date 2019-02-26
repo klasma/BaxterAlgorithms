@@ -44,6 +44,7 @@ classdef SEGOptimizerSeq < Optimizer
         scoringFunction = [];   % The performance measure to optimize. 'SEG' or (SEG+TRA)/2.
         plotFigure = [];        % Figure where optimization results are plotted.
         plotResults = [];       % Optimization results are plotted if this is true.
+        saveBestSettings = [];
     end
     
     methods
@@ -95,9 +96,9 @@ classdef SEGOptimizerSeq < Optimizer
             
             % Parse property/value inputs.
             [this.numImages, this.mostCells, this.scoringFunction,...
-                this.grids, this.plotResults] = GetArgs(...
-                {'NumImages', 'MostCells', 'ScoringFunction', 'Grids', 'Plot'},...
-                {nan, false, 'SEG', cell(size(aSettings)), false},...
+                this.grids, this.plotResults, this.saveBestSettings] = GetArgs(...
+                {'NumImages', 'MostCells', 'ScoringFunction', 'Grids', 'Plot', 'SaveBestSettings'},...
+                {nan, false, 'SEG', cell(size(aSettings)), false, true},...
                 true,...
                 varargin);
             
@@ -165,7 +166,7 @@ classdef SEGOptimizerSeq < Optimizer
             
             % Save the new parameters to the settings file if they give
             % better performance.
-            if oF < fBest_old
+            if this.saveBestSettings && oF < fBest_old
                 this.SaveSettings(aX)
             end
             
