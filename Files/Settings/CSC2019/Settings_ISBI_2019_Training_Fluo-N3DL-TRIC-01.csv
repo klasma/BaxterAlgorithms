@@ -18,7 +18,7 @@ SegAlgorithm,Segment_bandpass3D
 SegChannel,Ch1
 SegLightCorrect,none
 SegBgSubAlgorithm,none
-SegTopHatRadius,Inf
+SegTopHatRadius,20
 SegFillHoles,1
 SegMinHoleArea,Inf
 SegMinArea,25
