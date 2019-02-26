@@ -42,4 +42,8 @@ for i = 1:length(seqDirs)
     gtTrackFile = fullfile(gtTraPath, 'man_track.txt');
     newGtTrackFile = fullfile(newGtTraPath, 'man_track.txt');
     copyfile(gtTrackFile, newGtTrackFile)
+    
+    settingsLinkFile = fullfile(exPath, 'SettingsLinks.csv');
+    newSettingsLinkFile = fullfile(newExPath, 'SettingsLinks.csv');
+    copyfile(settingsLinkFile, newSettingsLinkFile)
 end
