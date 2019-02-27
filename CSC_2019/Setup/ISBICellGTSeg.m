@@ -10,7 +10,7 @@ function ISBICellGTSeg(aExPath)
 % image sequence folders.
 
 % Add necessary paths.
-subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter',pathsep);
+subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter',pathsep);
 addpath(subdirs{1}{:});
 
 % Image sequence information in Baxter Algorithms format.

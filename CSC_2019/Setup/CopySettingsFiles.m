@@ -1,8 +1,8 @@
 % Copy the old settings files to a new folder.
 
 currentPath = fileparts(mfilename('fullpath'));
-oldSettingsPath = fullfile(currentPath, '..', 'Files', 'Settings', 'CTC2015');
-newSettingsPath = fullfile(currentPath, '..', 'Files', 'Settings', 'CSC2019');
+oldSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', 'CTC2015');
+newSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', 'CSC2019');
 
 if ~exist(oldSettingsPath, 'dir')
     printf('The folder %s does not exist.', oldSettingsPath)

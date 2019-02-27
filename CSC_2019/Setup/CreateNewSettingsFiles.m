@@ -6,7 +6,7 @@ trainingOrChallenge = {
     'Training'};
 
 currentPath = fileparts(mfilename('fullpath'));
-newSettingsPath = fullfile(currentPath, '..', 'Files', 'Settings', 'CSC2019');
+newSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', 'CSC2019');
 
 for d = 1:length(dataSetFolders)
     exDirs = GetNames(dataSetFolders{d}, '');

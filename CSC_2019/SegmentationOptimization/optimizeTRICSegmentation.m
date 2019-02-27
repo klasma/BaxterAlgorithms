@@ -3,7 +3,7 @@
 % The parameter SegWHMax was changed from 0 to 0.001 before starting the
 % script, to avoid getting a step length of 0.
 
-subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter', pathsep);
+subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
 
 basePath = 'C:\CellData\Training';
