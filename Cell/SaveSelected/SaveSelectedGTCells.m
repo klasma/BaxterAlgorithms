@@ -28,7 +28,7 @@ end
 % Load a tracking version with all cells.
 cells = LoadCells(imData.seqPath, aVersion);
 
-% Select cells which correspond to a ground truth cell in the fist image.
+% Select cells which correspond to a ground truth cell in the first image.
 selectedCells = SelectCellsFromGTPixels(cells, imData, varargin{:});
 
 % Save the selected cells as a new version.
