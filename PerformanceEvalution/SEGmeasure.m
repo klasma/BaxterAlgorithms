@@ -39,7 +39,8 @@ end
 jaccard = [];  % Jaccard indices for all ground truth regions.
 for i = 1:length(gtFiles)
     % Ground truth label image.
-    gtIm = imread(fullfile(aGtPath, gtFiles{i}));
+    
+    gtIm = ReadTifStack(fullfile(aGtPath, gtFiles{i}));
     
     % Extract the zero based frame index from the file name.
     frame = regexpi(gtFiles{i}, '(?<=man_seg_?)\d+', 'match', 'once');
@@ -49,7 +50,7 @@ for i = 1:length(gtFiles)
     % the slice index is set to 0.
     slice = regexpi(gtFiles{i}, '(?<=man_seg_?\d+_)\d+', 'match', 'once');
     if isempty(slice)
-        slice = 0;
+        slice = nan;
     else
         slice = str2double(slice);
     end
@@ -61,7 +62,12 @@ for i = 1:length(gtFiles)
         resIm = zeros(size(gtIm));
     else
         resName = resName{~cellfun(@isempty, resName)};
-        resIm = imread(fullfile(aResPath, resName), slice+1);
+        imPath = fullfile(aResPath, resName);
+        if isnan(slice)
+            resIm = ReadTifStack(imPath);
+        else
+            resIm = imread(imPath, slice+1);
+        end
     end
     
     % Compute the Jaccard indices for all ground truth regions.
