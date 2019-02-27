@@ -3,11 +3,13 @@
 
 basePath = 'D:\CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019';
 seqPaths = {...
+    fullfile(basePath, 'Training', 'Fluo-N3DL-TRIC-cropped', 'Fluo-N3DL-TRIC_01')
+    fullfile(basePath, 'Training', 'Fluo-N3DL-TRIC-cropped', 'Fluo-N3DL-TRIC_02')
     fullfile(basePath, 'Training', 'Fluo-N3DL-TRIC', 'Fluo-N3DL-TRIC_01')
     fullfile(basePath, 'Training', 'Fluo-N3DL-TRIC', 'Fluo-N3DL-TRIC_02')
     fullfile(basePath, 'Challenge', 'Fluo-N3DL-TRIC', 'Fluo-N3DL-TRIC_01')
     fullfile(basePath, 'Challenge', 'Fluo-N3DL-TRIC', 'Fluo-N3DL-TRIC_02')};
-version = '_hpc';
+version = '_hpc2single';
 
 for i = 1:length(seqPaths)
     selVersion = [version '_sel'];
