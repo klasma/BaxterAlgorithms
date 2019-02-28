@@ -22,7 +22,7 @@ SegMinHoleArea,Inf
 SegMinArea,5000
 SegMaxArea,Inf
 SegMinSumIntensity,0
-SegClipping,0.18504
+SegClipping,0.18551
 SegClippingBelow,0
 SegSmooth,0
 SegMedFilt,0
@@ -76,10 +76,10 @@ startT,0
 authorStr,
 zStacked,1
 voxelHeight,7.9365
-BPSegHighStd,59.4451
-BPSegLowStd,9.4126
-BPSegBgFactor,1.2874
-BPSegThreshold,0.023316
+BPSegHighStd,46.7917
+BPSegLowStd,4.4189
+BPSegBgFactor,1.376
+BPSegThreshold,0.022896
 BPSegDarkOrBright,bright
 TrackZSpeedStd,20
 TrackYSpeedStd,5
