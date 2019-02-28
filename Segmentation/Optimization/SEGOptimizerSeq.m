@@ -166,7 +166,7 @@ classdef SEGOptimizerSeq < Optimizer
             
             % Save the new parameters to the settings file if they give
             % better performance.
-            if this.saveBestSettings && oF < fBest_old
+            if this.saveBestSettings && ~isempty(fBest_old) && oF < fBest_old
                 this.SaveSettings(aX)
             end
             
@@ -271,9 +271,10 @@ classdef SEGOptimizerSeq < Optimizer
 
                 % Remove the temporary segmentation results.
                 RemoveVersion(fileparts(this.seqPath), verName)
-            catch
+            catch ME
                 % Make sure that the optimization can recover from errors
                 % caused by strange parameters.
+                disp(ME)
                 fprintf(['Segmentation evaluation failed. The '...
                     'segmentation performance is set to 0 for this '...
                     'parameter set.\n'])

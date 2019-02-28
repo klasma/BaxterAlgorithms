@@ -158,7 +158,7 @@ classdef SEGOptimizerEx < Optimizer
             
             % Save the new parameters to the settings file if they give
             % better performance.
-            if oF < fBest_old
+            if ~isempty(fBest_old) && oF < fBest_old
                 for i = 1:length(this.seqOptimizers)
                     this.seqOptimizers(i).SaveSettings(aX);
                 end
