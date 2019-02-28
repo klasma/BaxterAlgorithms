@@ -1,3 +1,4 @@
+% Set SegClipping to 0.25 before starting the optimization.
 
 subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
