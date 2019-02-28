@@ -1,4 +1,4 @@
-% Set SegClipping to 0.25 before starting the optimization.
+% Set SegTopHatRadius to 3 before starting the optimization.
 
 subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
@@ -12,6 +12,8 @@ optimizer = SEGOptimizerEx(exPath,...
     'BPSegHighStd'
     'BPSegLowStd'
     'BPSegBgFactor'
-    'BPSegThreshold'});
+    'BPSegThreshold'
+    'SegTopHatRadius'},...
+    'Grids', {[], [], [], [], [], 1:100});
 
 optimizer.Optimize_coordinatedescent('MaxIter', 25)
