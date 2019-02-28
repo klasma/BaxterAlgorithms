@@ -11,8 +11,7 @@ for i = 1:length(seqDirs)
     fprintf('Optimizing seqmentation for %s\n', seqDirs{i})
     
     optimizer = SEGOptimizerSeq(seqPath,...
-        {'SegClipping'
-        'BPSegHighStd'
+        {'BPSegHighStd'
         'BPSegLowStd'
         'BPSegBgFactor'
         'BPSegThreshold'});
