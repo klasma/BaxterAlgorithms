@@ -76,10 +76,10 @@ startT,0
 authorStr,
 zStacked,1
 voxelHeight,7.9365
-BPSegHighStd,46.7917
-BPSegLowStd,4.4189
-BPSegBgFactor,1.376
-BPSegThreshold,0.022896
+BPSegHighStd,68.4399
+BPSegLowStd,0.92678
+BPSegBgFactor,1.4332
+BPSegThreshold,0.034841
 BPSegDarkOrBright,bright
 TrackZSpeedStd,20
 TrackYSpeedStd,5
