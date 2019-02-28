@@ -22,7 +22,7 @@ SegMinHoleArea,Inf
 SegMinArea,5000
 SegMaxArea,Inf
 SegMinSumIntensity,0
-SegClipping,0.5184
+SegClipping,1
 SegClippingBelow,0
 SegSmooth,0
 SegMedFilt,0
