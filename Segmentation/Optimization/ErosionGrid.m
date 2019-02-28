@@ -3,7 +3,7 @@ function oGrid = ErosionGrid(aR)
 %
 % Inputs:
 % aR - Maximum radius to be included in the array of radii. All returned
-%      radii will be smaller than on equal to this value.
+%      radii will be smaller than or equal to this value.
 %
 % Outputs:
 % oGrid - Array of structuring element radii which result in unique
