@@ -10,8 +10,8 @@ magnification,4
 dT,1
 minWellR,NaN
 maxWellR,NaN
-countClassifier,none
-splitClassifier,none
+countClassifier,PSC_CTC.mat
+splitClassifier,PSC.mat
 deathClassifier,none
 pCnt0,0.05
 pCnt1,0.9
