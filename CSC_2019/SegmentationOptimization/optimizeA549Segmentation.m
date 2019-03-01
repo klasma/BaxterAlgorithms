@@ -12,7 +12,6 @@ for i = 1:length(seqDirs)
     
     optimizer = SEGOptimizerSeq(seqPath,...
         {'BPSegHighStd'
-        'BPSegLowStd'
         'BPSegBgFactor'
         'BPSegThreshold'});
     
