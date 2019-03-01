@@ -36,7 +36,7 @@ for i = 1:length(exPaths)
         fprintf(fid, '\r\n');
         fprintf(fid, 'REM Prerequisities: MATLAB 2018b (x64)\r\n');
         fprintf(fid, '\r\n');
-        fprintf(fid, 'matlab -wait -r "RunBaxterAlgorithm_ISBI_2019(''%s'', ''%02d'')"\r\n', exDirs{i}, j);
+        fprintf(fid, 'matlab -wait -r "RunBaxterAlgorithms_ISBI_2019(''%s'', ''%02d'')"\r\n', exDirs{i}, j);
         
         fclose(fid);
     end
