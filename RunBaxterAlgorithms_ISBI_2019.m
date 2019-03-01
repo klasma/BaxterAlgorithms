@@ -25,7 +25,7 @@ addpath(subdirs{1}{:});
 fprintf('Processing %s-%s\n', aExDir, aSeqDir)
 
 baxterAlgorithmDir = fileparts(mfilename('fullpath'));
-baseDir = fileparts(fileparts(baxterAlgorithmDir));
+baseDir = fileparts(baxterAlgorithmDir);
 settingsName = sprintf('Settings_ISBI_2019_Challenge_%s-%s.csv', aExDir, aSeqDir);
 % Path of a settings file located in the program directory.
 settingsPath = GetSettingsPath(settingsName);
