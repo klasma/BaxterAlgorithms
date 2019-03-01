@@ -77,7 +77,7 @@ authorStr,
 zStacked,1
 voxelHeight,7.9365
 BPSegHighStd,14.8781
-BPSegLowStd,2.2228
+BPSegLowStd,1.5
 BPSegBgFactor,1.0045
 BPSegThreshold,0.0066708
 BPSegDarkOrBright,bright
