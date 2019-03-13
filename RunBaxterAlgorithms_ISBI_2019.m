@@ -43,9 +43,9 @@ imData = ImageData(seqPath,...
     'version', 'tmp',...
     'SettingsFile', settingsPath);
 
-if aImData.Get('TrackSaveCSB')
-    blobSeq = SegmentSequence(aImData, 'CreateOutputFiles', false);
-    SaveSegmentationCSB(aImData, blobSeq, aImData.version, true)
+if imData.Get('TrackSaveCSB')
+    blobSeq = SegmentSequence(imData, 'CreateOutputFiles', false);
+    SaveSegmentationCSB(imData, blobSeq, [], true)
 else
     cells = Track(imData,...
         'CreateOutputFiles', false);
