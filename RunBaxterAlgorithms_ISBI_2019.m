@@ -43,14 +43,19 @@ imData = ImageData(seqPath,...
     'version', 'tmp',...
     'SettingsFile', settingsPath);
 
-cells = Track(imData,...
-    'CreateOutputFiles', false);
-
-if imData.Get('TrackSelectFromGT')
-    cells = SelectCellsFromGTPixels(cells, imData);
+if aImData.Get('TrackSaveCSB')
+    blobSeq = SegmentSequence(aImData, 'CreateOutputFiles', false);
+    SaveSegmentationCSB(aImData, blobSeq, aImData.version, true)
+else
+    cells = Track(imData,...
+        'CreateOutputFiles', false);
+    
+    if imData.Get('TrackSelectFromGT')
+        cells = SelectCellsFromGTPixels(cells, imData);
+    end
+    
+    SaveCellsTif(imData, cells, [], true);
 end
-
-SaveCellsTif(imData, cells, [], true);
 
 % Close MATLAB so that there are not 38 MATLAB windows open after all image
 % sequences have been processed.

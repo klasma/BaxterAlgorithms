@@ -34,6 +34,12 @@ function SaveTrack(aImData, varargin)
     {'Track', 1},...
     true, varargin);
 
+if aImData.Get('TrackSaveCSB')
+    blobSeq = SegmentSequence(aImData, 'NumCores', aSegmentationCores);
+    SaveSegmentationCSB(aImData, blobSeq, aImData.version, false)
+    return
+end
+
 % Call the appropriate tracking algorithm.
 switch aAlgorithm
     case 'Track'
