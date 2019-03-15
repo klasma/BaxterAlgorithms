@@ -3,7 +3,7 @@ function SaveSegmentationCSB(aImData, aBlobSeq, aVersion, aForEvaluation)
 if aForEvaluation
     % Save the data in correct directory for the competition.
     exPath = aImData.GetExPath();
-    writeDir = fullfile(exPath, [seqDir, '_RES']);
+    writeDir = fullfile(exPath, [aImData.GetSeqDir(), '_RES']);
 else
     % Save the data in a sub-directory of the CellData-directory.
     writeDir = fullfile(....
