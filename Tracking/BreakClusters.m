@@ -21,7 +21,7 @@ function BreakClusters(aCells, aBlobs, aT, aImData)
 % aImData - ImageData object for the image sequence.
 %
 % See also:
-% KMeansSplit, BipartiteMatch, BipartiteMatch_correction,
+% BreakAllClusters, KMeansSplit, BipartiteMatch, BipartiteMatch_correction,
 % ViterbiTrackLinking, Cell, Blob
 
 cells = AliveCells(aCells, aT);

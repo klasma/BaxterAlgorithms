@@ -202,9 +202,12 @@ if aImData.Get('TrackBipartiteMatch')
     else
         trueCells = BipartiteMatch(trueCells, aImData);
     end
-elseif ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
-    % Replace the Gaussian components by the original blobs.
-    blobSeq = GMSegments(trueCells, segBlobSeq, aImData);
+else
+    if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+        % Replace the Gaussian components by the original blobs.
+        blobSeq = GMSegments(trueCells, segBlobSeq, aImData);
+    end
+    BreakAllClusters(trueCells, blobSeq, aImData)
 end
 
 % Find blobs that were not included in any tracks.
