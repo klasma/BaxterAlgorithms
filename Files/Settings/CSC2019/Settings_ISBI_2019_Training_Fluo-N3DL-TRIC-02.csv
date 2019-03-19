@@ -44,7 +44,7 @@ migClassifier,none
 pCnt0,0.1
 pCnt1,0.8
 pCnt2,0.1
-pCntExtrap,0.25
+pCntExtrap,0
 pSplit,0.01
 pDeath,0
 TrackPAppear,1e-05
