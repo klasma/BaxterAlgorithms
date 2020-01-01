@@ -57,16 +57,8 @@ PCSegThreshold,0.01
 PCSegIterations,10
 PCSegPSFSizeXY,20
 PCSegPSFSizeZ,9
-Stabilize,120701 08/29/2012 12:34:13.304 1377
-WellX,580
-WellY,495
-WellR,484.4961
 imageWidth,1163
 imageHeight,1036
-Cut,120701 08/29/2012 12:44:29.782 1377
-SaveTrack CellData,120701 08/30/2012 20:56:15.677 1377
-SaveTrack CellData_08312012,
-SaveTrack CellData_20120907,
 voxelHeight,6.45
 pCntExtrap,0.148
 TrackSaveIterations,0

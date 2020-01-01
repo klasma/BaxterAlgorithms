@@ -95,17 +95,9 @@ imageHeight,1036
 TSegDarkOrBright,bright
 TMSegComplimentAlg,Segment_localvariance
 TMComplimentErode,5
-Stabilize,BaxterAlgorithm 02/04/2013 18:23:58.487 1764
-WellX,557
-WellY,521
-WellR,465
-Cut,BaxterAlgorithm 02/04/2013 18:29:20.409 1764
-SaveTrack CellData_130130,BaxterAlgorithm 02/05/2013 12:50:18.655 1764
 voxelHeight,6.45
 pCntExtrap,0.001
-SaveTrack CellData_130209,
 TrackMigLogLikeList,MigLogLikeList_uniformClutter
-SaveTrack CellData_130123,
 SegSave,1
 SegMinHoleArea,Inf
 SegMinSumIntensity,0
