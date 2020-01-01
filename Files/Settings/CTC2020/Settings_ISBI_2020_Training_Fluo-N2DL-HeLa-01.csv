@@ -164,3 +164,8 @@ BPSegDarkOrBright,bright
 TrackSavePTC,0
 zStacked,0
 SegWUpSampling,1
+SegTopHatRadius,Inf
+SegMinHoleArea,Inf
+TrackSaveCSB,0
+TrackEvaluateCTC,0
+TrackSelectFromGT,0

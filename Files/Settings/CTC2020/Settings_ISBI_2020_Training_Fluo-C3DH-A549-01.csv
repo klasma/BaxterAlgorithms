@@ -95,3 +95,4 @@ SegWThresh2,-Inf
 SegCellMorphMask,50           50          0.5
 TrackMergeOverlapThresh,0
 TrackMergeOverlapDeltaT,3
+TrackSaveCSB,0

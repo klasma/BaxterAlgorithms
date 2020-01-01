@@ -172,3 +172,8 @@ zStacked,0
 channelColors,1 1 1
 channelMin,0
 channelMax,1
+SegTopHatRadius,Inf
+SegMinHoleArea,Inf
+TrackSaveCSB,0
+TrackEvaluateCTC,0
+TrackSelectFromGT,0

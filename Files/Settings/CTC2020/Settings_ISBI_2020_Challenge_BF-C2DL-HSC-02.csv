@@ -139,3 +139,5 @@ TMSegCovThreshold,0
 TMSegComplementAlg,Segment_localvariance
 SegTopHatRadius,Inf
 TrackSplitPriorChange,0
+TMSegMinSeparation,10
+TrackSaveCSB,0

@@ -148,3 +148,8 @@ TrackMergeBrokenMaxArea,0
 TrackMergeBrokenRatio,0.75
 TrackSavePTC,0
 zStacked,0
+SegTopHatRadius,Inf
+SegMinHoleArea,Inf
+TrackSaveCSB,0
+TrackEvaluateCTC,0
+TrackSelectFromGT,0
