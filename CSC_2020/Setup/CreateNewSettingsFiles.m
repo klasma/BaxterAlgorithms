@@ -1,12 +1,12 @@
 dataSetFolders = {
-    'E:\CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019\Challenge'
-    'E:\CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019\Training'};
+    'C:\CTC2020\Challenge'
+    'C:\CTC2020\Training'};
 trainingOrChallenge = {
     'Challenge'
     'Training'};
 
 currentPath = fileparts(mfilename('fullpath'));
-newSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', 'CSC2019');
+newSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', 'CTC2020');
 
 for d = 1:length(dataSetFolders)
     exDirs = GetNames(dataSetFolders{d}, '');
@@ -28,7 +28,7 @@ for d = 1:length(dataSetFolders)
         sett{1,3} = 'fileLink';
         
         for s = 1:length(seqDirs)
-            settingsFileName = sprintf('Settings_ISBI_2019_%s_%s-%s.csv',...
+            settingsFileName = sprintf('Settings_ISBI_2020_%s_%s-%s.csv',...
                 trainingOrChallenge{d}, exDirs{e}, seqDirs{s}(end-1:end));
             
             % Values.
