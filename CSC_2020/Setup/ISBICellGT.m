@@ -109,19 +109,10 @@ for seq = 1:length(seqDirs)
         child = numbers(1);
         parent = numbers(4);
         if parent ~= 0
-            cells(parent).AddChild(cells(child));
+            cells(parent).AddChild(cells(child), 'GapsOk', true);
         end
     end
     fclose(fid);
-    
-    % Check that there are no cells with only one child.
-    for i = 1:length(cells)
-        if length(cells(i).children) == 1
-            warning('Cell %d has only one child.', i)
-            cells(i).children.parent = [];
-            cells(i).children = [];
-        end
-    end
     
     % Remove cells that were not in the processed images.
     emptyIndices = arrayfun(@(c)c.lifeTime==0, cells);
