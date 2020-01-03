@@ -88,11 +88,17 @@ for index = 1:length(aBlobs)
             goals(i,:) = starts(i,:);
         elseif c.lastFrame > aT
             goals(i,:) = c.GetBlob(aT+1).super.centroid;
-        elseif c.divided
+        elseif length(c.children) == 2
             % The goal point for a parent is the averages of the child
             % positions.
-            goals(i,:) = (c.children(1).GetBlob(aT+1).super.centroid +...
-                c.children(2).GetBlob(aT+1).super.centroid)/2;
+            goals(i,:) = (c.children(1).blob(1).super.centroid +...
+                c.children(2).blob(1).super.centroid) / 2;
+        elseif length(c.children) == 1
+            % The goal point for a parent with a single child is the first
+            % position of the child. In the CTC datasets, parents with a
+            % single child represent cells that disappear from the image
+            % and reappear later.
+            goals(i,:) = c.children(1).blob(1).super.centroid;
         elseif c.disappeared
             % Put the goal points for disappearing cells on the closest
             % point on an image border. This may not be correct if the
