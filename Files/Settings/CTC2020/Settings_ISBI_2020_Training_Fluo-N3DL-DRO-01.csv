@@ -111,3 +111,4 @@ SegWUpSampling2,3
 TrackGMmahal_thresh,1
 TrackSaveCSB,1
 SegTopHatRadius,Inf
+TrackRelinkSelectedCells,1

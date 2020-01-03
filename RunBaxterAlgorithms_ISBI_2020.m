@@ -51,7 +51,8 @@ else
         'CreateOutputFiles', false);
     
     if imData.Get('TrackSelectFromGT')
-        cells = SelectCellsFromGTPixels(cells, imData);
+        cells = SelectCellsFromGTPixels(cells, imData,...
+        'Relink', imData.Get('TrackRelinkSelectedCells'));
     end
     
     SaveCellsTif(imData, cells, [], true);

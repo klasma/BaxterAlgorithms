@@ -70,6 +70,7 @@ SaveCells(cells, aImData.seqPath, aImData.version, 'CompressCopy', false);
 
 if aImData.Get('TrackSelectFromGT')
     % Select manually tracked cells and save them to a separate version.
-    SaveSelectedGTCells(aImData, aImData.version, [aImData.version '_sel'])
+    SaveSelectedGTCells(aImData, aImData.version, [aImData.version '_sel'],...
+        'Relink', aImData.Get('TrackRelinkSelectedCells'))
 end
 end
