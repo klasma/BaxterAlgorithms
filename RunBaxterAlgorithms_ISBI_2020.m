@@ -1,5 +1,5 @@
-function RunBaxterAlgorithms_ISBI_2019(aExDir, aSeqDir)
-% Runs cell tracking on a specific image sequence in the ISBI 2019 Cell
+function RunBaxterAlgorithms_ISBI_2020(aExDir, aSeqDir)
+% Runs cell tracking on a specific image sequence in the ISBI 2020 Cell
 % Tracking Challenge data set. The function assumes that the program has
 % been put in a directory named SW in the directory containing all
 % training data or all challenge data. The function assumes that the folder
@@ -26,7 +26,7 @@ fprintf('Processing %s-%s\n', aExDir, aSeqDir)
 
 baxterAlgorithmDir = fileparts(mfilename('fullpath'));
 baseDir = fileparts(baxterAlgorithmDir);
-settingsName = sprintf('Settings_ISBI_2019_Challenge_%s-%s.csv', aExDir, aSeqDir);
+settingsName = sprintf('Settings_ISBI_2020_Challenge_%s-%s.csv', aExDir, aSeqDir);
 % Path of a settings file located in the program directory.
 settingsPath = GetSettingsPath(settingsName);
 

@@ -1,8 +1,7 @@
-rootPath = 'E:\CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019\Training';
+rootPath = 'C:\CTC2020\Training';
 exDirs = {
-    'Fluo-C3DH-A549'
-    'Fluo-C3DH-A549-SIM'
-    'Fluo-N3DL-TRIC'};
+    'BF-C2DL-HSC'
+    'BF-C2DL-MuSC'};
 
 for i = 1:length(exDirs)
     exPath = fullfile(rootPath, exDirs{i});
