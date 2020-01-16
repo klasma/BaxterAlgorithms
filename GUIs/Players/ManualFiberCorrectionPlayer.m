@@ -552,6 +552,15 @@ classdef ManualFiberCorrectionPlayer < ManualCorrectionPlayer
                         this.MenuCallback_DrawChange(GetMenu(this.drawMenu,...
                             'Brush', 'Disk (CTRL+D)'), [])
                 end
+            elseif length(aEvent.Modifier) == 1 && ...
+                    strcmp(aEvent.Modifier{1}, 'alt')
+                % (Hidden) shortcuts where the ATL-key is held down.
+                switch aEvent.Key
+                    case 'i'
+                        % Show cell indices.
+                        this.showCellIndices = ~this.showCellIndices;
+                        this.Draw();
+                end
             else
                 % Shortcuts where a single key is pressed.
                 switch aEvent.Key

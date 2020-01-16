@@ -103,6 +103,13 @@ else
     for i = 1:length(oCells)
         oCells(i).imageData = imData;
     end
+    
+    % Add indices if no indices have been saved for the cells.
+    if all(isnan([oCells.index]))
+        for i = 1:length(oCells)
+            oCells(i).index = i;
+        end
+    end
 end
 
 % Delete cells which have a life time shorter than 1 frame. This is done to
@@ -140,5 +147,4 @@ if ~isempty(oCells)
     end
     oCells(deleteIndex) = [];
 end
-
 end
