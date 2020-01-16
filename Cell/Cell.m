@@ -19,6 +19,7 @@ classdef Cell < handle
     
     properties
         
+        index = nan;                        % Index of the cell in the array of cells that it has been or will be saved to.
         isCompressed = false;               % True for cells where the blobs have been removed to save computation time.
         imageData = [];                     % ImageData object with information about the image sequence.
         blob = [];                          % An array of Blob objects that have information about the cell regions.

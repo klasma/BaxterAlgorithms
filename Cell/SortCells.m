@@ -9,7 +9,8 @@ function oCells = SortCells(aCells)
 % daughter cell with the longest surviving progeny comes first. If the
 % progeny survives for the same number of frames, the daughter cell with
 % the longest life time comes first. False positives are put at the end of
-% the array.
+% the array. After sorting the cells, the function updates the index
+% property of each cell.
 %
 % Inputs:
 % aCells - Array of Cell objects.
@@ -27,7 +28,7 @@ function oCells = SortCells(aCells)
 % less important ones for all possible values of the variables. Also
 % reorders daughter cell pairs.
 sortFunc = zeros(length(aCells), 1);
-for i = 1:length(aCells);
+for i = 1:length(aCells)
     if aCells(i).isCell
         sortFunc(i) = aCells(i).firstFrame*1E12 -...
             aCells(i).lifeTime*1E6 - mean(aCells(i).cx);
@@ -51,4 +52,9 @@ end
 % Order the cells.
 [~, order] = sort(sortFunc);
 oCells = aCells(order);
+
+% Update the cell indices.
+for i = 1:length(oCells)
+    oCells(i).index = i;
+end
 end

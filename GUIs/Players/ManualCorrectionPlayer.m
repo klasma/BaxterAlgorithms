@@ -222,6 +222,7 @@ classdef ManualCorrectionPlayer < ZControlPlayer
     % ALT+M - Toggles plotting of microwells.
     % ALT+B - Toggles between displaying the original image and displaying
     %         a background subtracted image.
+    % ALT+I - Toggles display of cell indices.
     % 0-9   - Changes trajectory length to specified number
     % I     - Changes trajectory length to infinity
     %
@@ -274,16 +275,17 @@ classdef ManualCorrectionPlayer < ZControlPlayer
         
         % Visualization options.
         
-        tLength         % The number of frames from which to plot trajectories.
-        oLength         % The number of frames from which to plot cell outlines.
-        style           % String with the selected plotting style.
-        styleAlts       % Available plotting styles.
-        coloring        % String with the selected cell coloring alternative.
-        coloringAlts    % Different ways to color the cells.
-        tree            % String with the selected lineage tree option.
-        treeAlts        % Different ways to plot the lineage tree.
-        showMicrowell   % Hidden binary option (toggled by ALT+M) for plotting of microwells.
-        showBgSub       % Hidden binary option (toggled by ALT+B) for display of background subtracted images.
+        tLength             % The number of frames from which to plot trajectories.
+        oLength             % The number of frames from which to plot cell outlines.
+        style               % String with the selected plotting style.
+        styleAlts           % Available plotting styles.
+        coloring            % String with the selected cell coloring alternative.
+        coloringAlts        % Different ways to color the cells.
+        tree                % String with the selected lineage tree option.
+        treeAlts            % Different ways to plot the lineage tree.
+        showMicrowell       % Hidden binary option (toggled by ALT+M) for plotting of microwells.
+        showBgSub           % Hidden binary option (toggled by ALT+B) for display of background subtracted images.
+        showCellIndices     % Hidden binary option (toggled by ALT+I) for display of cell indices.
         
         % Variables connected to segmentation editing.
         
@@ -407,6 +409,7 @@ classdef ManualCorrectionPlayer < ZControlPlayer
             this.coloring = 'Rainbow';
             this.showMicrowell = false;
             this.showBgSub = false;
+            this.showCellIndices = false;
             this.tLength = 3;
             this.oLength = 1;
             
@@ -2271,6 +2274,14 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                         'LineStyle', '--')
                 end
             end
+            
+            % Display cell indices.
+            if this.showCellIndices
+                PlotIndices(this.ax, plotCells, this.frame, this.tLength,...
+                    'Options', aParams.textOpts,...
+                    'TrackGraphics', true)
+            end
+            
             drawnow()
         end
         
@@ -2366,6 +2377,15 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                     'Plane', 'xz',...
                     'TrackGraphics', true)
             end
+            
+            % Display cell indices.
+            if this.showCellIndices
+                PlotIndices(this.axXZ, plotCells, this.frame, this.tLength,...
+                    'Plane', 'xz',...
+                    'Options', aParams.textOpts,...
+                    'TrackGraphics', true)
+            end
+            
             drawnow()
         end
         
@@ -2457,6 +2477,15 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                     'Plane', 'yz',...
                     'TrackGraphics', true)
             end
+            
+            % Display cell indices.
+            if this.showCellIndices
+                PlotIndices(this.axYZ, plotCells, this.frame, this.tLength,...
+                    'Plane', 'yz',...
+                    'Options', aParams.textOpts,...
+                    'TrackGraphics', true)
+            end
+            
             drawnow()
         end
         
@@ -3345,6 +3374,10 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                         % Display a background subtracted image.
                         this.showBgSub = ~this.showBgSub;
                         this.Draw();
+                    case 'i'
+                        % Show cell indices.
+                        this.showCellIndices = ~this.showCellIndices;
+                        this.Draw();
                     case 'm'
                         % Show the microwell boundary as a hatched line.
                         this.showMicrowell = ~this.showMicrowell;
@@ -3733,6 +3766,7 @@ classdef ManualCorrectionPlayer < ZControlPlayer
             % plotCells - Array of Cell objects to be plotted.
             % trajOpts - Plotting options for PlotTrajectories.
             % outlineOpts - Plotting options for PlotOutlines.
+            % textOpts - Options for PlotIndices.
             % markerLineWidth - Line width used to draw markers for events
             %                   such as mitosis and apoptosis.
             %
@@ -3749,11 +3783,11 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                 oParams.plotCells = AreCells(this.cells);
             end
             
-            % Get options for plotting of trajectories and outlines.
-            trajOpts = struct('fMarkerEdgeColor',...
-                {repmat({str2num(get(this.fpColorTextBox, 'String'))}, 1, 3)}); %#ok<ST2NM>
-            outlineOpts = struct('fpColor',...
-                str2num(get(this.fpColorTextBox, 'String'))); %#ok<ST2NM>
+            % Options for plotting of trajectories, outlines and incides.
+            fpColor = str2num(get(this.fpColorTextBox, 'String')); %#ok<ST2NM>
+            trajOpts = struct('fMarkerEdgeColor', {repmat({fpColor}, 1, 3)});
+            outlineOpts = struct('fpColor', fpColor);
+            textOpts = struct('textColor', fpColor);
             
             if this.IsZoomed() && this.GetImData().GetDim() == 3
                 [x1, x2, y1, y2, z1, z2] = this.GetZoom();
@@ -3788,6 +3822,8 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                     trajOpts.cMarkerSize =  [3 3 3];
                     trajOpts.cMarkerFaceColor = {[], [], []};
                     trajOpts.fMarkerSize = [3 3 3];
+                    textOpts.fontWeight = 'bold';
+                    textOpts.fontSize = 12;
                 case 'ISBI'
                     % This style is nice for visualization of particle
                     % tracks or small cells. The cell nodes in the current
@@ -3801,6 +3837,8 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                     trajOpts.dMarkerFaceColor = {'none', 'none', 'none'};
                     trajOpts.cMarkerFaceColor = {'none', 'none', 'none'};
                     trajOpts.fMarkerFaceColor = {'none', 'none', 'none'};
+                    textOpts.fontWeight = 'normal';
+                    textOpts.fontSize = 10;
                 otherwise
                     % The default plotting options are used for all other
                     % styles. In these styles, the cell nodes in the
@@ -3812,6 +3850,7 @@ classdef ManualCorrectionPlayer < ZControlPlayer
             end
             oParams.trajOpts = trajOpts;
             oParams.outlineOpts = outlineOpts;
+            oParams.textOpts = textOpts;
         end
         
         function PositionTools(this)
