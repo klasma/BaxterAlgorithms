@@ -78,6 +78,7 @@ You can find more instructions on how to run the program in the user guide which
     <fileset.resources>
       <file>${PROJECT_ROOT}\Files</file>
       <file>${PROJECT_ROOT}\Scores\Features</file>
+      <file>${PROJECT_ROOT}\External\ParforProgMonv2\java</file>
       <file>${PROJECT_ROOT}\UserGuide\UserGuide.pdf</file>
     </fileset.resources>
     <fileset.package />
