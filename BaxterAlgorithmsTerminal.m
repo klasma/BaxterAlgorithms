@@ -20,8 +20,10 @@ function BaxterAlgorithmsTermial(aExPaths, aVer, varargin)
 % BaxterAlgorithms
 
 % Add necessary paths.
-subdirs = textscan(genpath(fileparts(mfilename('fullpath'))), '%s','delimiter',pathsep);
-addpath(subdirs{1}{:});
+if ~isdeployed
+    subdirs = textscan(genpath(fileparts(mfilename('fullpath'))), '%s','delimiter',pathsep);
+    addpath(subdirs{1}{:});
+end
 
 aRegExp = GetArgs({'RegExp'}, {'.*'}, true, varargin);
 
