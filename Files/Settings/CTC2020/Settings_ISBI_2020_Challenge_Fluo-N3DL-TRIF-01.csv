@@ -1,8 +1,8 @@
 setting,01
 numZ,13
 zStacked,1
-bits,14
-voxelHeight,3
+bits,16
+voxelHeight,1
 minWellR,NaN
 maxWellR,NaN
 channelNames,Ch1
@@ -22,7 +22,7 @@ SegTopHatRadius,15
 SegFillHoles,1
 SegMinHoleArea,Inf
 SegMinArea,25
-SegMaxArea,10000
+SegMaxArea,Inf
 SegMinSumIntensity,0
 SegClipping,1
 SegClippingBelow,0
@@ -80,13 +80,13 @@ authorStr,
 SegWSmooth,2.3827
 SegWHMax,0.00025413
 SegWThresh,-Inf
-SegWUpSampling,2
-SegWatershed2,anisotropicshape
+SegWUpSampling,1
+SegWatershed2,shape
 SegWLocMaxCentroids,0
 SegWSmooth2,0.73717
 SegWHMax2,0.42747
 SegWThresh2,-Inf
-SegWUpSampling2,2
+SegWUpSampling2,1
 TrackMaxCellCnt,4
 TrackPReAppear,0
 TrackPMissing,0
