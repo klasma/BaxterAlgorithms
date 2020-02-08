@@ -809,8 +809,9 @@ classdef SegmentationPlayer < CTCControlPlayer
                                 [x1-1 y1-1 z1-1 0 0 0];
                         end
                     else
-                        [oBlobs, ~, ~, oImages] = Segment_generic3D(...
+                        oBlobs = Segment_generic3D(...
                             imData, this.frame);
+                        oImages = struct();
                     end
                 end
             end
