@@ -51,105 +51,10 @@ function [oBlobs, oBw, oGray, oImages] = Segment_generic3D(aImData, aFrame, vara
     {1, aImData.imageWidth, 1, aImData.imageHeight, 1, aImData.numZ},...
     true, varargin);
 
-if isempty(varargin)
-    
-    xBlock = 483;
-    yBlock = 468;
-    zBlock = 496;
-    
-    xMarg = 50;
-    yMarg = 50;
-    zMarg = 50;
-
-%     xBlock = 256;
-%     yBlock = 256;
-%     zBlock = 30;
-%     
-%     xMarg = 50;
-%     yMarg = 50;
-%     zMarg = 50;
-    
-    xN = max(ceil((aImData.imageWidth - xMarg) / xBlock), 1);
-    yN = max(ceil((aImData.imageHeight - yMarg) / yBlock), 1);
-    zN = max(ceil((aImData.numZ - zMarg) / zBlock), 1);
-    
-    blobGroups = cell(yN, xN, zN);
-    limits = struct();
-    
-    for i = 1:xN
-        for j = 1:yN
-            for k = 1:zN
-                x1 = 1 + (i - 1) * xBlock;
-                x2 = i * xBlock;
-                y1 = 1 + (j - 1) * yBlock;
-                y2 = j * yBlock;
-                z1 = 1 + (k - 1) * zBlock;
-                z2 = k * zBlock;
-                
-                if i == 1
-                    limits(j, i, k).xMin = -inf;
-                else
-                    limits(j, i, k).xMin = x1;
-                end
-                if j == 1
-                    limits(j, i, k).yMin = -inf;
-                else
-                    limits(j, i, k).yMin = y1;
-                end
-                if k == 1
-                    limits(j, i, k).zMin = -inf;
-                else
-                    limits(j, i, k).zMin = z1;
-                end
-                
-                if i == xN
-                    limits(j, i, k).xMax = inf;
-                else
-                    limits(j, i, k).xMax = x2;
-                end
-                if j == yN
-                    limits(j, i, k).yMax = inf;
-                else
-                    limits(j, i, k).yMax = y2;
-                end
-                if k == zN
-                    limits(j, i, k).zMax = inf;
-                else
-                    limits(j, i, k).zMax = z2;
-                end
-                
-                x1 = max(x1 - xMarg, 1);
-                y1 = max(y1 - yMarg, 1);
-                z1 = max(z1 - zMarg, 1);
-                
-                x2 = min(x2 + xMarg, aImData.imageWidth);
-                y2 = min(y2 + yMarg, aImData.imageHeight);
-                z2 = min(z2 + zMarg, aImData.numZ);
-                
-                fprintf('Segmenting i=%d, j=%d, k=%d\n', i, j, k)
-                blobs = Segment_generic3D(aImData, aFrame,...
-                    'X1', x1,...
-                    'X2', x2,...
-                    'Y1', y1,...
-                    'Y2', y2,...
-                    'Z1', z1,...
-                    'Z2', z2);
-                
-                % Shift the blob bounding boxes to the full image.
-                for bIndex = 1:length(blobs)
-                    blobs(bIndex).boundingBox = blobs(bIndex).boundingBox +...
-                        [x1-1 y1-1 z1-1 0 0 0];
-                end
-                
-                blobGroups{j, i, k} = blobs;
-            end
-        end
-    end
-    
-    oBlobs = SelectBlobs(blobGroups, limits, 50);
+if nargin == 2
+    oBlobs = Segment_generic3D_blocks(aImData, aFrame, [8 4 4]);
     oImages = struct();
     return
-    
 end
 
 oImages = struct();
