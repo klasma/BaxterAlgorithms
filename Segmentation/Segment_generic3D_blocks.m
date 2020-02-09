@@ -1,5 +1,6 @@
 function oBlobs = Segment_generic3D_blocks(aImData, aFrame, aNumberOfBlocks)
 
+fprintf('Segment_generic3D_blocks')
 xMarg = 50;
 yMarg = 50;
 zMarg = 50;
@@ -12,9 +13,12 @@ xBlock = ceil(aImData.imageWidth / xN);
 yBlock = ceil(aImData.imageHeight / xN);
 zBlock = ceil(aImData.numZ / xN);
 
+I = aImData.GetDoubleZStack(aFrame, 'Channel', aImData.Get('SegChannel'));
+
 blobGroups = cell(yN*xN*zN,1);
 limits = cell(yN*xN*zN,1);
-parfor index = 1 : xN*yN*zN
+images = cell(yN*xN*zN,1);
+for index = 1 : xN*yN*zN
     [j,i,k] = ind2sub([yN xN zN], index);
     
     x1 = 1 + (i - 1) * xBlock;
@@ -37,7 +41,6 @@ parfor index = 1 : xN*yN*zN
     s.xMax(i==xN) = inf;
     s.yMax(j==yN) = inf;
     s.zMax(k==zN) = inf;
-    limits{index} = s;
     
     x1 = max(x1 - xMarg, 1);
     y1 = max(y1 - yMarg, 1);
@@ -47,19 +50,30 @@ parfor index = 1 : xN*yN*zN
     y2 = min(y2 + yMarg, aImData.imageHeight);
     z2 = min(z2 + zMarg, aImData.numZ);
     
+    s.x1 = x1;
+    s.x2 = x2;
+    s.y1 = y1;
+    s.y2 = y2;
+    s.z1 = z1;
+    s.z2 = z2;
+    limits{index} = s;
+    
+    images{index} = I(y1:y2, x1:x2, z1:z2);
+end
+
+imParameters = ImageParameters(aImData.seqPath);
+
+fprintf('Segment_generic3D_blocks before parfor')
+
+parfor index = 1:xN*yN*zN
+    [j,i,k] = ind2sub([yN xN zN], index);
     fprintf('Segmenting i=%d, j=%d, k=%d\n', i, j, k)
-    blobs = Segment_generic3D(aImData, aFrame,...
-        'X1', x1,...
-        'X2', x2,...
-        'Y1', y1,...
-        'Y2', y2,...
-        'Z1', z1,...
-        'Z2', z2);
+    blobs = Segment_generic3D_image(images{index}, imParameters, aFrame);
     
     % Shift the blob bounding boxes to the full image.
     for bIndex = 1:length(blobs)
         blobs(bIndex).boundingBox = blobs(bIndex).boundingBox +...
-            [x1-1 y1-1 z1-1 0 0 0];
+            [limits{index}.x1-1 limits{index}.y1-1 limits{index}.z1-1 0 0 0];
     end
     
     blobGroups{index} = blobs;
