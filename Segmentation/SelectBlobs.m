@@ -14,16 +14,16 @@ for i = 1:xN
             for bIndex = 1:length(blobs)
                 blob = blobs(bIndex);
                 bb = blob.boundingBox;
-                limits = aLimits(j,i,k);
+                limits = aLimits{j,i,k};
                 
-                dx1 = bb(1) - limits.xMin;
-                dx2 = limits.xMax - (bb(1) + bb(4));
+                dx1 = bb(1) + 0.5 - limits.xMin;
+                dx2 = limits.xMax - (bb(1) + bb(4) - 0.5);
                 
-                dy1 = bb(2) - limits.yMin;
-                dy2 = limits.yMax - (bb(2) + bb(5));
+                dy1 = bb(2) + 0.5 - limits.yMin;
+                dy2 = limits.yMax - (bb(2) + bb(5) - 0.5);
                 
-                dz1 = bb(3) - limits.zMin;
-                dz2 = limits.zMax - (bb(3) + bb(6));
+                dz1 = bb(3) + 0.5 - limits.zMin;
+                dz2 = limits.zMax - (bb(3) + bb(6) - 0.5);
                 
                 distances(bIndex) = min([dx1 dx2 dy1 dy2 dz1 dz2]);
             end
@@ -35,26 +35,24 @@ end
 [allDistances, order] = sort(allDistances, 'descend');
 allBlobs = allBlobs(order);
 
-selectedBlobs(numel(allBlobs),1) = Blob();
-index = 1;
+selectedBlobs(size(allBlobs)) = Blob();
+index = sum(allDistances > aMargin);
+selectedBlobs(1:index) = allBlobs(1:index);
+index = index + 1;
+startIndex = index;
 
-for bIndex = 1:length(allBlobs)
+for bIndex = startIndex:length(allBlobs)
     blob = allBlobs(bIndex);
-    if (allDistances(bIndex) > aMargin)
+    overlap = false;
+    for bIndex2 = startIndex:index-1
+        if Overlap(blob, selectedBlobs(bIndex2)) > 0 % TODO: handle small overlaps
+            overlap = true;
+            break;
+        end
+    end
+    if ~overlap
         selectedBlobs(index) = blob;
         index = index + 1;
-    else
-        overlap = false;
-        for bIndex2 = 1:index-1
-            if Overlap(blob, selectedBlobs(bIndex2)) > 0 % TODO: handle small overlaps
-                overlap = true;
-                break;
-            end
-        end
-        if ~overlap
-            selectedBlobs(index) = blob;
-            index = index + 1;
-        end
     end
 end
 
