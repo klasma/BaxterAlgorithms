@@ -14,7 +14,7 @@ zBlock = ceil(aImData.numZ / xN);
 
 blobGroups = cell(yN*xN*zN,1);
 limits = cell(yN*xN*zN,1);
-parfor index = 1 : xN*yN*zN
+for index = 1 : xN*yN*zN
     [j,i,k] = ind2sub([yN xN zN], index);
     
     x1 = 1 + (i - 1) * xBlock;
