@@ -61,7 +61,7 @@ TrackBipartiteMatch,0
 TrackFalsePos,0
 TrackSaveFPAsCells,0
 TrackCentroidOffset,0
-TrackMergeWatersheds,1
+TrackMergeWatersheds,0
 TrackMergeOverlapMaxIter,0
 TrackMergeBrokenMaxArea,0
 TrackMergeBrokenRatio,0.75
