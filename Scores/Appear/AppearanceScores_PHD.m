@@ -38,7 +38,7 @@ if aImData.Get('TrackPAppear') == 0 && ~aImData.Get('TrackMigInOut')
     return
 end
 
-if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'IMM'))
+if contains(aImData.Get('TrackMigLogLikeList'), 'IMM')
     % Some of the components in the GM-PHD follow the constant position
     % motion model and some come from the constant velocity motion model.
     % We start by creating a separate GM-PHD for each motion model. Then we

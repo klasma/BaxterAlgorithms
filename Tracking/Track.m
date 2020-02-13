@@ -114,7 +114,7 @@ if aImData.Get('TrackMergeBrokenMaxArea') > 0
 end
 
 % Compute scores for different linking options.
-if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+if contains(aImData.Get('TrackMigLogLikeList'), 'PHD')
     % Particle tracking using GM-PHD filters.
     
     % Blobs from segmentation. They will be replaced by GM-PHD components
@@ -131,7 +131,7 @@ splitScores = SplitScores(blobSeq, aImData, migrationScores, -20);
 countScores = CountScores(blobSeq, aImData,...
     'CreateOutputFiles', aCreateOutputFiles);
 deathScores = DeathScores(blobSeq, aImData);
-if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+if contains(aImData.Get('TrackMigLogLikeList'), 'PHD')
     % Particle tracking using GM-PHD filters.
     appearanceScores = AppearanceScores_PHD(phd, aImData);
     disappearanceScores = DisappearanceScores_PHD(phd, aImData);
@@ -195,7 +195,7 @@ trueCells = Matrix2Cell(cellMat, divMat, deathMat, blobSeq, aImData);
 % Split blobs that contain multiple cells using k-means clustering and
 % change assignments using bipartite matching.
 if aImData.Get('TrackBipartiteMatch')
-    if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+    if contains(aImData.Get('TrackMigLogLikeList'), 'PHD')
         warndlg(['Bipartite matching cannot (currently) be performed '...
             'if the migration scores are computed using GM-PHDs.'],...
             'Not performing bipartite matching')
@@ -203,7 +203,7 @@ if aImData.Get('TrackBipartiteMatch')
         trueCells = BipartiteMatch(trueCells, aImData);
     end
 else
-    if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+    if contains(aImData.Get('TrackMigLogLikeList'), 'PHD')
         % Replace the Gaussian components by the original blobs.
         blobSeq = GMSegments(trueCells, segBlobSeq, aImData);
     end

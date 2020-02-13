@@ -54,7 +54,7 @@ if aImData.sequenceLength < max([aCells.lastFrame])
     aBlobSeq = [aBlobSeq cell(1, aImData.sequenceLength-length(aBlobSeq))];
 end
 
-if ~isempty(strfind(aImData.Get('TrackMigLogLikeList'), 'PHD'))
+if contains(aImData.Get('TrackMigLogLikeList'), 'PHD')
     % Compute GM-PHDs for all time points if the migration scores are based
     % on a GM-PHD filter.
     ComputeGMPHD(aBlobSeq, aImData);
