@@ -52,7 +52,7 @@ function [oBlobs, oBw, oGray, oImages] = Segment_generic3D(aImData, aFrame, vara
     true, varargin);
 
 if nargin == 2
-    oBlobs = Segment_generic3D_blocks(aImData, aFrame, [8 4 4]);
+    oBlobs = Segment_generic3D_blocks(aImData, aFrame, [4 2 2]);
     oBw = [];
     oGray = [];
     oImages = struct();
