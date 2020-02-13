@@ -21,9 +21,9 @@ SegBgSubAlgorithm,none
 SegTopHatRadius,15
 SegFillHoles,1
 SegMinHoleArea,Inf
-SegMinArea,25
+SegMinArea,0
 SegMaxArea,Inf
-SegMinSumIntensity,0
+SegMinSumIntensity,5
 SegClipping,1
 SegClippingBelow,0
 SegSmooth,0
