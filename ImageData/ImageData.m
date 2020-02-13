@@ -456,11 +456,14 @@ classdef ImageData < ImageParameters
         function oImage = GetShownImage(this, aFrame, varargin)
             % Returns an image to be displayed in an axes.
             %
-            % The function returns either a merge image of different
-            % channels or a uint8 gray scale image with a single channel,
-            % depending on what should be displayed. The function is used
-            % only for display and the output is not meant to be used for
-            % processing.
+            % When displaying a single gray scale channel with no
+            % rescaling, the method returns an uint8 image. When displaying
+            % a single gray scale channel with rescaling, the method
+            % returns a single channel double image with values between 0
+            % and 1. When displaying multiple channels, the method returns
+            % a 3 channel RBG image with values between 0 and 1. The
+            % function is used only for display and the output is not meant
+            % to be used for processing.
             %
             % Inputs:
             % aFrame - Index of the time point to be read.
@@ -504,6 +507,14 @@ classdef ImageData < ImageParameters
                 oImage = this.GetUint8Image(aFrame,...
                     'Channel', aChannels,...
                     imreadArgs{:});
+            elseif length(aChannels) == 1  &&...
+                    this.IsTransChannel(aChannels)
+                % Rescaled gray scale image.
+                oImage = this.GetDoubleImage(aFrame, 'Channel', aChannels, imreadArgs{:})/255;
+                cmin = this.channelMin(visible);
+                cmax = this.channelMax(visible);
+                oImage = min(oImage, cmax); % Satturate.
+                oImage = max(0, oImage-cmin+eps) / (cmax-cmin+eps); % Clip.
             else
                 % Colored image or a scaled gray scale image.
                 oImage = MergeImage(this, aFrame,...
