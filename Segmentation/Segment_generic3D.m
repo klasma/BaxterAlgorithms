@@ -53,6 +53,8 @@ function [oBlobs, oBw, oGray, oImages] = Segment_generic3D(aImData, aFrame, vara
 
 if nargin == 2
     oBlobs = Segment_generic3D_blocks(aImData, aFrame, [8 4 4]);
+    oBw = [];
+    oGray = [];
     oImages = struct();
     return
 end
