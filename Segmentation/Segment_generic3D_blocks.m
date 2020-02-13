@@ -1,8 +1,8 @@
-function oBlobs = Segment_generic3D_blocks(aImData, aFrame, aNumberOfBlocks)
+function oBlobs = Segment_generic3D_blocks(aImData, aFrame, aNumberOfBlocks, aMargin)
 
-xMarg = 50;
-yMarg = 50;
-zMarg = 50;
+xMarg = aMargin;
+yMarg = aMargin;
+zMarg = aMargin;
 
 xN = aNumberOfBlocks(2);
 yN = aNumberOfBlocks(1);
@@ -54,7 +54,8 @@ parfor index = 1 : xN*yN*zN
         'Y1', y1,...
         'Y2', y2,...
         'Z1', z1,...
-        'Z2', z2);
+        'Z2', z2,...
+        'NumBlocks', [1 1 1]);
     
     % Shift the blob bounding boxes to the full image.
     for bIndex = 1:length(blobs)
@@ -68,5 +69,5 @@ end
 blobGroups = reshape(blobGroups, [yN xN zN]);
 limits = reshape(limits, [yN xN zN]);
 
-oBlobs = SelectBlobs(blobGroups, limits, 50);
+oBlobs = SelectBlobs(blobGroups, limits, aMargin);
 end
