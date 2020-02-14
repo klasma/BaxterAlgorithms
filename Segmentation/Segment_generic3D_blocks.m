@@ -9,8 +9,8 @@ yN = aNumberOfBlocks(1);
 zN = aNumberOfBlocks(3);
 
 xBlock = ceil(aImData.imageWidth / xN);
-yBlock = ceil(aImData.imageHeight / xN);
-zBlock = ceil(aImData.numZ / xN);
+yBlock = ceil(aImData.imageHeight / yN);
+zBlock = ceil(aImData.numZ / zN);
 
 blobGroups = cell(yN*xN*zN,1);
 limits = cell(yN*xN*zN,1);
