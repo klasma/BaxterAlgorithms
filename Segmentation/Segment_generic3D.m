@@ -58,6 +58,9 @@ if any(aNumBlocks > 1)
     oBlobs = Segment_generic3D_blocks(aImData, aFrame,...
         aNumBlocks,...
         aImData.Get('SegBlockMargin'));
+    oBw = [];
+    oGray = [];
+    oImages = struct();
     return
 end
 
