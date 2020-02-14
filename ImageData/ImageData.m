@@ -186,7 +186,7 @@ classdef ImageData < ImageParameters
             %          starts at 1. If 0 is given, the maximum intensity
             %          projection will be returned. The default value is 0.
             %          The input can also be an array of z-plane indices to
-            %          be read.
+            %          compute the maximum intensity projection of.
             % PixelRegion - Two element cell array with 2- or 3-element
             %               vectors defining sub-images to be read. The two
             %               vectors define pixel intervals in the two image
@@ -195,7 +195,17 @@ classdef ImageData < ImageParameters
             %               be down-sampled. The same input can be given to
             %               the build in function imread, if the image is a
             %               tif-image. For other file types, the whole
-            %               image is read and then cropped.
+            %               image is read and then cropped. The inputs X1,
+            %               X2, Y1 and Y2 can also be used to crop out a
+            %               sub-volume. The difference is that in that
+            %               case, the full image is read and cached for
+            %               future use. If PixelRegion is used, no caching
+            %               is done. PixelRegion should not be used
+            %               together with the X- and Y-arguments.
+            % X1 - First pixel in x-dimension for desired sub-volume.
+            % X2 - Last pixel in x-dimension for desired sub-volume.
+            % Y1 - First pixel in y-dimension for desired sub-volume.
+            % Y2 - Last pixel in y-dimension for desired sub-volume.
             %
             % Outputs:
             % oIm - Image number aFrame in the image sequence. If the image
@@ -209,9 +219,9 @@ classdef ImageData < ImageParameters
             
             
             % Get additional input arguments for this function.
-            [aChannel, aZPlane, aPixelRegion] = GetArgs(...
-                {'Channel', 'ZPlane', 'PixelRegion'},...
-                {1, 0, []},...
+            [aChannel, aZPlane, aPixelRegion, aX1, aX2, aY1, aY2] = GetArgs(...
+                {'Channel', 'ZPlane', 'PixelRegion', 'X1', 'X2', 'Y1', 'Y2'},...
+                {1, 0, [], 1, this.imageWidth, 1, this.imageHeight},...
                 true,...
                 varargin);
             
@@ -229,81 +239,23 @@ classdef ImageData < ImageParameters
             
             if this.GetDim() == 2
                 if ~isempty(this.cachedImages{channelIndex, 1}) && isempty(aPixelRegion)
-                    % Return a cached image.
+                    % Use a cached image.
                     oIm = this.cachedImages{channelIndex, 1};
-                    return
-                end
-                
-                if isempty(aPixelRegion)
-                    oIm = imread(this.filenames{channelIndex}{aFrame});
                 else
-                    if ~isempty(regexp(this.filenames{channelIndex}{aFrame},...
-                            '(tif|tiff)$', 'once'))
-                        % For tifs, we can cut out a pixel region in the
-                        % call to imread.
-                        oIm = imread(this.filenames{channelIndex}{aFrame},...
-                            'PixelRegion', aPixelRegion);
-                    else
-                        % For other formats, the whole image is read and
-                        % then the desired pixel region is cropped out.
+                    if isempty(aPixelRegion)
                         oIm = imread(this.filenames{channelIndex}{aFrame});
-                        oIm = CutPixelRegion(oIm, aPixelRegion);
-                    end
-                end
-                
-                if size(oIm,3) > 1
-                    % Convert color images to gray scale.
-                    oIm = mean(oIm, 3);
-                end
-                
-                % Cache the returned image.
-                if isempty(aPixelRegion)
-                    this.cachedImages{channelIndex, 1} = oIm;
-                    this.cachedFrame = aFrame;
-                end
-            else
-                if isequal(aZPlane, 0)
-                    % Maximum intensity projection of the whole z-stack.
-                    oIm = max(this.GetZStack(aFrame, 'Channel', aChannel), [], 3);
-                elseif length(aZPlane) == 1
-                    if ~isempty(this.cachedImages{channelIndex, aZPlane})  &&...
-                            isempty(aPixelRegion)
-                        % Return a cached image.
-                        oIm = this.cachedImages{channelIndex, aZPlane};
-                        return
-                    end
-                    
-                    if this.zStacked
-                        if isempty(regexp(this.filenames{channelIndex}{aFrame},...
-                                '(tif|tiff)$', 'once'))
-                            error('Only tif-files can have zStacked set to 1.')
-                        end
-                        if isempty(aPixelRegion)
-                            oIm = imread(this.filenames{channelIndex}{aFrame}, aZPlane);
-                        else
-                            oIm = imread(this.filenames{channelIndex}{aFrame}, aZPlane,...
-                                'PixelRegion', aPixelRegion);
-                        end
                     else
-                        if isempty(aPixelRegion)
-                            oIm = imread(this.filenames{channelIndex}...
-                                {(aFrame-1)*this.numZ + aZPlane});
+                        if ~isempty(regexp(this.filenames{channelIndex}{aFrame},...
+                                '(tif|tiff)$', 'once'))
+                            % For tifs, we can cut out a pixel region in the
+                            % call to imread.
+                            oIm = imread(this.filenames{channelIndex}{aFrame},...
+                                'PixelRegion', aPixelRegion);
                         else
-                            if ~isempty(regexp(this.filenames{channelIndex}{aFrame},...
-                                    '(tif|tiff)$', 'once'))
-                                % For tifs, we can cut out a pixel region
-                                % in the call to imread.
-                                oIm = imread(this.filenames{channelIndex}...
-                                    {(aFrame-1)*this.numZ + aZPlane},...
-                                    'PixelRegion', aPixelRegion);
-                            else
-                                % For other formats, the whole image is
-                                % read and then the desired pixel region is
-                                % cropped out.
-                                oIm = imread(this.filenames{channelIndex}...
-                                    {(aFrame-1)*this.numZ + aZPlane});
-                                oIm = CutPixelRegion(oIm, aPixelRegion);
-                            end
+                            % For other formats, the whole image is read and
+                            % then the desired pixel region is cropped out.
+                            oIm = imread(this.filenames{channelIndex}{aFrame});
+                            oIm = CutPixelRegion(oIm, aPixelRegion);
                         end
                     end
                     
@@ -314,8 +266,64 @@ classdef ImageData < ImageParameters
                     
                     % Cache the returned image.
                     if isempty(aPixelRegion)
-                        this.cachedImages{channelIndex, aZPlane} = oIm;
+                        this.cachedImages{channelIndex, 1} = oIm;
                         this.cachedFrame = aFrame;
+                    end
+                end
+            else
+                if isequal(aZPlane, 0)
+                    % Maximum intensity projection of the whole z-stack.
+                    oIm = max(this.GetZStack(aFrame, 'Channel', aChannel), [], 3);
+                elseif length(aZPlane) == 1
+                    if ~isempty(this.cachedImages{channelIndex, aZPlane})  &&...
+                            isempty(aPixelRegion)
+                        % Use a cached image.
+                        oIm = this.cachedImages{channelIndex, aZPlane};
+                    else
+                        if this.zStacked
+                            if isempty(regexp(this.filenames{channelIndex}{aFrame},...
+                                    '(tif|tiff)$', 'once'))
+                                error('Only tif-files can have zStacked set to 1.')
+                            end
+                            if isempty(aPixelRegion)
+                                oIm = imread(this.filenames{channelIndex}{aFrame}, aZPlane);
+                            else
+                                oIm = imread(this.filenames{channelIndex}{aFrame}, aZPlane,...
+                                    'PixelRegion', aPixelRegion);
+                            end
+                        else
+                            if isempty(aPixelRegion)
+                                oIm = imread(this.filenames{channelIndex}...
+                                    {(aFrame-1)*this.numZ + aZPlane});
+                            else
+                                if ~isempty(regexp(this.filenames{channelIndex}{aFrame},...
+                                        '(tif|tiff)$', 'once'))
+                                    % For tifs, we can cut out a pixel region
+                                    % in the call to imread.
+                                    oIm = imread(this.filenames{channelIndex}...
+                                        {(aFrame-1)*this.numZ + aZPlane},...
+                                        'PixelRegion', aPixelRegion);
+                                else
+                                    % For other formats, the whole image is
+                                    % read and then the desired pixel region is
+                                    % cropped out.
+                                    oIm = imread(this.filenames{channelIndex}...
+                                        {(aFrame-1)*this.numZ + aZPlane});
+                                    oIm = CutPixelRegion(oIm, aPixelRegion);
+                                end
+                            end
+                        end
+                        
+                        if size(oIm,3) > 1
+                            % Convert color images to gray scale.
+                            oIm = mean(oIm, 3);
+                        end
+                        
+                        % Cache the returned image.
+                        if isempty(aPixelRegion)
+                            this.cachedImages{channelIndex, aZPlane} = oIm;
+                            this.cachedFrame = aFrame;
+                        end
                     end
                 else
                     % Maximum intensity projection of a range of z-planes.
@@ -325,6 +333,10 @@ classdef ImageData < ImageParameters
                         'ZPlane', aZPlane),...
                         [], 3);
                 end
+            end
+            
+            if (aX1 > 1 || aX2 < this.imageWidth || aY1 > 1 || aY2 < this.imageHeight)
+                oIm = oIm(aY1:aY2, aX1:aX2);
             end
         end
         
@@ -638,8 +650,14 @@ classdef ImageData < ImageParameters
             % aFrame - Index of the time point to be read.
             %
             % Property/Value inputs:
-            % All property/value inputs taken by the MATLAB function
-            % imread.
+            % Channel - Name or index of the channel to be read. By
+            %           default, the first channel is read.
+            % X1 - First pixel in x-dimension for desired sub-volume.
+            % X2 - Last pixel in x-dimension for desired sub-volume.
+            % Y1 - First pixel in y-dimension for desired sub-volume.
+            % Y2 - Last pixel in y-dimension for desired sub-volume.
+            % Z1 - First pixel in z-dimension for desired sub-volume.
+            % Z2 - Last pixel in z-dimension for desired sub-volume.
             %
             % Outputs:
             % oStack - 3D array with a z-stack. Dimension 3 specifies
@@ -649,10 +667,22 @@ classdef ImageData < ImageParameters
             % GetImage, GetDoubleImage, GetIntensityCorrectedImage,
             % GetUint8Image,  GetShownImage, GetZStack, GetUint8ZStack
             
-            oStack = zeros(this.imageHeight, this.imageWidth, this.numZ);
-            for i = 1:this.numZ
+            % Get additional input arguments for this function.
+            [aChannel, aX1, aX2, aY1, aY2, aZ1, aZ2] = GetArgs(...
+                {'Channel', 'X1', 'X2', 'Y1', 'Y2', 'Z1', 'Z2'},...
+                {1, 1, this.imageWidth, 1, this.imageHeight, 1, this.numZ},...
+                true,...
+                varargin);
+            
+            oStack = zeros(aY2-aY1+1, aX2-aX1+1, aZ2-aZ1+1);
+            for i = aZ1:aZ2
                 oStack(:,:,i) = this.GetDoubleImage(aFrame,...
-                    'ZPlane', i, varargin{:});
+                    'ZPlane', i,...
+                    'Channel', aChannel,...
+                    'X1', aX1,...
+                    'X2', aX2,...
+                    'Y1', aY1,...
+                    'Y2', aY2);
             end
         end
         

@@ -23,6 +23,9 @@ function [oBlobs, oBw, oGray, oImages] = Segment_generic3D(aImData, aFrame, vara
 % Y2 - Last pixel in y-dimension of sub-volume to be segmented.
 % Z1 - First pixel in z-dimension of sub-volume to be segmented.
 % Z2 - Last pixel in z-dimension of sub-volume to be segmented.
+% NumBlocks - The number of blocks that each dimension of the image should
+%             be broken into before segmentation is applied. The dimensions
+%             are in the order [yN, xN, zN].
 %
 % Settings in aImData (these are only a few important ones):
 % SegAlgorithm - The name of the segmentation algorithm that will be used.
@@ -55,20 +58,26 @@ if any(aNumBlocks > 1)
     oBlobs = Segment_generic3D_blocks(aImData, aFrame,...
         aNumBlocks,...
         aImData.Get('SegBlockMargin'));
-    oBw = [];
-    oGray = [];
-    oImages = struct();
     return
 end
 
-oImages = struct();
-
-I = aImData.GetDoubleZStack(aFrame, 'Channel', aImData.Get('SegChannel'));
-
-if ~isempty(varargin)
-    % Crop the input volume if cropping instructions are given.
-    I = I(aY1:aY2, aX1:aX2, aZ1:aZ2);
+if nargout > 3
+    oImages = struct();
+    % Variable used to capture the last output from methods.
+    output = cell(1,1);
+else
+    % Variable used to NOT capture the last output from methods.
+    output = cell(1,0);
 end
+
+I = aImData.GetDoubleZStack(aFrame,...
+    'Channel', aImData.Get('SegChannel'),...
+    'X1', aX1,...
+    'X2', aX2,...
+    'Y1', aY1,...
+    'Y2', aY2,...
+    'Z1', aZ1,...
+    'Z2', aZ2);
 
 % Apply intensity clipping.
 if aImData.Get('SegClipping') < 1
@@ -78,7 +87,7 @@ end
 if aImData.Get('SegClippingBelow') > 0
     I = max(0, I - aImData.Get('SegClippingBelow')*255);
 end
-if aImData.Get('SegClipping') < 1 || aImData.Get('SegClippingBelow') > 0
+if nargout > 3 && aImData.Get('SegClipping') < 1 || aImData.Get('SegClippingBelow') > 0
     oImages.clipped = I;
 end
 
@@ -112,14 +121,13 @@ end
 
 % Execute main segmentation algorithm.
 oGray = [];
-segSteps = struct();
 switch aImData.Get('SegAlgorithm')
     case 'Segment_threshold3D'
-        [oBw, segSteps] = Segment_threshold3D(I,...
+        [oBw, output{:}] = Segment_threshold3D(I,...
             aImData.Get('TSegThreshold'),...
             aImData.Get('TSegDarkOrBright'));
     case 'Segment_bandpass3D'
-        [oBw, oGray, segSteps] = Segment_bandpass3D(I, aImData, aFrame,...
+        [oBw, oGray, output{:}] = Segment_bandpass3D(I, aImData, aFrame,...
             aImData.Get('BPSegHighStd'),...
             aImData.Get('BPSegLowStd'),...
             aImData.Get('BPSegBgFactor'),...
@@ -144,13 +152,15 @@ switch aImData.Get('SegAlgorithm')
 end
 
 % Transfer images from different segmentation steps to the output images.
-stepNames = fieldnames(segSteps);
-for i = 1:length(stepNames)
-    oImages.(stepNames{i}) = segSteps.(stepNames{i});
+if (numel(output) > 0)
+    stepNames = fieldnames(output{1});
+    for i = 1:length(stepNames)
+        oImages.(stepNames{i}) = output{1}.(stepNames{i});
+    end
 end
 
 % Add the z-stack before thresholding to the output images.
-if ~isempty(oGray)
+if nargout > 3 && ~isempty(oGray)
     oImages.gray = oGray;
 end
 
@@ -194,11 +204,15 @@ if ~strcmpi(aImData.Get('SegWatershed'), 'none')
                 aImData.Get('SegWatershed'))
     end
     
-    [labels, oImages.watershed] = WatershedLabels(prop, oBw,...
+    [labels, output{:}] = WatershedLabels(prop, oBw,...
         'Smooth', aImData.Get('SegWSmooth'),...
         'HMax', aImData.Get('SegWHMax'),...
         'Threshold', aImData.Get('SegWThresh'),...
-        'UpSampling', aImData.Get('SegWUpSampling'));
+        'UpSampling', aImData.Get('SegWUpSampling'),...
+        'Store', all(aImData.Get('SegNumBlocks') == 1));
+    if numel(output) > 0
+        oImages.watershed = output{1};
+    end
 else
     labels = bwlabeln(oBw);
 end
@@ -231,11 +245,16 @@ if ~strcmpi(aImData.Get('SegWatershed2'), 'none')
                 aImData.Get('SegWatershed2'))
     end
     
-    [labels, oImages.watershed2] = WatershedLabels(prop2, labels,...
+    [labels, output{:}] = WatershedLabels(prop2, labels,...
         'Smooth', aImData.Get('SegWSmooth2'),...
         'HMax', aImData.Get('SegWHMax2'),...
         'Threshold', aImData.Get('SegWThresh2'),...
-        'UpSampling', aImData.Get('SegWUpSampling2'));
+        'UpSampling', aImData.Get('SegWUpSampling2'),...
+        'Store', all(aImData.Get('SegNumBlocks') == 1));
+    clear prop2
+    if numel(output) > 0
+        oImages.watershed2 = output{1};
+    end
 end
 
 % Remove ridges between watersheds by assigning the pixels to one of the
@@ -245,6 +264,7 @@ end
 if ~strcmpi(aImData.Get('SegWatershed'), 'none')
     ridges = oBw & labels == 0;
     labels = RemoveWatershedRidges(labels, ridges, prop);
+    clear ridges
 end
 
 oBlobs = Labels2Blobs(labels, aFrame);
@@ -263,9 +283,11 @@ if aImData.Get('SegMinSumIntensity') > 0
     for i = 1:length(oBlobs)
         sumIntensities(i) = sum(oBlobs(i).GetPixels(intensity));
     end
+    clear intensity
     remove = sumIntensities < aImData.Get('SegMinSumIntensity');
     oBlobs(remove) = [];
 end
+clear I
 
 % Apply a morphological operator to the segmentation masks of the
 % individual cells. TODO: Consider placing this before regions are pruned.

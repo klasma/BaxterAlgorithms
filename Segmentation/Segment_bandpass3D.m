@@ -82,12 +82,16 @@ if aImData.numZ > 1
     highStd = highStd * [1 1 1/aImData.voxelHeight];
 end
 
-im_bg = SmoothComp(im, highStd, 'Store', length(aHighStd) == 1);  % Background.
-oImages.bg = im_bg;
-im_smooth = SmoothComp(im, lowStd, 'Store', length(aLowStd) == 1);  % Noise reduced image.
-oImages.smooth = im_smooth;
-im_sample = im_smooth - im_bg * aBgFactor;  % Get rid of background.
-oImages.bandpass = im_sample;
+multipleBlocks = any(aImData.Get('SegNumBlocks') > 1);
+
+% Background.
+im_bg = SmoothComp(im, highStd,...
+    'Store', length(aHighStd) == 1 && ~multipleBlocks);
+% Noise reduced image.
+im_smooth = SmoothComp(im, lowStd,...
+    'Store', length(aLowStd) == 1 && ~multipleBlocks);
+% Get rid of background.
+im_sample = im_smooth - im_bg * aBgFactor;
 
 switch aDarkOrBright
     case 'bright'
@@ -95,6 +99,15 @@ switch aDarkOrBright
     case 'dark'
         oBw = im_sample <  aThreshold;
 end
-oImages.mask = oBw;
-oGray = im_sample;
+
+if nargout > 1
+    oGray = im_sample;
+end
+
+if nargout > 2
+    oImages.bg = im_bg;
+    oImages.smooth = im_smooth;
+    oImages.bandpass = im_sample;
+    oImages.mask = oBw;
+end
 end

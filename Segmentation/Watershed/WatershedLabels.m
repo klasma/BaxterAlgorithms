@@ -31,6 +31,7 @@ function [oLabels, oLandscape] = WatershedLabels(aLandscape, aForeground, vararg
 % UpSampling - The number of virtual z-planes which will be inserted
 %              between each pair or real z-planes. The values in the
 %              virtual z-planes are computed using linear interpolation.
+% Store - Specify as false if you don't want to cache smoothed unit images.
 %
 % Outputs:
 % oLabels - Label matrix with watersheds.
@@ -39,17 +40,18 @@ function [oLabels, oLandscape] = WatershedLabels(aLandscape, aForeground, vararg
 %              applied.
 
 % Get parameter/value inputs.
-[aSmooth, aHMax, aThreshold, aUpSampling] = GetArgs(...
-    {'Smooth', 'HMax', 'Threshold', 'UpSampling'},...
-    {0, 0, -inf, 1},...
+[aSmooth, aHMax, aThreshold, aUpSampling, aStore] = GetArgs(...
+    {'Smooth', 'HMax', 'Threshold', 'UpSampling', 'Store'},...
+    {0, 0, -inf, 1, true},...
     true,...
     varargin);
 
 landscape = -aLandscape;
+clear aLandscape
 
 % Smooth the image prior to processing it.
 if aSmooth > 0
-    landscape = SmoothComp(landscape, aSmooth);
+    landscape = SmoothComp(landscape, aSmooth, 'Store', aStore);
 end
 
 % Suppress all local maxima below a threshold.
@@ -57,7 +59,9 @@ if aHMax > 0
     landscape = imhmin(landscape, aHMax);
 end
 
-oLandscape = -landscape;
+if nargout > 1
+    oLandscape = -landscape;
+end
 
 minima = imregionalmin(landscape);
 % Remove seeds in the background.
@@ -84,6 +88,7 @@ numLabels = max(foregroundLabels(:));
 % and breaking them into multiple seeds whenever they overlap with multiple
 % connected components in the foreground image.
 minimaLabels = bwlabeln(minima);
+clear minima
 overlaps = cell(numLabels,1);
 overlapIndices = cell(numLabels,1);
 seeds = zeros(size(minimaLabels));
@@ -100,6 +105,7 @@ for i = 1:length(seedIndices)
         nextIndex = nextIndex + 1;
     end
 end
+clear minimaLabels
 
 multiSeedLabels = find(cellfun(@length,overlapIndices) > 1);
 singleSeedLabels = setdiff(1:numLabels, multiSeedLabels);
@@ -112,6 +118,7 @@ labelSelection(singleSeedLabels) = 1:length(singleSeedLabels);
 % Put the labels with 0 or 1 seed into the output label image.
 oLabels = zeros(size(foregroundLabels));
 oLabels(foregroundLabels>0) = labelSelection(foregroundLabels(foregroundLabels>0));
+clear foregroundLabels
 
 % Perform the watershed transform to split labels with multiple seeds only
 % if necessary.
@@ -128,10 +135,12 @@ if ~isempty(multiSeedLabels)
     seedSelection(multiSeeds) = 1:length(multiSeeds);
     watershedSeeds = zeros(size(seeds));
     watershedSeeds(seeds>0) = seedSelection(seeds(seeds>0));
+    clear seeds
     
     % The watershed transform is computed on only labels with multiple
     % seeds.
     watershedForeground = double(oLabels == 0 & aForeground);
+    clear aForeground
     
     if aUpSampling > 1
         % Insert virtual z-planes between the existing ones.
@@ -141,6 +150,8 @@ if ~isempty(multiSeedLabels)
     end
     
     watershedLabels = SeededWatershed(landscape, watershedSeeds, watershedForeground);
+    clear landscape
+    clear watershedSeeds
     
     if aUpSampling > 1
         % Remove virtual z-planes.
