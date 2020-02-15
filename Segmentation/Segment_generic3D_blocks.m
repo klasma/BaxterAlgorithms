@@ -68,4 +68,9 @@ blobGroups = reshape(blobGroups, [yN xN zN]);
 limits = reshape(limits, [yN xN zN]);
 
 oBlobs = SelectBlobs(aImData, blobGroups, limits, aMargin);
+
+% Give the blobs indices.
+for bIndex = 1:length(oBlobs)
+    oBlobs(bIndex).index = bIndex;
+end
 end
