@@ -67,5 +67,5 @@ end
 blobGroups = reshape(blobGroups, [yN xN zN]);
 limits = reshape(limits, [yN xN zN]);
 
-oBlobs = SelectBlobs(blobGroups, limits, aMargin);
+oBlobs = SelectBlobs(aImData, blobGroups, limits, aMargin);
 end

@@ -1,4 +1,4 @@
-function oBlobs = SelectBlobs(aBlobGroups, aLimits, aMargin)
+function oBlobs = SelectBlobs(aImData, aBlobGroups, aLimits, aMargin)
 
 [yN, xN, zN] = size(aBlobGroups);
 
@@ -43,14 +43,25 @@ startIndex = index;
 
 for bIndex = startIndex:length(allBlobs)
     blob = allBlobs(bIndex);
-    overlap = false;
+    totalOverlap = 0;
+    area = blob.GetArea();
+    select = true;
     for bIndex2 = startIndex:index-1
-        if Overlap(blob, selectedBlobs(bIndex2)) > 0 % TODO: handle small overlaps
-            overlap = true;
-            break;
+        blob2 = selectedBlobs(bIndex2);
+        overlap = Overlap(blob, blob2);
+        if overlap > 0
+            totalOverlap = totalOverlap + overlap;
+            if totalOverlap > 0.1 * area
+                select = false;
+                break;
+            else
+                [x, y, z] = blob2.GetPixelCoordinates();
+                indices = sub2ind(aImData.GetSize(), y, x, z);
+                RemoveBlobPixels(blob, indices, aImData)
+            end
         end
     end
-    if ~overlap
+    if select
         selectedBlobs(index) = blob;
         index = index + 1;
     end
