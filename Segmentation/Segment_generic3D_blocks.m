@@ -57,10 +57,11 @@ for index = 1 : xN*yN*zN
         'Z2', z2,...
         'NumBlocks', [1 1 1]);
     
-    % Shift the blob bounding boxes to the full image.
+    % Shift the blob centroids and bounding boxes to the full image.
     for bIndex = 1:length(blobs)
-        blobs(bIndex).boundingBox = blobs(bIndex).boundingBox +...
-            [x1-1 y1-1 z1-1 0 0 0];
+        blob = blobs(bIndex);
+        blob.centroid = blob.centroid + [x1-1 y1-1 z1-1];
+        blob.boundingBox = blob.boundingBox + [x1-1 y1-1 z1-1 0 0 0];
     end
     
     blobGroups{index} = blobs;
