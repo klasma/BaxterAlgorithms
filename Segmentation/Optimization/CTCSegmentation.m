@@ -79,7 +79,8 @@ switch aScoringFunction
         % Find the frames with ground truth segmentations.
         gtImages = GetNames(gtPath, 'tif');
         gtStrings = regexp(gtImages, '(?<=man_seg_?)\d+', 'match', 'once');
-        gtFrames = cellfun(@str2double, gtStrings) + 1;
+        gtFramesWithDuplicates = cellfun(@str2double, gtStrings) + 1;
+        gtFrames = unique(gtFramesWithDuplicates);
         
         if ~isnan(aNumImages)
             if aMostCells
@@ -87,9 +88,10 @@ switch aScoringFunction
                 gtImagePaths = strcat(gtPath, filesep, gtImages);
                 numCells = zeros(size(gtFrames));
                 % Load the images to see how many cells they have.
-                for i = 1:length(gtFrames)
+                for i = 1:length(gtImages)
                     im = imread(gtImagePaths{i});
-                    numCells(i) = max(im(:));
+                    index = gtFrames == gtFramesWithDuplicates(i);
+                    numCells(index) = numCells(index) + max(im(:));
                 end
                 [~,indices] = sort(numCells, 'descend');
                 gtFrames = gtFrames(indices(1:aNumImages));
