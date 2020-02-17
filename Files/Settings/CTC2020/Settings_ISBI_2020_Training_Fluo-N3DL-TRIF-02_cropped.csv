@@ -113,5 +113,5 @@ TrackGMReductionMethod,GMMmergeKLdiv
 TrackGMmahal_thresh,1
 TrackSaveCSB,0
 TrackRelinkSelectedCells,0
-SegNumBlocks,2  0  0
+SegNumBlocks,2  1  1
 SegBlockMargin,50
