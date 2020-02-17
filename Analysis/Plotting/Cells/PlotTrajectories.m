@@ -220,17 +220,30 @@ for cIndex = 1:length(alive)
     
     % Link children to parents.
     if ~isempty(cCell.parent) && cCell.firstFrame > aFrame - aTLength + 1
-        if cCell.isCell
-            h = plot(aAxes,...
-                [cCell.parent.cx(end) cCell.cx(1)],...
-                [cCell.parent.cy(end) cCell.cy(1)],...
-                'Color', cOpts.dMarkerEdgeColor{1});
-        else
-            h = plot(aAxes,...
-                [cCell.parent.cx(end) cCell.cx(1)],...
-                [cCell.parent.cy(end) cCell.cy(1)],...
-                'Color', cOpts.fMarkerEdgeColor{1});
+        switch aPlane
+            case 'xy'
+                parentX = cCell.parent.cx(end);
+                parentY = cCell.parent.cy(end);
+                childX = cCell.cx(1);
+                childY = cCell.cy(1);
+            case 'xz'
+                parentX = cCell.parent.cx(end);
+                parentY = cCell.parent.cz(end);
+                childX = cCell.cx(1);
+                childY = cCell.cz(1);
+            case 'yz'
+                parentX = cCell.parent.cz(end);
+                parentY = cCell.parent.cy(end);
+                childX = cCell.cz(1);
+                childY = cCell.cy(1);
         end
+        if cCell.isCell
+            color = cOpts.dMarkerEdgeColor{1};
+        else
+            color = cOpts.fMarkerEdgeColor{1};
+        end
+        h = plot(aAxes, [parentX childX], [parentY childY],...
+            'Color', color);
         graphics = [graphics h]; %#ok<AGROW>
     end
     
