@@ -41,6 +41,10 @@ selectedBlobs(1:index) = allBlobs(1:index);
 index = index + 1;
 startIndex = index;
 
+% Remove blobs that touch the artificial borders, as there can be
+% segmentation artifacts close to the borders.
+allBlobs = allBlobs(allDistances > -aMargin);
+
 for bIndex = startIndex:length(allBlobs)
     blob = allBlobs(bIndex);
     totalOverlap = 0;
