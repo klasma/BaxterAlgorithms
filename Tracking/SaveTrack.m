@@ -62,15 +62,26 @@ if aImData.Get('TrackSaveCTC')
     % SaveCellsTif removes point blobs, and therefore we need to get the
     % possibly altered cells as an output from SaveCellsTif, to make sure
     % that the same cells are saved in the mat-file.
-    cells = SaveCellsTif(aImData, cells, aImData.version, false);
+    if (aImData.Get('TrackSaveMat'))
+        cells = SaveCellsTif(aImData, cells, aImData.version, false);
+    else
+        cells = SaveCellsTif(aImData, cells, aImData.version, false,...
+            'SaveDeaths', true, 'SaveFP', true);
+    end
 end
 
-% Save the results to a mat-file, as an array of Cell objects.
-SaveCells(cells, aImData.seqPath, aImData.version, 'CompressCopy', false);
+if aImData.Get('TrackSaveMat')
+    % Save the results to a mat-file, as an array of Cell objects.
+    SaveCells(cells, aImData.seqPath, aImData.version, 'CompressCopy', false);
+end
 
 if aImData.Get('TrackSelectFromGT')
     % Select manually tracked cells and save them to a separate version.
-    SaveSelectedGTCells(aImData, aImData.version, [aImData.version '_sel'],...
-        'Relink', aImData.Get('TrackRelinkSelectedCells'))
+    cells = SelectCellsFromGTPixels(cells, aImData,...
+        'Relink', aImData.Get('TrackRelinkSelectedCells'));
+    if aImData.Get('TrackSaveCTC')
+        cells = SaveCellsTif(aImData, cells, [aImData.version '_sel'], false);
+    end
+    SaveCells(cells, aImData.seqPath, [aImData.version '_sel'], 'CompressCopy', false);
 end
 end
