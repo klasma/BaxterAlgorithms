@@ -39,7 +39,8 @@ for i = 1:length(seqDirs)
     
     numImages = length(GetNames(gtSegPath, 'tif'));
     newGtSegPath = fullfile(newExPath, 'Analysis', [seqDirs{i}(end-1:end) '_GT'], 'SEG');
-    SaveSubVolume(gtSegPath, newGtSegPath, [x1 x2], [y1 y2], [1 1], [1 numImages])
+    SaveSubVolume(gtSegPath, newGtSegPath, [x1 x2], [y1 y2], [1 1], [1 numImages],...
+        @(x)ReplaceZInSegName(x,1-z1))
     
     gtTraPath = fullfile(exPath, 'Analysis', [seqDirs{i}(end-1:end) '_GT'], 'TRA');
     newGtTraPath = fullfile(newExPath, 'Analysis', [seqDirs{i}(end-1:end) '_GT'], 'TRA');
