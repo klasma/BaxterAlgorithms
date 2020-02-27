@@ -121,7 +121,7 @@ RelWSegPerimRatio,0.33
 BPSegHightStd,14.8199
 BPSegLowStd,3.0442
 BPSegBgFactor,0.58182
-BPSegThreshold,0.031
+BPSegThreshold,0.025
 SaveTrack CellData_130307_2D,BaxterAlgorithm 03/07/2013 01:24:03.245 48
 SaveTrack CellData_130307_bordersub,BaxterAlgorithm 03/07/2013 15:32:30.445 48
 SaveTrack CellData_130307_all,BaxterAlgorithm 03/07/2013 22:22:34.684 48
@@ -183,5 +183,5 @@ TrackMergeBrokenRatio,0.75
 TrackSavePTC,0
 TrackEvaluateCTC,0
 TrackSelectFromGT,0
-SegTopHatRadius,Inf
+SegTopHatRadius,300
 TrackSaveCSB,0
