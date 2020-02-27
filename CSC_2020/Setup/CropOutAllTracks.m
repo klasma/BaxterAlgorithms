@@ -1,5 +1,5 @@
-exPath = 'C:\CTC2020\Training\Fluo-N3DL-TRIF';
-newExPath = 'C:\CTC2020\Training\Fluo-N3DL-TRIF-cropped';
+exPath = 'D:\CTC2020\Training\Fluo-N3DL-TRIF';
+newExPath = 'D:\CTC2020\Training\Fluo-N3DL-TRIF-cropped';
 
 seqDirs = GetSeqDirs(exPath);
 
