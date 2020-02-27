@@ -38,12 +38,12 @@ SegMaxArea,Inf
 SegMaxCount,2000
 SegSmooth,0
 SegWatershed,intermediate
-SegWSmooth,5.8819
-SegWHMax,0.1838
+SegWSmooth,5.8657
+SegWHMax,0.16152
 SegWThresh,-Inf
 SegWLocMaxCentroids,0
 LVSegRegionSize,3
-LVSegThreshold,1.6
+LVSegThreshold,1.4449
 LVSegErodeSize,3
 LVSegRegionShape,square
 LVSegErodeShape,square
