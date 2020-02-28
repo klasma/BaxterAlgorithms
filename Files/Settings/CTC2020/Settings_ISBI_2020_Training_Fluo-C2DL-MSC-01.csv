@@ -119,9 +119,9 @@ RelWSegRegMergeThresh,1.5
 RelWSegBgAreaThresh,100000
 RelWSegPerimRatio,0.33
 BPSegHightStd,14.8199
-BPSegLowStd,3.1644
+BPSegLowStd,3.0442
 BPSegBgFactor,0.58182
-BPSegThreshold,0.025037
+BPSegThreshold,0.025
 SaveTrack CellData_130307_2D,BaxterAlgorithm 03/07/2013 01:24:03.245 48
 SaveTrack CellData_130307_bordersub,BaxterAlgorithm 03/07/2013 15:32:30.445 48
 SaveTrack CellData_130307_all,BaxterAlgorithm 03/07/2013 22:22:34.684 48
@@ -165,14 +165,14 @@ TrackSaveFPAsCells,0
 TrackSaveCTC,1
 SegSave,1
 SegClippingBelow,0
-BPSegHighStd,13.7358
+BPSegHighStd,14.8199
 BPSegDarkOrBright,bright
 TrackSavePTC,0
 zStacked,0
 channelColors,1 1 1
 channelMin,0
 channelMax,1
-SegTopHatRadius,367
+SegTopHatRadius,300
 SegMinHoleArea,Inf
 TrackSaveCSB,0
 TrackEvaluateCTC,0
