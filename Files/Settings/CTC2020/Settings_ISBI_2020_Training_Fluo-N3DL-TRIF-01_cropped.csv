@@ -54,7 +54,7 @@ TrackMigLogLikeList,MigLogLikeList_PHD_DRO
 TrackDeathShift,2e-05
 TrackMaxDeathProb,1
 TrackMaxMigScore,0
-TrackMigInOut,0
+TrackMigInOut,1
 TrackNumNeighbours,1
 TrackSingleIdleState,0
 TrackBipartiteMatch,0
