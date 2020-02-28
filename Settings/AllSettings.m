@@ -1334,6 +1334,7 @@ migLLL = {...
     'MigLogLikeList_agree'
     'MigLogLikeList_cellClutter'
     'MigLogLikeList_uniformClutter'
+    'MigLogLikeList_uniformClutter_fragments'
     'MigLogLikeList_viterbiPaper'
     'MigLogLikeList_Jaccard'};
 sett.TrackMigLogLikeList = Setting(...
