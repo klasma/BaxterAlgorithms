@@ -115,3 +115,5 @@ TrackSelectFromGT,0
 SegWatershed2,none
 SegTopHatRadius,Inf
 TrackSaveCSB,0
+SegGbRamPerFrameCTC,2
+TrackSaveMat,1

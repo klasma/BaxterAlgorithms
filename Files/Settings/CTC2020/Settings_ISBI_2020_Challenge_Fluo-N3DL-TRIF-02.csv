@@ -116,3 +116,4 @@ TrackRelinkSelectedCells,0
 SegNumBlocks,4  2  2
 SegBlockMargin,50
 TrackSaveMat,0
+SegGbRamPerFrameCTC,10

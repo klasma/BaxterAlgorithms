@@ -133,3 +133,5 @@ SegTopHatRadius,Inf
 TrackSplitPriorChange,0
 TMSegMinSeparation,10
 TrackSaveCSB,0
+SegGbRamPerFrameCTC,2
+TrackSaveMat,1

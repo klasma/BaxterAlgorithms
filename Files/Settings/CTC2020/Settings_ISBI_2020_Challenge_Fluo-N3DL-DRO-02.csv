@@ -112,3 +112,6 @@ TrackGMmahal_thresh,1
 SegTopHatRadius,Inf
 TrackSaveCSB,0
 TrackRelinkSelectedCells,1
+SegGbRamPerFrameCTC,20
+SegNumBlocks,1  1  1
+TrackSaveMat,1
