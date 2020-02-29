@@ -1,4 +1,5 @@
-% Starting from the settings of the BaxterAlgorithms paper.
+% Starting from optimized settings after adding a secondary watershed
+% transform.
 
 subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
@@ -6,10 +7,12 @@ addpath(subdirs{1}{:});
 basePath = 'C:\CTC2020\Training';
 exPath = fullfile(basePath, 'BF-C2DL-MuSC');
 
-MSC_optimizer = SEGOptimizerEx(exPath,...
+MuSC_optimizer = SEGOptimizerEx(exPath,...
     {'LVSegThreshold'
     'SegWHMax'
-    'SegWSmooth'},...
+    'SegWSmooth'
+    'SegWSmooth2'
+    'SegWHMax2'},...
     'Plot', true);
 
-MSC_optimizer.Optimize_coordinatedescent('MaxIter', 25);
+MuSC_optimizer.Optimize_coordinatedescent('MaxIter', 25);

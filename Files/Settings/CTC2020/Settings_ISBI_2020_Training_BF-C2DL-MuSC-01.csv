@@ -115,6 +115,6 @@ TrackSelectFromGT,0
 SegWatershed2,shape
 SegTopHatRadius,Inf
 TrackSaveCSB,0
-SegWSmooth2,3
+SegWSmooth2,3.1256
 SegWHMax2,3
 SegWThresh2,-Inf
