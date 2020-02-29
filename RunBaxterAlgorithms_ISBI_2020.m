@@ -45,10 +45,11 @@ imData = ImageData(seqPath,...
 
 % Decide how many cores can be used for segmentation.
 [~, sys] = memory;
-ram = sys.PhysicalMemory.Total;
+ram = sys.PhysicalMemory.Available;
 ramPerFrame = imData.Get('SegGbRamPerFrameCTC');
 numCores = floor(ram / (ramPerFrame * 1E9));
 numCores = min(numCores, MaxWorkers());
+numCores = max(numCores, 1);
 
 if imData.Get('TrackSaveCSB')
     blobSeq = SegmentSequence(imData,...
