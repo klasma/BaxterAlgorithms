@@ -146,6 +146,6 @@ TrackSelectFromGT,0
 authorStr,
 SegTopHatRadius,Inf
 TrackSaveCSB,0
-SegGbRamPerFrameCTC,8
+SegGbRamPerFrameCTC,10
 SegNumBlocks,1  1  1
 TrackSaveMat,1
