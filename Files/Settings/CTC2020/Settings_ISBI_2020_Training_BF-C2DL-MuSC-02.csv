@@ -112,6 +112,9 @@ TrackSavePTC,0
 TrackSaveCTC,0
 TrackEvaluateCTC,0
 TrackSelectFromGT,0
-SegWatershed2,none
+SegWatershed2,shape
 SegTopHatRadius,Inf
 TrackSaveCSB,0
+SegWSmooth2,3
+SegWHMax2,3
+SegWThresh2,-Inf
