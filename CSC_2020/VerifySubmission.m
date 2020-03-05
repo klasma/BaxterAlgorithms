@@ -24,7 +24,7 @@ versions = {...
 'C:\CTC2020\Challenge', 'Fluo-N2DL-HeLa',       'Fluo-N2DL-HeLa_01',        '_200102_002711_CTC_2020_initial'
 'C:\CTC2020\Challenge', 'Fluo-N2DL-HeLa',       'Fluo-N2DL-HeLa_02',        '_200102_002711_CTC_2020_initial'
 'C:\CTC2020\Challenge', 'Fluo-N3DH-CE',         'Fluo-N3DH-CE_01',          '_200102_002711_CTC_2020_initial'
-'C:\CTC2020\Challenge', 'Fluo-N3DH-CE',         'Fluo-N3DH-CE_02',          '_200102_002711_CTC_2020_initial'
+'C:\CTC2020\Challenge', 'Fluo-N3DH-CE',         'Fluo-N3DH-CE_02',          '_200303_141612_short_sequence'
 'C:\CTC2020\Challenge', 'Fluo-N3DH-CHO',        'Fluo-N3DH-CHO_01',         '_200102_002711_CTC_2020_initial'
 'C:\CTC2020\Challenge', 'Fluo-N3DH-CHO',        'Fluo-N3DH-CHO_02',         '_200102_002711_CTC_2020_initial'
 'C:\CTC2020\Challenge', 'Fluo-N3DH-SIM+',       'Fluo-N3DH-SIM+_01',        '_200102_002711_CTC_2020_initial'
