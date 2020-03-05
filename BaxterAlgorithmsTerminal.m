@@ -1,4 +1,4 @@
-function BaxterAlgorithmsTermial(aExPaths, aVer, varargin)
+function BaxterAlgorithmsTerminal(aExPaths, aVer, varargin)
 % Runs the Baxter Algorithms cell tracking from the command line.
 %
 % This is only meant for processing computers where MATLAB has to be run
