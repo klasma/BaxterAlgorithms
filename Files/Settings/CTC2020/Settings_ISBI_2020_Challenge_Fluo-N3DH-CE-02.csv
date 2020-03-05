@@ -28,8 +28,8 @@ TrackPDisappear,1e-06
 TrackPMig,0.01
 TrackPMigDet,0.8
 TrackMigInOut,0
-TrackXSpeedStd,30   6
-TrackZSpeedStd,15   3
+TrackXSpeedStd,30      12.3492
+TrackZSpeedStd,15       6.1746
 TrackMaxMigDist,Inf
 TrackBipartiteMatch,1
 TrackMergeWatersheds,1
@@ -92,7 +92,7 @@ FibSegSmallestHole,5000
 FibSegImOpenRadius,5
 FibSegShapeHmin,5
 BPSegHightStd,20  12
-BPSegLowStd,15   8
+BPSegLowStd,15       9.8519
 BPSegBgFactor,1
 BPSegThreshold,0.01
 FlPcSegSmoothing,100
@@ -132,7 +132,7 @@ channelMin,0
 channelMax,1
 SegSave,1
 SegMinHoleArea,Inf
-BPSegHighStd,20  12
+BPSegHighStd,20      14.1164
 BPSegDarkOrBright,bright
 migClassifier,none
 TrackPReAppear,0
