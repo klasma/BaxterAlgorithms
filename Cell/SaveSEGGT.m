@@ -5,7 +5,11 @@ function SaveSEGGT(aFolder, aVersion, varargin)
 % 16-bit tifs with label images, that can be used for evaluation of
 % segmentation performance. The label images are saved in a folder named
 % SEG, in a folder with the name of the image sequence followed by _GT, in
-% the analysis folder of the experiment.
+% the analysis folder of the experiment. This function works for 2D data
+% and 3D data that include all z-slices. This means that 3D data can be
+% exported in the same ground truth format as in the CTC dataset
+% Fluo-N3DH-SIM+. It is not possible to export segmentation ground truths
+% in the format used in the other challenge datasets.
 %
 % Inputs:
 % aFolder - Path of folder with image sequences. This can be either a
@@ -54,7 +58,15 @@ for t = 1:length(blobSeq)
             fmt = ['man_seg%0' num2str(digits) 'd.tif'];
         end
         imPath = fullfile(dstFolder, sprintf(fmt, t-1));
-        imwrite(uint16(im), imPath)
+        if size(im,3) == 1  % 2D data.
+            imwrite(uint16(im), imPath, 'Compression', 'lzw')
+        else  % 3D data.
+            for i = 1:size(im,3)
+                imwrite(uint16(squeeze(im(:,:,i))), imPath,...
+                    'WriteMode', 'append',...
+                    'Compression', 'lzw')
+            end
+        end
     end
 end
 
