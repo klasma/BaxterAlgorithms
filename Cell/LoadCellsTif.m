@@ -20,7 +20,7 @@ imData = ImageData(aSeqPath);
 % Image data for the image sequence with cell regions.
 labelImData = ImageData(aCTCPath);
 labelImData.Set('numZ', imData.numZ)
-labelImData.Set('zStacked', imData.zStacked)
+labelImData.Set('zStacked', 1)
 
 % File with information about cell parents. It is named res_track.txt for
 % computer generated results and man_track.txt for ground truth tracks.
