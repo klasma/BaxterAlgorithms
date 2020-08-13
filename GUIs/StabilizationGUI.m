@@ -111,9 +111,19 @@ uicontrol(...
         % Puts the execution on a processing queue, to be started later.
         
         dstExPath = sPanel.GetValue('Output');
+        if length(imData.channelNames) > 1
+            referenceChannel = sPanel.GetValue('Reference_channel');
+        else
+            referenceChannel = imData.channelNames{1};
+        end
+        missingPixels = sPanel.GetValue('Missing_pixels');
         numCores = str2double(sPanel.GetValue('Number_of_cores'));
         
-        aQueue.Add(@()RunStabilization(aSeqPaths, dstExPath, numCores))
+        aQueue.Add(@()RunStabilization(aSeqPaths,...
+            dstExPath,...
+            numCores,...
+            referenceChannel,...
+            missingPixels))
     end
 end
 
