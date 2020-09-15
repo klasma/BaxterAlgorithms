@@ -70,12 +70,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
 
 	// Get the dimensions of the inputs.
-	const int *countSize = (int*) mxGetDimensions(prhs[1]);
-	const int *migSize = (int*) mxGetDimensions(prhs[2]);
-	const int *mitSize = (int*) mxGetDimensions(prhs[3]);
-	const int *apoSize = (int*) mxGetDimensions(prhs[4]);
-	const int *appearSize = (int*) mxGetDimensions(prhs[5]);
-	const int *disappearSize = (int*) mxGetDimensions(prhs[6]);
+	const mwSize *countSize = mxGetDimensions(prhs[1]);
+	const mwSize *migSize = mxGetDimensions(prhs[2]);
+	const mwSize *mitSize = mxGetDimensions(prhs[3]);
+	const mwSize *apoSize = mxGetDimensions(prhs[4]);
+	const mwSize *appearSize = mxGetDimensions(prhs[5]);
+	const mwSize *disappearSize = mxGetDimensions(prhs[6]);
 	int tMax = (int) mxGetNumberOfElements(prhs[0]);  // Allow numDetsA to be either row or column vector.
 	int maxCount = countSize[1]-3; // first element is t, second is detection index and the third is the debris probability
 	int numMigs = migSize[0];

@@ -152,8 +152,8 @@ void mexFunction(
     for(int i=0; i<n; i++) {
         neighborhoods[i] = 0;
     }
-    int numDims = mxGetNumberOfDimensions(prhs[0]);  // Number of image dimensions.
-    const int *dims = mxGetDimensions(prhs[0]);  // Array of image dimensions.
+    mwSize numDims = mxGetNumberOfDimensions(prhs[0]);  // Number of image dimensions.
+    const mwSize *dims = mxGetDimensions(prhs[0]);  // Array of image dimensions.
     
     /* A pixel in the middle of a 2D image has 8 neighboring pixels, but if
      * the pixel is on the image border, the pixel can have different

@@ -32,9 +32,13 @@ void mexFunction(
     // Inputs.
 
 	double *aLabels_double = mxGetPr(prhs[0]);
-	int numDims = mxGetNumberOfDimensions(prhs[0]);  // Number of image dimensions.
-	const int *dims = mxGetDimensions(prhs[0]);  // Array of image dimensions.
-	int numElements = mxGetNumberOfElements(prhs[0]);
+	int numDims = (int) mxGetNumberOfDimensions(prhs[0]);  // Number of image dimensions.
+	const mwSize *dims = mxGetDimensions(prhs[0]);  // Array of image dimensions.
+	int *dims_int = new int[numDims];
+	for (int i=0; i<numDims; i++) {
+		dims_int[i] = (int) dims[i];
+	}
+	int numElements = (int) mxGetNumberOfElements(prhs[0]);
 	
 	// Convert double labels to int labels.
 	int *aLabels = new int[numElements];
@@ -44,7 +48,7 @@ void mexFunction(
     
 	double *aImage = mxGetPr(prhs[1]);
 	double aMergeThreshold = *mxGetPr(prhs[2]);
-	int aMinSize = (double) *mxGetPr(prhs[3]);
+	int aMinSize = (int) *mxGetPr(prhs[3]);
 	
 
 	// Outputs.
@@ -54,7 +58,8 @@ void mexFunction(
 	int *oNewLabels = new int[numElements];
 
 	// Merge the watersheds.
-	MergeSegments(numDims, dims, aLabels, aImage, aMergeThreshold, aMinSize, oNewLabels);
+	MergeSegments(numDims, dims_int, aLabels, aImage, aMergeThreshold, aMinSize, oNewLabels);
+	delete[] dims_int;
 
 	// Convert the new int labels to double labels.
 	for (int i=0; i<numElements; i++) {
