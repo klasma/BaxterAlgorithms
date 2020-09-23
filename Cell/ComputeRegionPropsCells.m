@@ -33,7 +33,7 @@ for chIndex = 1:length(channels)
     for t = 1:length(blobSeq)
         % Read in fluorescence image.
         fluor = aImData.GetDoubleZStack(t, 'Channel', channels{chIndex})/255;
-        for bIndex = 1:length(blobSeq{t});
+        for bIndex = 1:length(blobSeq{t})
             b = blobSeq{t}(bIndex);
             
             if any(isnan(b.boundingBox))
