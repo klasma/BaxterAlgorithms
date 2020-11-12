@@ -24,7 +24,7 @@ imData = ImageData(aSeqPath);
 % Remove false positive cells.
 cells = AreCells(aCells);
 
-[exPath, seqDir] = fileparts(aSeqPath);
+[exPath, seqDir] = FileParts2(aSeqPath);
 
 savePath = fullfile(exPath, 'Analysis', ['CellData' aVer], 'xml');
 % Path of the XML-file that the data will be saved to.

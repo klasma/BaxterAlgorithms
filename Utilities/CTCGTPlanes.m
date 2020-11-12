@@ -17,7 +17,7 @@ function [oT, oZ] = CTCGTPlanes(aSeqPath)
 %      the same size as oT.
 
 % Find the path of the ground truth folder.
-[exPath, seqDir] = fileparts(aSeqPath);
+[exPath, seqDir] = FileParts2(aSeqPath);
 gtPath = fullfile(exPath, 'Analysis', [seqDir '_GT']);
 if ~exist(gtPath, 'dir')
     % Some ground truth folders only use the last 2 letters from the image

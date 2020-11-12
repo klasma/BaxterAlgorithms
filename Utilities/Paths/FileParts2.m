@@ -5,7 +5,8 @@ function [oExPath, oSeqDir] = FileParts2(aSeqPath)
 % built in function fileparts, with two output arguments. This function
 % does however not discard characters which come after the last period in
 % the sequence (folder) name, making it possible to use image sequence
-% names with periods in them.
+% names with periods in them. In contrast to fileparts, FileParts2 is not
+% affected by path separators at the end of the input.
 %
 % Inputs:
 % aSeqPath - Full or relative path of an image sequence. The input can also
@@ -21,15 +22,15 @@ function [oExPath, oSeqDir] = FileParts2(aSeqPath)
 % fileparts, GetNames, FileEnd, FileType
 
 if iscell(aSeqPath)
-    n = length(aSeqPath);
-    oExPath = cell(n, 1);
-    oSeqDir = cell(n, 1);
-    for i = 1:n
-        oExPath{i} = fileparts(aSeqPath{i});
-        oSeqDir{i} = aSeqPath{i}(length(oExPath{i})+2:end);
-    end
+    [oExPath, oSeqDir] = cellfun(@FileParts2, aSeqPath,...
+        'UniformOutput', false);
 else
-    oExPath = fileparts(aSeqPath);
-    oSeqDir = aSeqPath(length(oExPath)+2:end);
+    [oExPath, file, ext]= fileparts(aSeqPath);
+    oSeqDir = [file ext];
+    
+    if isempty(oSeqDir) &&... % Handles trailing / and \.
+            length(oExPath) < length(aSeqPath) % Handles aSeqPath = 'C:\' and ''.
+        [oExPath, oSeqDir] = FileParts2(oExPath);
+    end
 end
 end

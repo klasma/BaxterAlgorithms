@@ -14,7 +14,7 @@ function DeleteSettings(aSeqPath)
 % See also:
 % CopySettings
 
-exPath = fileparts(aSeqPath);
+exPath = FileParts2(aSeqPath);
 
 % File with links to other settings files. This takes precedence over a
 % real settings file if it exists.

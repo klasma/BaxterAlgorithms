@@ -269,7 +269,7 @@ classdef SEGOptimizerSeq < Optimizer
                 end
 
                 % Remove the temporary segmentation results.
-                RemoveVersion(fileparts(this.seqPath), verName)
+                RemoveVersion(FileParts2(this.seqPath), verName)
             catch
                 % Make sure that the optimization can recover from errors
                 % caused by strange parameters.

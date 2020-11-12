@@ -295,7 +295,7 @@ classdef ImageParameters < Map
             % See also:
             % GetSeqDir
             
-            oPath = fileparts(this.seqPath);
+            oPath = FileParts2(this.seqPath);
         end
         
         function oOpts = GetOpts(this)

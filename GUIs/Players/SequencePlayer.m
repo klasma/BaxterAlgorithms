@@ -611,7 +611,7 @@ classdef SequencePlayer < handle
             if nargin == 1
                 oExPath = GetExPath(this, this.seqIndex);
             else
-                oExPath = fileparts(this.seqPaths{aIndex});
+                oExPath = FileParts2(this.seqPaths{aIndex});
             end
         end
         
