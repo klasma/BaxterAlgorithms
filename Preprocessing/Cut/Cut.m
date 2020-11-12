@@ -61,9 +61,9 @@ for i = 1:length(xAll)
     y1All(i) = max(round((yAll(i) - rAll(i)*(1 + MARGIN))), 1);
     y2All(i) = min(round((yAll(i) + rAll(i)*(1 + MARGIN))), imData.imageHeight);
     
-    x = xAll(i) - x1All(i) + 1; %#ok<NASGU>
-    y = yAll(i) - y1All(i) + 1; %#ok<NASGU>
-    r = rAll(i); %#ok<NASGU>
+    x = xAll(i) - x1All(i) + 1;
+    y = yAll(i) - y1All(i) + 1;
+    r = rAll(i);
     save(microWellFile, 'x', 'y', 'r')
 end
 

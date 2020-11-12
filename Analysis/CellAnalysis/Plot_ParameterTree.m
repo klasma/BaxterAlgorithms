@@ -164,7 +164,7 @@ for i = 1:length(cells)
         end
         
         % Convert time points from frames to hours if necessary.
-        if strcmpi(aXUnit, 'hours');
+        if strcmpi(aXUnit, 'hours')
             x = imData.FrameToT(x);
         end
         
@@ -199,7 +199,7 @@ if aMarkDeath
         
         if c.died
             x = lf+1;
-            if strcmpi(aXUnit, 'hours');
+            if strcmpi(aXUnit, 'hours')
                 x = imData.FrameToT(x);
             end
             y = Y2(i);

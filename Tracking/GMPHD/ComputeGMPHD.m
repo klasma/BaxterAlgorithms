@@ -52,8 +52,8 @@ else
     
     if aCreateOutputFiles
         % Save the updated phd to a file.
-        propagatedPHD = phd_p(1); %#ok<NASGU>
-        updatedPHD = phd_u(1); %#ok<NASGU>
+        propagatedPHD = phd_p(1);
+        updatedPHD = phd_u(1);
         if ~exist(fileparts(filename), 'dir')
             mkdir(fileparts(filename))
         end
@@ -95,8 +95,8 @@ for t = 2:aImData.sequenceLength
         
         if aCreateOutputFiles
             % Save the PHDs to a file.
-            propagatedPHD = phd_p(t); %#ok<NASGU>
-            updatedPHD = phd_u(t); %#ok<NASGU>
+            propagatedPHD = phd_p(t);
+            updatedPHD = phd_u(t);
             save(filename, 'propagatedPHD', 'updatedPHD')
         end
     end

@@ -77,7 +77,7 @@ numAxes = length(conditions);
 
 is3D = cells(1).imageData.GetDim() == 3;
 for i = 1:length(cells)
-    if (cells(i).imageData.GetDim() == 3) ~= is3D;
+    if (cells(i).imageData.GetDim() == 3) ~= is3D
         errordlg(...
             '2D and 3D datasets cannot be mixed in population analysis.',...
             'Analysis error')

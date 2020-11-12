@@ -984,7 +984,7 @@ classdef CellAnalysisPlayer < ControlPlayer
                 figCnt = figCnt + 1;
                 overviewFigs = [overviewFigs f]; %#ok<AGROW>
                 axIndex = 1;
-                for clIndex = 1:length(cellVecTmp);  % Loop over plots.
+                for clIndex = 1:length(cellVecTmp)  % Loop over plots.
                     if axIndex == 13
                         % There are 12 axes per figure, so on 13 a new
                         % figure is opened, and the counter is reset.

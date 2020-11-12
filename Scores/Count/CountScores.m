@@ -79,7 +79,7 @@ if aCreateOutputFiles
     filename = fullfile(...
         aImData.GetResumePath(),...
         'counts.mat');
-    counts = oList; %#ok<NASGU>
+    counts = oList;
     save(filename, 'counts')
 end
 end

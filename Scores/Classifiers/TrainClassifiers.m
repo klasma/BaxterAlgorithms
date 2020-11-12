@@ -50,7 +50,7 @@ function TrainClassifiers(aSeqPaths, aVer, aSaveName, aFeatures, aCount, aMitosi
 MIN_EX = 10;
 
 % Variables that will be saved.
-type = 'mnrpca'; %#ok<NASGU>
+type = 'mnrpca';
 featureNames = aFeatures;
 
 % Check for tracking results with the specified name.
@@ -93,7 +93,7 @@ if aCount
         % Train the classifier.
         [classifier, means, transform] =...
             Train(features, counts+1, weights,...
-            'MaxSamples', aMaxSamples); %#ok<ASGLU>
+            'MaxSamples', aMaxSamples);
         
         % Save the classifier.
         savePathCount = fullfile(saveFolder, 'Count', [aSaveName '.mat']);
@@ -116,7 +116,7 @@ if aMitosis
         % Train the classifier.
         [classifier, means, transform] =...
             Train(features, splits+1, weights,...
-            'MaxSamples', aMaxSamples); %#ok<ASGLU>
+            'MaxSamples', aMaxSamples);
         
         % Save the classifier.
         savePathSplit = fullfile(saveFolder, 'Split', [aSaveName '.mat']);
@@ -139,7 +139,7 @@ if aDeath
         % Train the classifier.
         [classifier, means, transform] =...
             Train(features, deaths+1, weights,...
-            'MaxSamples', aMaxSamples); %#ok<ASGLU>
+            'MaxSamples', aMaxSamples);
         
         % Save the classifier.
         savePathDeath = fullfile(saveFolder, 'Death', [aSaveName '.mat']);

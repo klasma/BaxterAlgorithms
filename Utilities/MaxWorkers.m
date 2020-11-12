@@ -16,7 +16,7 @@ if ~verLessThan('matlab', '7.14')
     oNum = myCluster.NumWorkers;
 else
     % Old command that will be removed in a future release of MATLAB.
-    myScheduler = findResource('scheduler', 'configuration', 'local'); %#ok<DFNDR>
+    myScheduler = findResource('scheduler', 'configuration', 'local');
     oNum = myScheduler.clusterSize;
 end
 end

@@ -40,10 +40,8 @@ aGhostCells = GetArgs({'GhostCells'}, {true}, true, varargin);
 
 % Plot live cells in green and dead cells in black.
 colors = {[0 1 0]; [0 0 0]};
-legendStrings = {'Live cells' 'Dead cells'};
 if aGhostCells
     colors = [colors; {[0.5 0.5 0.5]}];  % Plot ghost cells in gray.
-    legendStrings = [legendStrings {'Ghost cells'}];
 end
 
 % Sort the cells by condition.
@@ -79,10 +77,10 @@ for p = 1:length(pCellVec)
     y = [counts_live'; counts_dead'];
     
     if any(counts_live)
-        legendStrings{p} = [legendStrings{p} {'Live cells'}]; %#ok<AGROW>
+        legendStrings{p} = [legendStrings{p} {'Live cells'}];
     end
     if any(counts_dead)
-        legendStrings{p} = [legendStrings{p} {'Dead cells'}]; %#ok<AGROW>
+        legendStrings{p} = [legendStrings{p} {'Dead cells'}];
     end
     
     % Compute the number of ghost cells in each frame.
@@ -96,7 +94,7 @@ for p = 1:length(pCellVec)
         y = [y; counts_ghost']; %#ok<AGROW>
         
         if any(counts_ghost)
-            legendStrings{p} = [legendStrings{p} {'Ghost cells'}]; %#ok<AGROW>
+            legendStrings{p} = [legendStrings{p} {'Ghost cells'}];
         end
     end
     

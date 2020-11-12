@@ -833,7 +833,7 @@ classdef SequencePlayer < handle
             
             % Convert to gray scale if the displayed image only has shades
             % of gray.
-            if IsGrayRGB(imSave);
+            if IsGrayRGB(imSave)
                 imSave = rgb2gray(imSave);
             end
             
