@@ -118,3 +118,5 @@ TrackSaveCSB,0
 SegWSmooth2,3.1256
 SegWHMax2,3
 SegWThresh2,-Inf
+SegGbRamPerFrameCTC,2
+TrackSaveMat,1

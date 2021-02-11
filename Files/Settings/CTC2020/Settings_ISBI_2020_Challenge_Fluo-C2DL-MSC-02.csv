@@ -185,3 +185,5 @@ TrackEvaluateCTC,0
 TrackSelectFromGT,0
 SegTopHatRadius,300
 TrackSaveCSB,0
+SegGbRamPerFrameCTC,1
+TrackSaveMat,1

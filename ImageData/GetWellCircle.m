@@ -1,14 +1,11 @@
 function [oX, oY, oR] = GetWellCircle(aImData)
 % Finds a circular microwell in the first image of an image sequence.
 %
-% The function either computes the center and the radius of the microwell,
-% or reads the data from a mat-file if it has been computed before. The
+% The function computes the center and the radius of the microwell. The
 % function is intended for images that have already been cut and will
 % return the first microwell in sequences with multiple wells. The computed
-% microwell information is saved to a mat-file with the same name as the
-% image sequence, in a folder named 'Microwells' in the Analysis folder of
-% the experiment. The mat-files store the three variables 'x', 'y', and
-% 'r'. All values are in pixels.
+% microwell information is stored in persistent variables, so that it does
+% not need to be computed multiple times for the same image sequence.
 %
 % Inputs:
 % aImData - ImageData object of the image sequence.
@@ -21,6 +18,11 @@ function [oX, oY, oR] = GetWellCircle(aImData)
 % See also:
 % FindWellsHough, Cut
 
+persistent outputX % Cell array with all previously returned x-values.
+persistent outputY % Cell array with all previously returned y-values.
+persistent outputR % Cell array with all previously returned r-values.
+persistent labels  % Labels that uniquely identify the different outputs.
+
 if isnan(aImData.Get('minWellR')) || isnan(aImData.Get('maxWellR'))
     % The image has no circular microwell.
     oX = nan;
@@ -29,41 +31,46 @@ if isnan(aImData.Get('minWellR')) || isnan(aImData.Get('maxWellR'))
     return
 end
 
-microwellFile = fullfile(...
-    aImData.GetAnalysisPath(),...
-    'Microwells',...
-    [aImData.GetSeqDir() '.mat']);
+% Name to save persistent data to.
+label = sprintf('%s %f %f',...
+    aImData.seqPath,...
+    aImData.Get('minWellR'),...
+    aImData.Get('maxWellR'));
 
-if exist(microwellFile, 'file')
-    tmp = load(microwellFile);
-    % If more than one well was found we just take the first. This should
-    % never happen.
-    oX = tmp.x(1);
-    oY = tmp.y(1);
-    oR = tmp.r(1);
-else
-    [x, y, r] = FindWellsHough(aImData, 1);
-    if isempty(x) % The microwell was not found.
-        warning('Blaulab:klasma:baddata',...
-            'Unable to find a microwell in the specified images')
-        % Create a circle in the center of the image, that touches
-        % the closest image sides.
-        x = aImData.imageWidth/2;
-        y = aImData.imageHeight/2;
-        r = min(aImData.imageWidth, aImData.imageHeight)/2;
-    end
-    
-    if ~exist(fileparts(microwellFile), 'dir')
-        mkdir(fileparts(microwellFile))
-    end
-    
-    % Save the computed microwell parameters to a mat-file.
-    save(microwellFile, 'x', 'y', 'r')
-    
-    % If more than one well was found we just take the first. This  should
-    % never happen.
-    oX = x(1);
-    oY = y(1);
-    oR = r(1);
+% Return pre-computed results if they exist.
+if any(strcmp(labels, label))
+    index = strcmp(labels, label);
+    oX = outputX{index};
+    oY = outputY{index};
+    oR = outputR{index};
+    return
+elseif length(labels) > 999
+    % Clear pre-computed results to avoid memory leak and overhead.
+    outputX = {};
+    outputY = {};
+    outputR = {};
+    labels = {};
 end
+
+[x, y, r] = FindWellsHough(aImData, 1);
+if isempty(x) % The microwell was not found.
+    warning('Blaulab:klasma:baddata',...
+        'Unable to find a microwell in the specified images')
+    % Create a circle in the center of the image, that touches
+    % the closest image sides.
+    x = aImData.imageWidth/2;
+    y = aImData.imageHeight/2;
+    r = min(aImData.imageWidth, aImData.imageHeight)/2;
+end
+
+% If more than one well was found we just take the first. This  should
+% never happen.
+oX = x(1);
+oY = y(1);
+oR = r(1);
+
+outputX = [outputX; {oX}];
+outputY = [outputY; {oY}];
+outputR = [outputR; {oR}];
+labels = [labels; {label}];
 end

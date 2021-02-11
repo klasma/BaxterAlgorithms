@@ -43,11 +43,22 @@ imData = ImageData(seqPath,...
     'version', 'tmp',...
     'SettingsFile', settingsPath);
 
+% Decide how many cores can be used for segmentation.
+[~, sys] = memory;
+ram = sys.PhysicalMemory.Available;
+ramPerFrame = imData.Get('SegGbRamPerFrameCTC');
+numCores = floor(ram / (ramPerFrame * 1E9));
+numCores = min(numCores, MaxWorkers());
+numCores = max(numCores, 1);
+
 if imData.Get('TrackSaveCSB')
-    blobSeq = SegmentSequence(imData, 'CreateOutputFiles', false);
+    blobSeq = SegmentSequence(imData,...
+        'NumCores', numCores,...
+        'CreateOutputFiles', false);
     SaveSegmentationCSB(imData, blobSeq, [], true)
 else
     cells = Track(imData,...
+        'SegmentationCores', numCores,...
         'CreateOutputFiles', false);
     
     if imData.Get('TrackSelectFromGT')

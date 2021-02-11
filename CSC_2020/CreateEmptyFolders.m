@@ -1,8 +1,6 @@
-basePath = fullfile(ExternalDrive(),...
-    'CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019\Challenge');
+basePath = fullfile('C:\CTC2020\Challenge');
 
-submissionPath = fullfile(ExternalDrive(),...
-    'CellData_2011_2014\2019_02_14_Cell_Tracking_Challenge_2019\Submission');
+submissionPath = fullfile('C:\CTC2020\Submission');
 
 exDirs = GetNames(basePath, '');
 
