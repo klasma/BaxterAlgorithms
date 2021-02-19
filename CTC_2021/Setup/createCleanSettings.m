@@ -23,7 +23,7 @@ for e = 1:length(exDirs)
             value = GetSeqSettings(settings, seqDir, settingsToKeep{i});
             settings_clean = SetSeqSettings(settings_clean, seqDir, settingsToKeep{i}, value);
         end
-        settingsFileName = sprintf('Settings_ISBI_2021_%s_%s-%s.csv',...
+        settingsFileName = sprintf('Settings_ISBI_2021_%s_%s-%s_clean.csv',...
                 trainingOrChallenge{d}, exDirs{e}, seqDir(end-1:end));
         WriteSettings(fullfile(newSettingsPath, settingsFileName), settings_clean)
     end
