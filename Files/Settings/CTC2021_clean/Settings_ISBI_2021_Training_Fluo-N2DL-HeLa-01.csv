@@ -1,0 +1,7 @@
+setting,Fluo-N2DL-HeLa_01
+numZ,1
+zStacked,0
+bits,16
+voxelHeight,1
+channelMin,0.5
+channelMax,0.55
