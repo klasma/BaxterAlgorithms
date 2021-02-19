@@ -1,7 +1,7 @@
 setting,Fluo-C3DH-A549_02
-numZ,34
+numZ,28
 zStacked,1
 bits,13
 voxelHeight,7.9365
 channelMin,0
-channelMax,0.2485
+channelMax,1

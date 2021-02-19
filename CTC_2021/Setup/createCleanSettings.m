@@ -1,7 +1,7 @@
 % Creates settings without algorithm parameters, to start segmentation
 % optimization from.
 
-dataSetFolders = 'C:\CTC2021\Training';
+dataSetFolder = 'C:\CTC2021\Training';
 
 settingsToKeep = {'numZ' 'zStacked' 'bits' 'voxelHeight' 'channelMin' 'channelMax'};
 
