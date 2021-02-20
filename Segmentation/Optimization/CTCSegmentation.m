@@ -1,4 +1,4 @@
-function CTCSegmentation(aSeqPath, aVer, varargin)
+function CTCSegmentation(aImData, aVer, varargin)
 % Saves segmentation results in frames with manual segmentation.
 %
 % The function segments only the images which have a segmentation ground
@@ -9,7 +9,7 @@ function CTCSegmentation(aSeqPath, aVer, varargin)
 % long time to produce complete tracking results.
 %
 % Inputs:
-% aSeqPath - Full path of the image sequence.
+% aImData - ImData the image sequence to segment.
 % aVer - Name of the generated tracking version.
 %
 % Property/Value inputs:
@@ -55,7 +55,7 @@ function CTCSegmentation(aSeqPath, aVer, varargin)
     {'NumImages', 'MostCells', 'ScoringFunction'},...
     {nan, false, 'SEG'}, true, evaluationArgs);
 
-imData = ImageData(aSeqPath);
+imData = aImData;
 
 % Overwrite the saved settings with settings specified by the caller.
 for i = 1:length(settingsArgs)/2
