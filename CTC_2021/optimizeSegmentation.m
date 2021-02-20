@@ -1,6 +1,4 @@
 % Optimize segmentation on the primary track datasets for CTC 2021.
-%
-% Starting from the TRIC settings of CTC 2019.
 
 subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
