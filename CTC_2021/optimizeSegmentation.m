@@ -5,16 +5,12 @@ addpath(subdirs{1}{:});
 
 % % Settings to test on.
 % basePath = 'C:\CTC2021\Training';
-% initialSettingsFolder = 'C:\git\BaxterAlgorithms_CSC2019\Files\Settings\CTC2021_clean';
-% optimizedSettingsFolder = 'C:\git\BaxterAlgorithms_CSC2019\Files\Settings\CTC2021_trained_on_GT';
 % exDirs = {'Fluo-C2DL-MSC'};
 % maxIter = 1;
 % settingsToOptimize = {'BPSegThreshold'};
 
 % Real settings.
 basePath = 'C:\CTC2021\Training';
-initialSettingsFolder = 'C:\git\BaxterAlgorithms_CSC2019\Files\Settings\CTC2021_clean';
-optimizedSettingsFolder = 'C:\git\BaxterAlgorithms_CSC2019\Files\Settings\CTC2021_trained_on_GT';
 % The fluorescence experiments are ordered so that the fastest ones are
 % processed first. Transmission microscopy datasets for which bandpass
 % filtering is not the best segmentation algorithm are placed at the end.
@@ -39,24 +35,17 @@ settingsToOptimize = {
     'BPSegLowStd'
     'BPSegBgFactor'
     'BPSegThreshold'
+    'SegClipping'
+    'SegWHMax'
+    'SegWHMax2'
     };
-% % Switch to this when watersheds are used in the initial settings files.
-% settingsToOptimize = {
-%     'BPSegHighStd'
-%     'BPSegLowStd'
-%     'BPSegBgFactor'
-%     'BPSegThreshold'
-%     'SegWSmooth'
-%     'SegWHMax'
-%     'SegWSmooth2'
-%     'SegWHMax2'
-% };
 
 exPaths = fullfile(basePath, exDirs);
 
 allSettings = AllSettings();
 
 for i = 1:length(exPaths)
+    fprintf('Processing experiment %d / %d %s\n', i, length(exDirs), exDirs{i})
     exPath = exPaths{i};
     seqDirs = GetSeqDirs(exPath);
     seqPaths = fullfile(exPath, seqDirs);
@@ -65,18 +54,14 @@ for i = 1:length(exPaths)
     initialImData = cell(size(seqDirs));
     for j = 1:length(seqDirs)
         seqPath = fullfile(exPaths{i}, seqDirs{j});
-        settingsFileName = sprintf('Settings_ISBI_2021_Training_%s-%s_clean.csv',...
-            exDirs{i}, seqDirs{j}(end-1:end));
-        settingsPath = fullfile(initialSettingsFolder, settingsFileName);
+        settingsPath = fullfile(exPath, 'SettingsLinks_clean.csv');
         initialImData{j} = ImageData(seqPath, 'SettingsFile', settingsPath);
     end
     
     % Specify where the optimized settings should be saved.
     optimizedSettingsPaths = cell(size(seqDirs));
     for j = 1:length(seqDirs)
-        settingsFileName = sprintf('Settings_ISBI_2021_Training_%s-%s_trained_on_GT.csv',...
-            exDirs{i}, seqDirs{j}(end-1:end));
-        optimizedSettingsPaths{j} = fullfile(optimizedSettingsFolder, settingsFileName);
+        optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_GT.csv');
     end
     
     optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
