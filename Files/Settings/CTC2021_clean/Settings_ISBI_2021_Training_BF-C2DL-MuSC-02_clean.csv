@@ -1,7 +1,20 @@
-setting,BF-C2DL-MuSC_02
+setting,02
 numZ,1
 zStacked,0
 bits,8
 voxelHeight,6.45
 channelMin,0
 channelMax,1
+SegBgSubAlgorithm,BgSub_medianfit
+SegMediaChanges,322   422   876   909  1377
+SegBgSubAtten,5
+SegMinArea,0
+BPSegHighStd,10
+BPSegLowStd,3
+BPSegThreshold,0.01
+SegWatershed,intermediate
+SegWSmooth,0
+SegWHMax,0.01
+SegWatershed2,shape
+SegWSmooth2,0
+SegWHMax2,2
