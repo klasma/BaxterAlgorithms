@@ -273,6 +273,16 @@ classdef SegmentationPlayer < CTCControlPlayer
             this.settings = AllSettings();
             
             % Adding visualization settings to the set of settings.
+            this.settings.Add('SettingsFile', Setting(...
+                'name', 'SettingsFile',...
+                'alternatives_advanced', FileEnd(this.GetImData().availableSettingsFiles),...
+                'type', 'choice',...
+                'category', 'visualization',...
+                'level', 'advanced',...
+                'visiblefunction', @(x)length(this.GetImData().availableSettingsFiles) > 1,...
+                'callbackfunction', @this.SettingsFile_Callback,...
+                'tooltip', ['The settings file that will be used to '...
+                'load and save settings.']), 1);
             this.settings.Add('Display', Setting(...
                 'name', 'Display',...
                 'alternatives_advanced', {'original'},...
@@ -335,10 +345,11 @@ classdef SegmentationPlayer < CTCControlPlayer
                 'callbackfunction', @this.ManageTemplates))
             
             % Add parameter values for the visualization settings.
-            this.GetImData().Add('Display', 'original', 1)
-            this.GetImData().Add('Outline_color', [1 0 0], 2)
-            this.GetImData().Add('Ground_truth', 'none', 3)
-            this.GetImData().Add('Segment', 'everything', 4)
+            this.GetImData().Add('SettingsFile', FileEnd(this.GetImData().currentSettingsFile), 1)
+            this.GetImData().Add('Display', 'original', 2)
+            this.GetImData().Add('Outline_color', [1 0 0], 3)
+            this.GetImData().Add('Ground_truth', 'none', 4)
+            this.GetImData().Add('Segment', 'everything', 5)
             
             % Add dummy settings that correspond to the template buttons.
             this.GetImData().Add('Create_matching_template', [])
@@ -1489,18 +1500,26 @@ classdef SegmentationPlayer < CTCControlPlayer
                 return
             end
             
+            SettingsFile_Callback(this, [], [])
+        end
+        
+        function SettingsFile_Callback(this, ~, ~)
             oldImData = this.GetImData();
             
             % Overwrite the entire ImageData object to replace the settings
             % with the ones from the settings file.
-            this.imDatas{this.seqIndex} = ImageData(this.GetSeqPath());
+            settingsFile = fullfile(this.GetExPath, this.sPanel.GetValue('SettingsFile'));
+            this.imDatas{this.seqIndex} = ImageData(this.GetSeqPath(),...
+                'SettingsFile', settingsFile);
             
             % Copy visualization settings from the old ImageData object.
+            
             newImData = this.imDatas{this.seqIndex};
-            newImData.Add('Display', oldImData.Get('Display'), 1)
-            newImData.Add('Outline_color', oldImData.Get('Outline_color'), 2)
-            newImData.Add('Ground_truth', oldImData.Get('Ground_truth'), 3)
-            newImData.Add('Segment', oldImData.Get('Segment'), 4)
+            newImData.Add('SettingsFile', oldImData.Get('SettingsFile'), 1)
+            newImData.Add('Display', oldImData.Get('Display'), 2)
+            newImData.Add('Outline_color', oldImData.Get('Outline_color'), 3)
+            newImData.Add('Ground_truth', oldImData.Get('Ground_truth'), 4)
+            newImData.Add('Segment', oldImData.Get('Segment'), 5)
             
             % Copy dummy settings for template buttons from the old
             % ImageData object.
@@ -1590,19 +1609,28 @@ classdef SegmentationPlayer < CTCControlPlayer
             
             this.SwitchSequence@CTCControlPlayer(aIndex, 'Draw', false);
             
+            allSettingsFiles = FileEnd(GetSettingsFiles(this.GetExPath()));
+            selectedSettingsFile = FileEnd(this.sPanel.GetValue('SettingsFile'));
+            if ~any(strcmpi(allSettingsFiles, selectedSettingsFile))
+                this.sPanel.SetValue('SettingsFile', allSettingsFiles{1})
+            end
+            
             if get(this.revertButton, 'value') ||...
                     this.GetImData().GetDim() ~= oldImData.GetDim()
                 % Overwrite the entire ImageData object to replace the
                 % settings with the ones from the settings file.
-                this.imDatas{this.seqIndex} = ImageData(this.GetSeqPath());
+                settingsFile = fullfile(this.GetExPath, this.sPanel.GetValue('SettingsFile'));
+                this.imDatas{this.seqIndex} = ImageData(this.GetSeqPath(),...
+                    'SettingsFile', settingsFile);
             end
             
             % Copy visualization settings from the previous image sequence.
             if ~this.GetImData().Has('Display')
                 this.GetImData().Add('Display', oldImData.Get('Display'), 1)
-                this.GetImData().Add('Outline_color', oldImData.Get('Outline_color'), 2)
-                this.GetImData().Add('Ground_truth', oldImData.Get('Ground_truth'), 3)
-                this.GetImData().Add('Segment', oldImData.Get('Segment'), 4)
+                this.GetImData().Add('SettingsFile', oldImData.Get('SettingsFile'), 2)
+                this.GetImData().Add('Outline_color', oldImData.Get('Outline_color'), 3)
+                this.GetImData().Add('Ground_truth', oldImData.Get('Ground_truth'), 4)
+                this.GetImData().Add('Segment', oldImData.Get('Segment'), 5)
                 % Copy dummy settings for template buttons from the
                 % previous image sequence.
                 this.GetImData().Add('Create_matching_template', [])
