@@ -1,4 +1,4 @@
-function WriteSettings(aPath, aSett, varargin)
+function WriteSettings(aInput, aSett, varargin)
 % Saves a table of processing settings to a csv-file.
 %
 % The function can take either a csv-file path or an experiment path as
@@ -9,6 +9,21 @@ function WriteSettings(aPath, aSett, varargin)
 % instead. In this case, the settings file will be modified and not
 % overwritten but if there are no linked settings, the old settings file is
 % overwritten.
+%
+% Settings files start with 'Settings' and settings link files start with
+% 'SettingsLinks'. If an experiment folder contains multipe settings link
+% files and/or settings files, the first file returned by GetSettingsFiles
+% will be used.
+%
+% The first column of the SettingsLinks files have the name of the image
+% sequence, the second column has the name of the Settings file linked to
+% and the third column has the sequence name linked to in that settings
+% file.
+%
+% A linked settings file is modified once for every image sequence. This
+% can be inefficient if there are many image sequences, but settings links
+% are meant to be used for development and competitions where the number of
+% image sequences is limited, so it should not be a problem.
 %
 % Inputs:
 % aPath - Either the full path name of a csv-file or the full path name of
@@ -26,14 +41,31 @@ function WriteSettings(aPath, aSett, varargin)
 %             and the top left element is changed to 'setting'. The
 %             parameter should be set to false when a settings link file is
 %             created.
+%
+% See also:
+% ReadSettings, ReadSeqSettings, GetSeqSettings, WriteSeqSettings,
+% SettingsGUI, SettingsPath, ReadSeqLog, WriteSeqLog, GetSettingsFiles
 
 aTranspose = GetArgs({'Transpose'}, {true}, true, varargin);
 
-if ~isempty(regexpi(aPath, '.csv$'))
-    % The path of the csv-file was specified directly.
-    
-    if ~exist(fileparts(aPath), 'dir')
-        mkdir(fileparts(aPath))
+if ~isempty(regexpi(aInput, '.csv$'))
+    % A settings file or settings linnk file was given as input.
+    settingsFile = aInput;
+else
+    % An experiment folder was given as input.
+    allSettingsFiles = GetSettingsFiles(aInput);
+    if isempty(allSettingsFiles)
+        % Default settings file to be created.
+        fullfile(aInput, 'Settings.csv')
+    else
+        settingsFile = allSettingsFiles{1};
+    end
+end
+
+if isempty(regexpi(FileEnd(settingsFile), '^SettingsLinks'))
+    % Write settings to a settings file.
+    if ~exist(fileparts(aInput), 'dir')
+        mkdir(fileparts(aInput))
     end
     sett = aSett;
     if aTranspose
@@ -42,48 +74,29 @@ if ~isempty(regexpi(aPath, '.csv$'))
     else
         
     end
-    WriteDelimMat(aPath, sett, ',')
+    WriteDelimMat(aInput, sett, ',')
 else
-    % The path of the experiment directory was specified.
+    % Write settings to a linked file.
     
-    settingsLinkPath = fullfile(aPath, 'SettingsLinks.csv');
-    if exist(settingsLinkPath, 'file')
-        % Write settings to a linked file instead of to the file in the
-        % default location.
-        
-        settLinks = ReadSettings(settingsLinkPath, aSett(2:end,1));
-        
-        % A linked settings file is modified once for every image sequence.
-        % This can be inefficient if there are many image sequences, but
-        % settings links are meant to be used for development and
-        % competitions where the number of image sequences is limited, so
-        % it should not be a problem.
-        for i = 1:size(aSett,1)-1
-            linkedPath = GetSettingsPath(settLinks{i+1,2});
-            sett = ReadSettings(linkedPath);  % Load all rows in the settings file.
-            for j = 1:size(aSett,2)-1
-                % Modify the appropriate row in the settings file.
-                sett = SetSeqSettings(sett, settLinks{i+1,3},...
-                    aSett{1,j+1}, aSett{i+1,j+1});
-            end
-            
-            if aTranspose
-                % Transpose the settings matrix so that changes can be
-                % viewed in git.
-                sett = sett';
-                sett{1,1} = 'setting';
-            end
-            
-            WriteDelimMat(linkedPath, sett, ',')
+    settLinks = ReadDelimMat(settingsFile, ',');
+    
+    for i = 1:size(aSett,1)-1
+        linkedPath = GetSettingsPath(settLinks{i+1,2});
+        sett = ReadSettings(linkedPath);  % Load all rows in the settings file.
+        for j = 1:size(aSett,2)-1
+            % Modify the appropriate row in the settings file.
+            sett = SetSeqSettings(sett, settLinks{i+1,3},...
+                aSett{1,j+1}, aSett{i+1,j+1});
         end
-    else
-        % Write to the default location.
-        sett = aSett;
+        
         if aTranspose
+            % Transpose the settings matrix so that changes can be
+            % viewed in git.
             sett = sett';
             sett{1,1} = 'setting';
         end
-        WriteDelimMat(fullfile(aPath, 'Settings.csv'), sett, ',')
+        
+        WriteDelimMat(linkedPath, sett, ',')
     end
 end
 end

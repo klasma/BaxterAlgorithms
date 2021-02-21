@@ -22,6 +22,8 @@ classdef ImageParameters < Map
         channelMin = {};            % Pixel intensity (normalized between 0 and 1) below which all pixels are displayed as black.
         channelMax = {};            % Pixel intensity (normalized between 0 and 1) above which all pixels are displayed as white.
         xCalibrationMicrons = [];   % The image pixel width in microns.
+        currentSettingsFile = [];
+        availableSettingsFiles = [];
     end
     
     properties (Dependent = true)
@@ -77,13 +79,20 @@ classdef ImageParameters < Map
             
             % Construct a spread sheet by reading a settings file.
             if isempty(spreadSheet)
+                this.availableSettingsFiles = GetSettingsFiles(this.GetExPath);
                 if isempty(this.globalSettingsFile)
                     % Read settings file from the default location.
-                    spreadSheet = ReadSettings(this.GetExPath(), this.GetSeqDir());
+                    this.currentSettingsFile = this.availableSettingsFiles{1};
                 else
                     % Read settings file from a specified location.
-                    spreadSheet = ReadSettings(this.globalSettingsFile, this.GetSeqDir());
+                    this.currentSettingsFile = this.globalSettingsFile;
+                    if ~any(strcmpi(this.availableSettingsFiles, this.currentSettingsFile))
+                        this.availableSettingsFiles =...
+                            [this.currentSettingsFile
+                            this.availableSettingsFiles];
+                    end
                 end
+                spreadSheet = ReadSettings(this.currentSettingsFile, this.GetSeqDir());
             end
             
             allSettings = AllSettings();
