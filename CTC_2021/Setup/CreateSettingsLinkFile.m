@@ -16,6 +16,6 @@ for s = 1:length(seqDirs)
 end
 
 % Save the link file.
-WriteSettings(fullfile(aExPath, sprintf('SettingsLinks%s.csv', aSuffix)), sett,...
-    'Transpose', false);
+filename = fullfile(aExPath, sprintf('SettingsLinks%s.csv', aSuffix));
+WriteDelimMat(filename, sett, ',');
 end
