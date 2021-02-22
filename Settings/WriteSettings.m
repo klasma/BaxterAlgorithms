@@ -81,11 +81,17 @@ else
     settLinks = ReadDelimMat(settingsFile, ',');
     
     for i = 1:size(aSett,1)-1
-        linkedPath = GetSettingsPath(settLinks{i+1,2});
+        seqDir = aSett{i+1,1};
+        linkIndex = find(strcmpi(settLinks(2:end,1), seqDir));
+        assert(~isempty(linkIndex),...
+            sprintf('No link for %s was found in the settings link file.', seqDir))
+        assert(length(linkIndex) == 1,...
+            sprintf('Multiple links %s were found in the settings link file.', seqDir))
+        linkedPath = GetSettingsPath(settLinks{linkIndex+1,2});
         sett = ReadSettings(linkedPath);  % Load all rows in the settings file.
         for j = 1:size(aSett,2)-1
             % Modify the appropriate row in the settings file.
-            sett = SetSeqSettings(sett, settLinks{i+1,3},...
+            sett = SetSeqSettings(sett, settLinks{linkIndex+1,3},...
                 aSett{1,j+1}, aSett{i+1,j+1});
         end
         
