@@ -217,15 +217,15 @@ if aImData.Get('SegFillHoles')
         % Fill only holes that are smaller than a threshold.
         withoutHoles = imfill(oBw,'holes');
         holes = withoutHoles & ~oBw;
-        largeholes = bwareaopen(holes, aImData.Get('SegMinHoleArea'));
+        largeholes = bwareaopen(holes, round(aImData.Get('SegMinHoleArea')));
         oBw = withoutHoles & ~largeholes;
     end
 end
 
 % Remove small regions early to avoid unnecessary computation.
 % TODO: Consider removing this if morphological operators are used.
-if aImData.Get('SegMinArea') > 0
-    oBw = bwareaopen(oBw, aImData.Get('SegMinArea'));
+if round(aImData.Get('SegMinArea')) > 0
+    oBw = bwareaopen(oBw, round(aImData.Get('SegMinArea')));
 end
 
 % Apply a watershed transform to break clusters of cells.
