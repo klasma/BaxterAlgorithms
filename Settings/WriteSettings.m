@@ -56,7 +56,7 @@ else
     allSettingsFiles = GetSettingsFiles(aInput);
     if isempty(allSettingsFiles)
         % Default settings file to be created.
-        fullfile(aInput, 'Settings.csv')
+        settingsFile = fullfile(aInput, 'Settings.csv');
     else
         settingsFile = allSettingsFiles{1};
     end
@@ -64,8 +64,8 @@ end
 
 if isempty(regexpi(FileEnd(settingsFile), '^SettingsLinks'))
     % Write settings to a settings file.
-    if ~exist(fileparts(aInput), 'dir')
-        mkdir(fileparts(aInput))
+    if ~exist(fileparts(settingsFile), 'dir')
+        mkdir(fileparts(settingsFile))
     end
     sett = aSett;
     if aTranspose
@@ -74,7 +74,7 @@ if isempty(regexpi(FileEnd(settingsFile), '^SettingsLinks'))
     else
         
     end
-    WriteDelimMat(aInput, sett, ',')
+    WriteDelimMat(settingsFile, sett, ',')
 else
     % Write settings to a linked file.
     
