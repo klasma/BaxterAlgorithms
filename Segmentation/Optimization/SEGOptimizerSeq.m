@@ -291,11 +291,18 @@ classdef SEGOptimizerSeq < Optimizer
                 end
 
                 % Remove the temporary segmentation results.
-                RemoveVersion(fileparts(this.seqPath), verName)
+                try
+                    % Use a separate try/catch to avoid setting oF to 1.
+                    RemoveVersion(fileparts(this.seqPath), verName)
+                catch ME
+                    getReport(ME)
+                    fprintf('Unable to remove %s from %s\n',...
+                        verName, fileparts(this.seqPath))
+                end
             catch ME
                 % Make sure that the optimization can recover from errors
                 % caused by strange parameters.
-                disp(ME)
+                getReport(ME)
                 fprintf(['Segmentation evaluation failed. The '...
                     'segmentation performance is set to 0 for this '...
                     'parameter set.\n'])
