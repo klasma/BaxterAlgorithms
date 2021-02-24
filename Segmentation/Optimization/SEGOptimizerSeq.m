@@ -280,6 +280,9 @@ classdef SEGOptimizerSeq < Optimizer
                 switch this.scoringFunction
                     case 'SEG'
                         oF = 1 - SEG;
+                    case '0.9*SEG+0.1*DET'
+                        DET = PerformanceDET(this.seqPath, verName);
+                        oF = 1 - (0.9*SEG+0.1*DET);
                     case '(SEG+TRA)/2'
                         % Compute the TRA performance and take the average
                         % of SEG and TRA.

@@ -37,8 +37,7 @@ if nargin == 2
     aCosts = [5 10 1 1 1.5 1];
 end
 
-% Find the names of all tif-files with label images.
-resFiles = GetNames(aResPath, 'tif');
+% Find the names of all tif-files with label images in the ground truth.
 gtFiles = GetNames(aGtPath, 'tif');
 
 % Read track information for computed tracks.
@@ -126,17 +125,26 @@ for t = t1 : t1 + length(gtFiles) - 1
     waitbar(t/length(gtFiles), wbar)
     
     % Read uint16 label images.
+    resFile = replace(gtFiles{t-t1+1}, 'man_track', 'mask');
+    resPath = fullfile(aResPath, resFile);
     if numZ == 1
         gtIm = imread(fullfile(aGtPath, gtFiles{t-t1+1}));
-        resIm = imread(fullfile(aResPath, resFiles{t}));
+        
+        if exist(resPath, 'file')
+            resIm = imread(resPath);
+        else
+            resIm = zeros(h,w);
+        end
     else
         gtIm = zeros(h, w, numZ);
         for i = 1:numZ
             gtIm(:,:,i) = imread(fullfile(aGtPath, gtFiles{t-t1+1}), i);
         end
         resIm = zeros(h, w, numZ);
-        for i = 1:numZ
-            resIm(:,:,i) = imread(fullfile(aResPath, resFiles{t}), i);
+        if exist(resPath, 'file')
+            for i = 1:numZ
+                resIm(:,:,i) = imread(resPath, i);
+            end
         end
     end
     

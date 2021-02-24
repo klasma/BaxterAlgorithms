@@ -1,4 +1,4 @@
-function [oMeasure, oErrors, oFrameErrors, oBlackErrors] =...
+function [oMeasure, oErrors, oFrameErrors, oBlackErrors, oBlackFrameErrors] =...
     PerformanceTRA(aSeqPaths, aTestVer, varargin)
 % Computes the TRA tracking performance.
 %
@@ -42,6 +42,10 @@ function [oMeasure, oErrors, oFrameErrors, oBlackErrors] =...
 %                empty tracking results without any cells. This corresponds
 %                to the creation of a completely manual tracking result in
 %                the manual correction step.
+% oBlackFrameErrors - The same as oFrameErrors, but with the errors that
+%                     result from empty tracking results without any cells.
+%                     This corresponds to the creation of a completely
+%                     manual tracking result in the manual correction step.
 %
 % References:
 % [1] Ulman, V.; Maška, M.; Magnusson, K. E. G.; Ronneberger, O.; Haubold,
@@ -73,12 +77,13 @@ if iscell(aSeqPaths)
     oErrors = nan(length(aSeqPaths),6);
     oFrameErrors = cell(length(aSeqPaths));
     oBlackErrors = nan(length(aSeqPaths),6);
+    oBlackFrameErrors = cell(length(aSeqPaths));
     
     if aNumCores == 1
         for i = 1:numel(aSeqPaths)
             fprintf('Evaluating TRA performance for sequence %d / %d\n',...
                 i, numel(aSeqPaths))
-            [oMeasure(i), oErrors(i,:), oFrameErrors{i}, oBlackErrors(i,:)] =...
+            [oMeasure(i), oErrors(i,:), oFrameErrors{i}, oBlackErrors(i,:), oBlackFrameErrors{i}] =...
                 PerformanceTRA(aSeqPaths{i}, aTestVer);
         end
     else
@@ -86,7 +91,7 @@ if iscell(aSeqPaths)
         parfor i = 1:numel(aSeqPaths)
             fprintf('Evaluating TRA performance for sequence %d / %d\n',...
                 i, numel(aSeqPaths))
-            [oMeasure(i), oErrors(i,:), oFrameErrors{i}, oBlackErrors(i,:)] =...
+            [oMeasure(i), oErrors(i,:), oFrameErrors{i}, oBlackErrors(i,:), oBlackFrameErrors{i}] =...
                 PerformanceTRA(aSeqPaths{i}, aTestVer);
         end
     end
@@ -101,6 +106,7 @@ if ~HasVersion(aSeqPaths, aTestVer)
     oErrors = nan(1,6);
     oFrameErrors = nan(imData.sequenceLength,6);
     oBlackErrors = nan(1,6);
+    oBlackFrameErrors = nan(imData.sequenceLength,6);
     return
 end
 
@@ -155,7 +161,7 @@ end
 
 % Read the files with AOGM-results.
 [resMeasure, oErrors, oFrameErrors] = ReadAOGMFile(imData, resFile);
-[blackMeasure, oBlackErrors] = ReadAOGMFile(imData, resFileBlack);
+[blackMeasure, oBlackErrors, oBlackFrameErrors] = ReadAOGMFile(imData, resFileBlack);
 
 % Compuate the TRA measure.
 oMeasure = max(1 - resMeasure / blackMeasure, 0);
