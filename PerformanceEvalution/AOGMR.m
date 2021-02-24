@@ -109,8 +109,6 @@ false_positive_links = zeros(0,4);  % T_1, Label_1, T_2, Label_2
 false_negative_links = zeros(0,4);  % T_1, GT_Label_1, T_2, GT_Label_2
 wrong_type_links = zeros(0,4);      % T_1, Label_1, T_2, Label_2
 
-wbar = waitbar(0, '', 'Name', 'Computing tracking performance');
-
 % Extract information that is necessary to pre-allocate arrays for 3D data.
 % It is assumed that all frames have voxel volumes of the same size and
 % that the computer generated volumes have the same size as the ground
@@ -122,7 +120,6 @@ h = gtInfo(1).Height;
 
 t1 = str2double(regexp(gtFiles{1}, '(?<=man_track)\d+', 'match', 'once')) + 1;
 for t = t1 : t1 + length(gtFiles) - 1
-    waitbar(t/length(gtFiles), wbar)
     
     % Read uint16 label images.
     resFile = replace(gtFiles{t-t1+1}, 'man_track', 'mask');
@@ -387,5 +384,4 @@ aogm = size(splits,1) * aCosts(1) +...
 
 fprintf(fid, 'AOGM value: %g\r\n', aogm);
 fclose(fid);
-delete(wbar)
 end
