@@ -63,6 +63,18 @@ info.Overwrite = Setting(...
     'tooltip', 'Delete existing files associated with the save version.',...
     'type', 'check',...
     'default', false);
+exPaths = unique(FileParts2(aSeqPaths));
+settingsFiles = cellfun(@GetSettingsFiles, exPaths,...
+    'UniformOutput', false);
+settingsFiles = cat(1, settingsFiles{:});
+settingsFiles = FileEnd(settingsFiles);
+settingsFiles = unique(settingsFiles);
+info.Settings = Setting(...
+    'name', 'Settings',...
+    'tooltip', 'Settings file or settings link file defining settings.',...
+    'type', 'choice',...
+    'default', settingsFiles{1},...
+    'alternatives_basic', settingsFiles);
 
 sPanel = SettingsPanel(info,...
     'Parent', mainFigure,...
@@ -138,6 +150,7 @@ noteTextbox = uicontrol(...
         
         % Get processing parameters specified by the user.
         version = sPanel.GetValue('Save_Version');
+        settingsFile = sPanel.GetValue('Settings');
         numCores = str2double(sPanel.GetValue('Number_of_cores'));
         parallelizeOver = sPanel.GetValue('Parallelize_over');
         switch parallelizeOver
@@ -160,6 +173,7 @@ noteTextbox = uicontrol(...
         RunTracking(...
             aSeqPaths,...
             version,...
+            settingsFile,...
             numCores,...
             parallelizeSegmentation,...
             overwrite,...
@@ -172,6 +186,7 @@ noteTextbox = uicontrol(...
         
         % Get processing parameters specified by the user.
         version = sPanel.GetValue('Save_Version');
+        settingsFile = sPanel.GetValue('Settings');
         numCores = str2double(sPanel.GetValue('Number_of_cores'));
         parallelizeOver = sPanel.GetValue('Parallelize_over');
         switch parallelizeOver
@@ -194,6 +209,7 @@ noteTextbox = uicontrol(...
         aQueue.Add(@()RunTracking(...
             aSeqPaths,...
             version,...
+            settingsFile,...
             numCores,...
             parallelizeSegmentation,...
             overwrite,...
@@ -205,6 +221,7 @@ end
 function RunTracking(...
     aSeqPaths,...
     aVersion,...
+    aSettingsFile,...
     aNumCores,...
     aParallelizeSegmentation,...
     aOverwrite,...
@@ -237,13 +254,38 @@ if aOverwrite
     end
 end
 
+imDatas = [];
+for i = 1:length(aSeqPaths)
+    seqPath = aSeqPaths{i};
+    exPath = FileParts2(seqPath);
+    settingsPath = fullfile(exPath, aSettingsFile);
+    
+    if ~exist(settingsPath, 'file')
+        warning('The settings file %s did not exist. Not processing %s.',...
+            settingsPath, seqPath)
+        continue
+    end
+    
+    if ~HasSettings(settingsPath, FileEnd(seqPath))
+        warning('The settings file %s did not contain settings for %s. Not processing %s.',...
+            settingsPath, FileEnd(seqPath), seqPath)
+        continue
+    end
+    
+    imData = ImageData(seqPath,...
+        'version', aVersion,...
+        'SettingsFile', settingsPath);
+    imDatas = [imDatas imData]; %#ok<AGROW>
+end
+
 % Copy all of the settings from the sequences to the
 % CellData-folder with the tracking results, so that they can be
 % reviewed later. This cannot be done in the parfor-loop, as
 % multiple workers could try to access the same file at the same
 % time.
-for i = 1:length(aSeqPaths)
-    [exPath, seqDir] = FileParts2(aSeqPaths{i});
+for i = 1:length(imDatas)
+    exPath = imDatas(i).GetExPath();
+    seqDir = imDatas(i).GetSeqDir();
     if ~exist(fullfile(exPath, 'Analysis', ['CellData' aVersion]), 'dir')
         mkdir(fullfile(exPath, 'Analysis', ['CellData' aVersion]))
     end
@@ -253,7 +295,7 @@ for i = 1:length(aSeqPaths)
         % Only copy the settings if the sequence has not been tracked. If
         % it has been tracked, it is better to keep the old settings that
         % were used for tracking.
-        CopySettings(aSeqPaths{i}, fullfile(exPath, 'Analysis',...
+        CopySettings(imDatas(i), fullfile(exPath, 'Analysis',...
             ['CellData' aVersion], seqDir))
     end
 end
@@ -266,20 +308,20 @@ if aNumCores == 1 || aParallelizeSegmentation
     % parallelization will be done over images in the segmentation.
     wbar = waitbar(0, sprintf(['Processing sequence 1 / %d. '...
         '(Press ctrl+c in the command window to cancel.)'],...
-        length(aSeqPaths)), 'Name', 'Tracking...');
-    for i = 1:length(aSeqPaths)
+        length(imDatas)), 'Name', 'Tracking...');
+    for i = 1:length(imDatas)
         try
             if ishandle(wbar)
-                waitbar((i-1)/length(aSeqPaths), wbar,...
+                waitbar((i-1)/length(imDatas), wbar,...
                     sprintf(['Processing sequence %d / %d. '...
                     '(Press ctrl+c in the command window to cancel.)'],...
-                    i, length(aSeqPaths)))
+                    i, length(imDatas)))
             end
-            TrackSequence(aSeqPaths{i}, aVersion, aNotes,...
+            TrackSequence(imDatas(i), aNotes,...
                 'SegmentationCores', aNumCores)
         catch ME % Allow processing of the other files to continue if an error occurs.
             disp(getReport(ME))
-            errorFiles = [errorFiles {FileEnd(aSeqPaths{i})}]; %#ok<AGROW>
+            errorFiles = [errorFiles {FileEnd(imDatas(i).GetSeqDir())}]; %#ok<AGROW>
             errorStructs = [errorStructs ME]; %#ok<AGROW>
         end
     end
@@ -293,13 +335,13 @@ else
     StartWorkers(aNumCores)
     wbar_parfor = ParforProgMon(...
         'Tracking... (Press ctrl+c in the command window to cancel.) ',...
-        length(aSeqPaths), 1, 600, 80);
-    parfor i = 1:length(aSeqPaths)
+        length(imDatas), 1, 600, 80);
+    parfor i = 1:length(imDatas)
         try
-            TrackSequence(aSeqPaths{i}, aVersion, aNotes)
+            TrackSequence(imDatas(i), aNotes)
         catch ME % Allow processing of the other files to continue if an error occurs.
             disp(getReport(ME))
-            errorFiles = [errorFiles {FileEnd(aSeqPaths{i})}];
+            errorFiles = [errorFiles {FileEnd(imDatas(i))}];
             errorStructs = [errorStructs ME];
         end
         wbar_parfor.increment(); %#ok<PFBNS>
@@ -319,12 +361,12 @@ end
 feval(aExitFunction)
 end
 
-function TrackSequence(aSrcSeqPath, aVersion, aNotes, varargin)
+function TrackSequence(aImData, aNotes, varargin)
 % Runs tracking on a single image sequence and writes a log file.
 %
 % Inputs:
-% aSrcSeqPath - Path of image sequence folder to be tracked.
-% aVersion - Name of the tracking version to be created.
+% aImData - Path of image sequence folder to be tracked. The version
+%           property has to be set.
 % aNotes - Notes written by the user about the tracking version.
 %
 % Property/Value inputs:
@@ -333,10 +375,9 @@ function TrackSequence(aSrcSeqPath, aVersion, aNotes, varargin)
 
 aSegmentationCores = GetArgs({'SegmentationCores'}, {1}, true, varargin);
 
-imData = ImageData(aSrcSeqPath, 'version', aVersion);
-logFile = imData.GetLogPath();
+logFile = aImData.GetLogPath();
 if ~exist(logFile, 'file')
-    SaveTrack(imData, 'SegmentationCores', aSegmentationCores);
+    SaveTrack(aImData, 'SegmentationCores', aSegmentationCores);
     WriteLog(logFile, 'TrackingGUI', aNotes)
 end
 end
