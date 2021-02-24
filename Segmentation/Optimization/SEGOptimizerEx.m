@@ -44,6 +44,7 @@ classdef SEGOptimizerEx < Optimizer
         seqOptimizers       % Array of SEGOptimizerSeq-objects for the image sequences.
         plotFigure = [];    % Figure where optimization results are plotted.
         plotResults = [];   % Optimization results are plotted if this is true.
+        optimizerSavePath = [];
     end
     
     methods
@@ -108,7 +109,8 @@ classdef SEGOptimizerEx < Optimizer
                 aGrids,...
                 aSavePaths,...
                 aInitialImData,...
-                this.plotResults...
+                this.plotResults,...
+                this.optimizerSavePath...
                 ] = GetArgs(...
                 {...
                 'NumImages',...
@@ -117,9 +119,10 @@ classdef SEGOptimizerEx < Optimizer
                 'Grids',...
                 'SavePaths',...
                 'InitialImData',...
-                'Plot'...
+                'Plot',...
+                'OptimizerSavePath'...
                 },...
-                {nan, false, 'SEG', cell(size(aSettings)), [], [], false},...
+                {nan, false, 'SEG', cell(size(aSettings)), [], [], false, []},...
                 true,...
                 varargin);
             
@@ -150,7 +153,7 @@ classdef SEGOptimizerEx < Optimizer
                     'Grids', aGrids,...
                     'SaveBestSettings', false,...
                     'SavePath', aSavePaths{i},...
-                    'InitialImData', aInitialImData{i})];
+                    'InitialImData', aInitialImData(i))];
             end
             
             % Take the initial value and the bounds from the first
@@ -182,57 +185,19 @@ classdef SEGOptimizerEx < Optimizer
                 end
             end
             
+            if ~isempty(this.optimizerSavePath)
+                tmpFigure = this.plotFigure;
+                this.plotFigure = []; % Do not save the figure.
+                optimizer = this;
+                if ~exist(fileparts(this.optimizerSavePath), 'dir')
+                    mkdir(fileparts(this.optimizerSavePath))
+                end
+                save(this.optimizerSavePath, 'optimizer')
+                this.plotFigure = tmpFigure; % Put the figure back.
+            end
+            
             if this.plotResults
-                % Plot how the parameters and the objective value evolve
-                % throughout the optimization.
-                
-                if isempty(this.plotFigure)
-                    % Create a figure for plotting if one does not exist.
-                    this.plotFigure = figure(...
-                        'Name', sprintf('Optimizing segmentation for multiple sequences'),...
-                        'NumberTitle', 'off');
-                end
-                
-                % Plots how the utility evolves during the optimization.
-                % The best utility is marked by an asterisk.
-                scoreAxes = subplot(1, 2, 1, 'Parent', this.plotFigure);
-                plot(scoreAxes, 1:length(this.fAll), 1-this.fAll)
-                [minValue, minIndex] = min(this.fAll);
-                hold(scoreAxes, 'on')
-                plot(scoreAxes, minIndex, 1-minValue, '*')
-                % Allow the plot to be overwritten in the next function
-                % evaluation.
-                hold(scoreAxes, 'off')
-                xlabel(scoreAxes, 'Function evaluation')
-                ylabel(scoreAxes, this.seqOptimizers(1).scoringFunction)
-                grid(scoreAxes, 'on')
-                
-                % Plots how the segmentation parameters evolve over time.
-                % The best parameters are marked by asterisks.
-                settingsNames = this.seqOptimizers(1).settingsNames;
-                for i = 1:length(settingsNames)
-                    settingsAxes = subplot(length(settingsNames), 2, 2*i,...
-                        'Parent', this.plotFigure);
-                    plot(settingsAxes, 1:size(this.xAll,2), this.xAll(i,:))
-                    hold(settingsAxes, 'on')
-                    plot(settingsAxes, minIndex, this.xAll(i,minIndex), '*')
-                    % Allow the plot to be overwritten in the next
-                    % function evaluation.
-                    hold(settingsAxes, 'off')
-                    title(settingsAxes, settingsNames{i})
-                    grid(settingsAxes, 'on')
-                    % All parameter axes share the same x-axis, so only the
-                    % bottom axes needs an x-label.
-                    if i < length(settingsNames)
-                        set(settingsAxes, 'XTickLabel', {})
-                    else
-                        xlabel(settingsAxes, 'Function evaluation')
-                    end
-                end
-                
-                % Plot the results after each function evaluation and not
-                % just at the end of the optimization.
-                drawnow
+                this.Plot()
             end
         end
         
@@ -262,6 +227,61 @@ classdef SEGOptimizerEx < Optimizer
             
             % Compute the average objective value.
             oF = mean(errors);
+        end
+        
+        function Plot(this)
+            % Plots how the parameters and the objective value evolve
+            % throughout the optimization.
+            
+            if isempty(this.plotFigure)
+                % Create a figure for plotting if one does not exist.
+                seqDirs = arrayfun(@(x)FileEnd(x.seqPath), this.seqOptimizers,...
+                    'UniformOutput', false);
+                this.plotFigure = figure(...
+                    'Name', sprintf('Optimizing segmentation for %s', strjoin(seqDirs, ', ')),...
+                    'NumberTitle', 'off');
+            end
+            
+            % Plots how the utility evolves during the optimization.
+            % The best utility is marked by an asterisk.
+            scoreAxes = subplot(1, 2, 1, 'Parent', this.plotFigure);
+            plot(scoreAxes, 1:length(this.fAll), 1-this.fAll)
+            [minValue, minIndex] = min(this.fAll);
+            hold(scoreAxes, 'on')
+            plot(scoreAxes, minIndex, 1-minValue, '*')
+            % Allow the plot to be overwritten in the next function
+            % evaluation.
+            hold(scoreAxes, 'off')
+            xlabel(scoreAxes, 'Function evaluation')
+            ylabel(scoreAxes, this.seqOptimizers(1).scoringFunction)
+            grid(scoreAxes, 'on')
+            
+            % Plots how the segmentation parameters evolve over time.
+            % The best parameters are marked by asterisks.
+            settingsNames = this.seqOptimizers(1).settingsNames;
+            for i = 1:length(settingsNames)
+                settingsAxes = subplot(length(settingsNames), 2, 2*i,...
+                    'Parent', this.plotFigure);
+                plot(settingsAxes, 1:size(this.xAll,2), this.xAll(i,:))
+                hold(settingsAxes, 'on')
+                plot(settingsAxes, minIndex, this.xAll(i,minIndex), '*')
+                % Allow the plot to be overwritten in the next
+                % function evaluation.
+                hold(settingsAxes, 'off')
+                title(settingsAxes, settingsNames{i})
+                grid(settingsAxes, 'on')
+                % All parameter axes share the same x-axis, so only the
+                % bottom axes needs an x-label.
+                if i < length(settingsNames)
+                    set(settingsAxes, 'XTickLabel', {})
+                else
+                    xlabel(settingsAxes, 'Function evaluation')
+                end
+            end
+            
+            % Plot the results after each function evaluation and not
+            % just at the end of the optimization.
+            drawnow
         end
     end
 end

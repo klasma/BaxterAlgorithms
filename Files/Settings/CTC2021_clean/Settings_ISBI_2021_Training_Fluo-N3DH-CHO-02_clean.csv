@@ -15,3 +15,5 @@ SegWHMax,0.01
 SegWatershed2,shape
 SegWSmooth2,0
 SegWHMax2,2
+SegMinArea,100
+SegMinSumIntensity,5

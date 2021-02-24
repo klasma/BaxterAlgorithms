@@ -13,5 +13,6 @@ if ~exist(verPath, 'dir')
     warning('The folder %s does not exist.\n', verPath)
     return
 end
+fclose('all'); % rmdir can fail because files are open in Matlab.
 rmdir(verPath, 's')
 end

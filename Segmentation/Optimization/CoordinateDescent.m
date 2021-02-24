@@ -169,6 +169,9 @@ while any(~unchanged) && iter < aMaxIter
             x = x_max;
             f = f_x_max;
             steps(i) = steps(i) * (1+aIncrease);
+        elseif f_x_max == f && f_x_min == f
+            % The step size did not have any effect. Try increasing it.
+            steps(i) = steps(i) * (1+2*aIncrease);
         elseif steps(i) > aTolerance(i)
             % The lower and higher values were both worse, and the
             % requested accuracy has not been reached. The step length is

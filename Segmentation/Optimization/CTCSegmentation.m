@@ -63,7 +63,7 @@ for i = 1:length(settingsArgs)/2
 end
 
 switch aScoringFunction
-    case 'SEG'
+    case {'SEG' '0.9*SEG+0.1*DET'}
         % Find the frames in which there are segmentation ground truths.
         seqDir = imData.GetSeqDir();
         gtPath = fullfile(imData.GetAnalysisPath(), [seqDir '_GT'], 'SEG');
@@ -120,6 +120,7 @@ resPath = fullfile(....
 
 if exist(resPath, 'dir')
     % Remove old files.
+    fclose('all'); % rmdir can fail because files are open in Matlab.
     rmdir(resPath, 's')
 end
 mkdir(resPath)
@@ -155,6 +156,68 @@ parfor i = 1:length(gtFrames)
                 'Compression', 'lzw')
         end
     end
+end
+
+% Convert to tracking format if the scoring function is '0.9*SEG+0.1*DET'.
+if strcmp(aScoringFunction, '0.9*SEG+0.1*DET')
+    totalCellCount = 0;
+    frameCellCounts = zeros(1, imData.sequenceLength);
+    for i = 1:length(gtFrames)
+        fprintf('Converting frames to tracking format %d / %d\n', i, length(gtFrames))
+        t = gtFrames(i);
+
+        imPath = fullfile(resPath, sprintf(fmt, t-1));
+        
+        % Read label image.
+        if imData.numZ == 1  % 2D data.
+            im = imread(imPath);
+        else  % 3D data.
+            im = zeros(imData.imageHeight, imData.imageWidth, imData.numZ, 'uint16');
+            if exist(imPath, 'file')
+                for z = 1:imData.numZ
+                    im(:,:,z) = imread(imPath, z);
+                end
+            end
+        end
+        
+        % Convert labels to unique cell identifiers.
+        gtz = im > 0;
+        if ~any(gtz)
+            continue
+        end
+        frameCellCounts(t) = max(im(gtz));
+        im(gtz) = im(gtz) + totalCellCount;
+        totalCellCount = totalCellCount + frameCellCounts(t);
+        
+        % Save the modified label image.
+        if imData.numZ == 1  % 2D data.
+            imwrite(im, imPath, 'Compression', 'lzw')
+        else  % 3D data.
+            for slice = 1:size(im,3)
+                if slice == 1
+                    % Overwrite the existing file.
+                    imwrite(im(:,:,slice), imPath,...
+                    'Compression', 'lzw')
+                else
+                    % Append to the new file.
+                    imwrite(im(:,:,slice), imPath,...
+                    'WriteMode', 'append',...
+                    'Compression', 'lzw')
+                end
+            end
+        end
+    end
+    
+    % Create a res_track.txt file.
+    fid = fopen(fullfile(resPath, 'res_track.txt'), 'w');
+    cellIndex = 1;
+    for t = 1:imData.sequenceLength
+        for i = 1:frameCellCounts(t)
+            fprintf(fid, '%d %d %d %d\r\n', cellIndex, t-1, t-1, 0);
+            cellIndex = cellIndex + 1;
+        end
+    end
+    fclose(fid);
 end
 
 fprintf('Done segmenting frames\n')

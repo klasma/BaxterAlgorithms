@@ -5,9 +5,6 @@ bits,8
 voxelHeight,6.45
 channelMin,0
 channelMax,1
-SegBgSubAlgorithm,BgSub_median
-SegMediaChanges,600
-SegBgSubAtten,1
 SegMinArea,0
 BPSegHighStd,10
 BPSegLowStd,3
@@ -18,3 +15,5 @@ SegWHMax,0.01
 SegWatershed2,shape
 SegWSmooth2,0
 SegWHMax2,2
+SegMinArea,100
+SegMinSumIntensity,5

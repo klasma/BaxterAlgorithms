@@ -148,15 +148,15 @@ uicontrol(...
         
         % Names of the different types of tracking errors.
         titles = {...
+            'Splitting Ops.'
             'False Negatives'
             'False Positives'
-            'Splitting Ops.'
-            'Missing Edges'
             'Redundant Edges'
+            'Missing Edges'
             'Incorrect Edges'};
         
         % Penalties for the different types of tracking errors.
-        AOGMpenalties = [10 1 5 1.5 1 1];
+        AOGMpenalties = [5 10 1 1 1.5 1];
         
         % Evaluate the performance.
         [TRAmeasures, AOGMerrors, ~, blackAOGMerrors] =...

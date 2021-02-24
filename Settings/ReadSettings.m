@@ -67,8 +67,8 @@ end
 
 if isempty(regexpi(FileEnd(settingsFile), '^SettingsLinks'))
     % Read a specified settings file.
-    assert(exist(aInput, 'file') == 2,...
-        sprintf('The settings file %s does not exist.', aInput))
+    assert(exist(settingsFile, 'file') == 2,...
+        sprintf('The settings file %s does not exist.', settingsFile))
     oSett = ReadDelimMat(settingsFile, ',');
 else
     % Read a settings file linked to by a settings link file.

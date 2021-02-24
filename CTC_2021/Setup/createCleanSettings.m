@@ -11,16 +11,16 @@ settingsToKeep = {
     'channelMin'
     'channelMax'
     };
-bgSubSettings = {
-    'SegBgSubAlgorithm'
-    'SegMediaChanges'
-    'SegBgSubAtten'
-    };
-bgSubEx = {
-    'BF-C2DL-HSC'
-    'BF-C2DL-MuSC'
-    };
-defaults = {...
+% bgSubSettings = {
+%     'SegBgSubAlgorithm'
+%     'SegMediaChanges'
+%     'SegBgSubAtten'
+%     };
+% bgSubEx = {
+%     'BF-C2DL-HSC'
+%     'BF-C2DL-MuSC'
+%     };
+defaults = {
     'SegMinArea', '0',...
     'BPSegHighStd', '10',...
     'BPSegLowStd', '3',...
@@ -31,6 +31,8 @@ defaults = {...
     'SegWatershed2', 'shape'...
     'SegWSmooth2', '0',...
     'SegWHMax2', '2',...
+    'SegMinArea', '100',...
+    'SegMinSumIntensity', '5'
     };
 
 currentPath = fileparts(mfilename('fullpath'));
@@ -52,12 +54,12 @@ for e = 1:length(exDirs)
             value = GetSeqSettings(settings, seqDir, settingsToKeep{i});
             settings_clean = SetSeqSettings(settings_clean, num, settingsToKeep{i}, value);
         end
-        if any(strcmpi(bgSubEx, exDirs{e}))
-            for i = 1:length(bgSubSettings)
-                value = GetSeqSettings(settings, seqDir, bgSubSettings{i});
-                settings_clean = SetSeqSettings(settings_clean, num, bgSubSettings{i}, value);
-            end
-        end
+%         if any(strcmpi(bgSubEx, exDirs{e}))
+%             for i = 1:length(bgSubSettings)
+%                 value = GetSeqSettings(settings, seqDir, bgSubSettings{i});
+%                 settings_clean = SetSeqSettings(settings_clean, num, bgSubSettings{i}, value);
+%             end
+%         end
         settings_clean = SetSeqSettings(settings_clean, num, defaults{:});
         settingsFileName = sprintf('Settings_ISBI_2021_%s_%s-%s_clean.csv',...
                 'Training', exDirs{e}, num);

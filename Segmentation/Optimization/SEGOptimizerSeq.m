@@ -280,6 +280,9 @@ classdef SEGOptimizerSeq < Optimizer
                 switch this.scoringFunction
                     case 'SEG'
                         oF = 1 - SEG;
+                    case '0.9*SEG+0.1*DET'
+                        DET = PerformanceDET(this.seqPath, verName);
+                        oF = 1 - (0.9*SEG+0.1*DET);
                     case '(SEG+TRA)/2'
                         % Compute the TRA performance and take the average
                         % of SEG and TRA.
@@ -291,11 +294,18 @@ classdef SEGOptimizerSeq < Optimizer
                 end
 
                 % Remove the temporary segmentation results.
-                RemoveVersion(fileparts(this.seqPath), verName)
+                try
+                    % Use a separate try/catch to avoid setting oF to 1.
+                    RemoveVersion(fileparts(this.seqPath), verName)
+                catch ME
+                    getReport(ME)
+                    fprintf('Unable to remove %s from %s\n',...
+                        verName, fileparts(this.seqPath))
+                end
             catch ME
                 % Make sure that the optimization can recover from errors
                 % caused by strange parameters.
-                disp(ME)
+                getReport(ME)
                 fprintf(['Segmentation evaluation failed. The '...
                     'segmentation performance is set to 0 for this '...
                     'parameter set.\n'])
