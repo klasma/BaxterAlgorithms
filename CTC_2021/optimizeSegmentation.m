@@ -8,16 +8,10 @@ addpath(subdirs{1}{:});
 % exDirs = {'Fluo-C2DL-MSC'};
 % maxIter = 25;
 % settingsToOptimize = {
-%     'BPSegHighStd'
-%     'BPSegLowStd'
-%     'BPSegBgFactor'
 %     'BPSegThreshold'
-%     'SegClipping'
-%     'SegWHMax'
-%     'SegWHMax2'
-%     'SegMinArea'
-%     'SegMinSumIntensity'
 %     };
+% overWriteOldOptimizers = false;
+% optimizerName = 'TestOptimizer.mat';
 
 % Real settings.
 basePath = 'C:\CTC2021\Training';
@@ -52,6 +46,8 @@ settingsToOptimize = {
     'SegMinArea'
     'SegMinSumIntensity'
     };
+overWriteOldOptimizers = false;
+optimizerName = 'PerExperimentOptimizerCTC2021.mat';
 
 exPaths = fullfile(basePath, exDirs);
 
@@ -64,11 +60,12 @@ for i = 1:length(exPaths)
     seqPaths = fullfile(exPath, seqDirs);
     
     % Read initial settings which only have information about the images.
-    initialImData = cell(size(seqDirs));
+    initialImData = [];
     for j = 1:length(seqDirs)
         seqPath = fullfile(exPaths{i}, seqDirs{j});
         settingsPath = fullfile(exPath, 'SettingsLinks_clean.csv');
-        initialImData{j} = ImageData(seqPath, 'SettingsFile', settingsPath);
+        imData = ImageData(seqPath, 'SettingsFile', settingsPath);
+        initialImData = [initialImData; imData];
     end
     
     % Specify where the optimized settings should be saved.
@@ -77,8 +74,16 @@ for i = 1:length(exPaths)
         optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_GT.csv');
     end
     
+    % Specify where the segmentation optimizer should be saved.
+    optimizerSavePath = fullfile(exPath, 'Analysis', 'SegmentationOptimizers', optimizerName);
+    if ~overWriteOldOptimizers
+        assert(~exist(optimizerSavePath, 'file'),...
+            'The optimizer ''%s'' already exists.', optimizerSavePath)
+    end
+    
     optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
         'SavePaths', optimizedSettingsPaths,...
+        'OptimizerSavePath', optimizerSavePath,...
         'InitialImData', initialImData,...
         'ScoringFunction', '0.9*SEG+0.1*DET',...
         'Plot', true);
