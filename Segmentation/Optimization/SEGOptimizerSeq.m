@@ -309,7 +309,7 @@ classdef SEGOptimizerSeq < Optimizer
                 fprintf(['Segmentation evaluation failed. The '...
                     'segmentation performance is set to 0 for this '...
                     'parameter set.\n'])
-                oF = 1;
+                oF = inf;
             end
         end
         
