@@ -191,11 +191,11 @@ lines = regexp(results, '\r\n', 'split');
 % The names of the different error types, which appear on the rows above
 % the errors of the given types.
 headings = {...
+    'Splitting Operations'
     'False Negative Vertices'
     'False Positive Vertices'
-    'Splitting Operations'
-    'Edges To Be Added'
     'Redundant Edges To Be Deleted'
+    'Edges To Be Added'
     'Edges with Wrong Semantics'}';
 
 % Indices of lines with headings.
