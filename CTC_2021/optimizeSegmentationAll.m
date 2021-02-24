@@ -22,12 +22,12 @@ exDirs = {
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
-    'Fluo-C3DH-H157'
-    'Fluo-N3DH-CE'
     'PhC-C2DH-U373'
     'DIC-C2DH-HeLa'
     'BF-C2DL-MuSC'
     'BF-C2DL-HSC'
+    'Fluo-N3DH-CE'
+    'Fluo-C3DH-H157'
     };
 maxIter = 25;
 settingsToOptimize = {
@@ -38,6 +38,8 @@ settingsToOptimize = {
     'SegClipping'
     'SegWHMax'
     'SegWHMax2'
+    'SegMinArea'
+    'SegMinSumIntensity'
     };
 
 
@@ -75,6 +77,8 @@ end
 
 optimizer = SEGOptimizerEx(allSeqPaths, settingsToOptimize,...
     'SavePaths', allOptimizedSettingsPaths,...
-    'InitialImData', allInitialImData);
+    'InitialImData', initialImData,...
+    'ScoringFunction', '0.9*SEG+0.1*DET',...
+    'Plot', true);
 
 optimizer.Optimize_coordinatedescent('MaxIter', maxIter)

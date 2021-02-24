@@ -6,8 +6,18 @@ addpath(subdirs{1}{:});
 % % Settings to test on.
 % basePath = 'C:\CTC2021\Training';
 % exDirs = {'Fluo-C2DL-MSC'};
-% maxIter = 1;
-% settingsToOptimize = {'BPSegThreshold'};
+% maxIter = 25;
+% settingsToOptimize = {
+%     'BPSegHighStd'
+%     'BPSegLowStd'
+%     'BPSegBgFactor'
+%     'BPSegThreshold'
+%     'SegClipping'
+%     'SegWHMax'
+%     'SegWHMax2'
+%     'SegMinArea'
+%     'SegMinSumIntensity'
+%     };
 
 % Real settings.
 basePath = 'C:\CTC2021\Training';
@@ -15,6 +25,7 @@ basePath = 'C:\CTC2021\Training';
 % processed first. Transmission microscopy datasets for which bandpass
 % filtering is not the best segmentation algorithm are placed at the end.
 exDirs = {
+    'Fluo-C2DL-Huh7'
     'Fluo-C2DL-MSC'
     'Fluo-N2DH-GOWT1'
     'Fluo-C3DH-A549'
@@ -22,12 +33,12 @@ exDirs = {
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
-    'Fluo-C3DH-H157'
-    'Fluo-N3DH-CE'
     'PhC-C2DH-U373'
     'DIC-C2DH-HeLa'
     'BF-C2DL-MuSC'
     'BF-C2DL-HSC'
+    'Fluo-N3DH-CE'
+    'Fluo-C3DH-H157'
     };
 maxIter = 25;
 settingsToOptimize = {
@@ -38,6 +49,8 @@ settingsToOptimize = {
     'SegClipping'
     'SegWHMax'
     'SegWHMax2'
+    'SegMinArea'
+    'SegMinSumIntensity'
     };
 
 exPaths = fullfile(basePath, exDirs);
@@ -66,7 +79,9 @@ for i = 1:length(exPaths)
     
     optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
         'SavePaths', optimizedSettingsPaths,...
-        'InitialImData', initialImData);
+        'InitialImData', initialImData,...
+        'ScoringFunction', '0.9*SEG+0.1*DET',...
+        'Plot', true);
     
     optimizer.Optimize_coordinatedescent('MaxIter', maxIter)
 end
