@@ -106,6 +106,7 @@ if ~exist(resFile, 'file')
             exist(fullfile(imData.GetAnalysisPath(), ['CellData' aTestVer], [seqDir '.mat']), 'file')
         if exist(resPath, 'dir')
             % Remove incomplete results folder.
+            fclose('all'); % rmdir can fail because files are open in Matlab.
             rmdir(resPath, 's')
         end
         imData = ImageData(aSeqPaths);

@@ -120,6 +120,7 @@ resPath = fullfile(....
 
 if exist(resPath, 'dir')
     % Remove old files.
+    fclose('all'); % rmdir can fail because files are open in Matlab.
     rmdir(resPath, 's')
 end
 mkdir(resPath)
