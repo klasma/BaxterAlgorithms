@@ -24,10 +24,6 @@ exDirs = {
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
-    'PhC-C2DH-U373'
-    'DIC-C2DH-HeLa'
-    'BF-C2DL-MuSC'
-    'BF-C2DL-HSC'
     'Fluo-N3DH-CE'
     'Fluo-C3DH-H157'
     };
