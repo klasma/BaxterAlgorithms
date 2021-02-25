@@ -6,23 +6,21 @@ addpath(subdirs{1}{:});
 % % Settings to test on.
 % basePath = 'C:\CTC2021\Training';
 % exDirs = {'Fluo-C2DL-MSC'};
-% maxIter = 25;
+% maxIter = 1;
 % settingsToOptimize = {
 %     'BPSegThreshold'
 %     };
-% overWriteOldOptimizers = false;
+% overWriteOldOptimizers = true;
 % optimizerName = 'TestOptimizer.mat';
 
 % Real settings.
 basePath = 'C:\CTC2021\Training';
-% The fluorescence experiments are ordered so that the fastest ones are
-% processed first.
 exDirs = {
-    'Fluo-C2DL-Huh7'
     'Fluo-C2DL-MSC'
+    'Fluo-C3DL-MDA231'
+    'Fluo-C3DH-H157'
     'Fluo-N2DH-GOWT1'
     'Fluo-C3DH-A549'
-    'Fluo-C3DL-MDA231'
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
@@ -31,9 +29,9 @@ exDirs = {
     'BF-C2DL-MuSC'
     'BF-C2DL-HSC'
     'Fluo-N3DH-CE'
-    'Fluo-C3DH-H157'
     };
 maxIter = 25;
+
 settingsToOptimize = {
     'BPSegHighStd'
     'BPSegLowStd'
@@ -46,7 +44,7 @@ settingsToOptimize = {
     'SegMinSumIntensity'
     };
 overWriteOldOptimizers = false;
-optimizerName = 'PerExperimentOptimizerCTC2021.mat';
+optimizerName = 'PerExperimentStOptimizerCTC2021.mat';
 
 exPaths = fullfile(basePath, exDirs);
 
@@ -70,7 +68,7 @@ for i = 1:length(exPaths)
     % Specify where the optimized settings should be saved.
     optimizedSettingsPaths = cell(size(seqDirs));
     for j = 1:length(seqDirs)
-        optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_GT.csv');
+        optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_ST.csv');
     end
     
     % Specify where the segmentation optimizer should be saved.
@@ -81,10 +79,12 @@ for i = 1:length(exPaths)
     end
     
     optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
+        'NumImages', 32,...
         'SavePaths', optimizedSettingsPaths,...
         'OptimizerSavePath', optimizerSavePath,...
         'InitialImData', initialImData,...
         'ScoringFunction', '0.9*SEG+0.1*DET',...
+        'Suffix', '_ST',...
         'Plot', true);
     
     optimizer.Optimize_coordinatedescent('MaxIter', maxIter)

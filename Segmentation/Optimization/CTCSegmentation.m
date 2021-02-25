@@ -50,10 +50,10 @@ function CTCSegmentation(aImData, aVer, varargin)
 
 % Parse property/value inputs.
 [evaluationArgs, settingsArgs] =...
-    SelectArgs(varargin, {'NumImages', 'MostCells', 'ScoringFunction'});
-[aNumImages, aMostCells, aScoringFunction] = GetArgs(...
-    {'NumImages', 'MostCells', 'ScoringFunction'},...
-    {nan, false, 'SEG'}, true, evaluationArgs);
+    SelectArgs(varargin, {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix'});
+[aNumImages, aMostCells, aScoringFunction, aSuffix] = GetArgs(...
+    {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix'},...
+    {nan, false, 'SEG', '_GT'}, true, evaluationArgs);
 
 imData = aImData;
 
@@ -66,11 +66,11 @@ switch aScoringFunction
     case {'SEG' '0.9*SEG+0.1*DET'}
         % Find the frames in which there are segmentation ground truths.
         seqDir = imData.GetSeqDir();
-        gtPath = fullfile(imData.GetAnalysisPath(), [seqDir '_GT'], 'SEG');
+        gtPath = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
         if ~exist(gtPath, 'dir')
             % If the ground truth folder is not found, we check if the folder
             % name has been abbreviated.
-            gtPath = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) '_GT'], 'SEG');
+            gtPath = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
         end
         if ~exist(gtPath, 'dir')
             error('No ground truth exists for %s', imData.seqPath)

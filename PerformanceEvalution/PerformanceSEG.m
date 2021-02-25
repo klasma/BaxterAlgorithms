@@ -32,7 +32,7 @@ function oMeasure = PerformanceSEG(aSeqPaths, aTestVer, aRelaxed, varargin)
 % SEGmeasure
 
 % Parse property/value inputs.
-aNumCores = GetArgs({'NumCores'}, {1}, true, varargin);
+[aNumCores, aSuffix] = GetArgs({'NumCores', 'Suffix'}, {1, '_GT'}, true, varargin);
 
 % Handle cell inputs through recursion.
 if iscell(aSeqPaths)
@@ -65,7 +65,7 @@ imData = ImageData(aSeqPaths);
 seqDir = imData.GetSeqDir();
 
 % Folder with ground truth.
-gtPath = fullfile(imData.GetAnalysisPath(), [seqDir '_GT'], 'SEG');
+gtPath = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
 % Folder with tracking results.
 resPath = fullfile(imData.GetCellDataDir('Version', aTestVer),...
     'RES', [seqDir '_RES']);
@@ -80,7 +80,7 @@ end
 % Check if the name of the ground truth folder has been abbreviated, if the
 % folder cannot be found.
 if ~exist(gtPath, 'dir')
-    alt = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) '_GT'], 'SEG');
+    alt = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
     if exist(alt, 'dir')
         gtPath = alt;
     else
