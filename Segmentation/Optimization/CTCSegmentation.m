@@ -97,14 +97,16 @@ switch aScoringFunction
                 gtFrames = gtFrames(indices(1:aNumImages));
                 gtFrames = sort(gtFrames);
             else
-                % Sample images evenly from the first to the last image.
-                if aNumImages == 1
-                    indices = 1;
-                else
-                    stepLength = (length(gtFrames)-1) / (aNumImages-1);
-                    indices = round(1 + (0:aNumImages-1) * stepLength);
+                if length(gtFrames) > aNumImages
+                    % Sample images evenly from the first to the last image.
+                    if aNumImages == 1
+                        indices = 1;
+                    else
+                        stepLength = (length(gtFrames)-1) / (aNumImages-1);
+                        indices = round(1 + (0:aNumImages-1) * stepLength);
+                    end
+                    gtFrames = gtFrames(indices);
                 end
-                gtFrames = gtFrames(indices);
             end
         end
     case '(SEG+TRA)/2'
