@@ -5,29 +5,29 @@ function oMeasure = PerformanceDET(aSeqPath, aTestVer, varargin)
 % worse than a segmentation with no cells, the output is 1 - totalCosts /
 % totalCostsBlack instead of max(1 - totalCosts / totalCostsBlack, 0).
 
+% Parse property/value inputs.
+aSuffix = GetArgs({'Suffix'}, {'_GT'}, true, varargin);
+
 imData = ImageData(aSeqPath);
 
-[~, ~, frameErrors, ~, frameErrorsBlack] = PerformanceTRA(aSeqPath, aTestVer);
+[~, ~, frameErrors, ~, frameErrorsBlack] = PerformanceTRA(aSeqPath, aTestVer,...
+    'Suffix', aSuffix);
 
-% Find the ground truth folder.
-seqDir = imData.GetSeqDir();
-gtPath = fullfile(imData.GetAnalysisPath(), [seqDir '_GT'], 'SEG');
-if ~exist(gtPath, 'dir')
-    % If the ground truth folder is not found, we check if the folder name
-    % has been abbreviated.
-    gtPath = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) '_GT'], 'SEG');
-end
-if ~exist(gtPath, 'dir')
-    error('No ground truth exists for %s.', imData.seqPath)
+% Folder with results.
+resPath = fullfile(imData.GetCellDataDir('Version', aTestVer),...
+    'RES', [imData.GetSeqDir() '_RES']);
+
+if ~exist(resPath, 'dir')
+    error('The result path %s does not exist.', resPath)
 end
 
-% Find the frames with ground truth segmentations.
-gtImages = GetNames(gtPath, 'tif');
-gtStrings = regexp(gtImages, '(?<=man_seg_?)\d+', 'match', 'once');
-gtFramesWithDuplicates = cellfun(@str2double, gtStrings) + 1;
-gtFrames = unique(gtFramesWithDuplicates);
+% Find the frames with segmentation results.
+resImages = GetNames(resPath, 'tif');
+frameStrings = regexp(resImages, '(?<=mask_?)\d+', 'match', 'once');
+framesWithDuplicates = cellfun(@str2double, frameStrings) + 1;
+frames = unique(framesWithDuplicates);
 binaryFrames = zeros(1, imData.sequenceLength);
-binaryFrames(gtFrames) = 1;
+binaryFrames(frames) = 1;
 
 costs = [5 10 1 0 0 0]';
 

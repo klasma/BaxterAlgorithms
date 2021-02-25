@@ -1,24 +1,22 @@
-% Optimize segmentation on the primary track datasets for CTC 2021.
+% Optimize segmentation jointly on the primary track datasets for CTC 2021.
 
 subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
 
 % % Settings to test on.
 % basePath = 'C:\CTC2021\Training';
-% exDirs = {'Fluo-C2DL-MSC'};
-% maxIter = 25;
-% settingsToOptimize = {
-%     'BPSegThreshold'
-%     };
+% exDirs = {'Fluo-C2DL-MSC'; 'Fluo-N2DH-GOWT1'};
+% maxIter = 1;
+% settingsToOptimize = {'BPSegThreshold'};
 % overWriteOldOptimizers = false;
 % optimizerName = 'TestOptimizer.mat';
 
 % Real settings.
 basePath = 'C:\CTC2021\Training';
 % The fluorescence experiments are ordered so that the fastest ones are
-% processed first.
+% processed first. Transmission microscopy datasets for which bandpass
+% filtering is not the best segmentation algorithm are placed at the end.
 exDirs = {
-    'Fluo-C2DL-Huh7'
     'Fluo-C2DL-MSC'
     'Fluo-N2DH-GOWT1'
     'Fluo-C3DH-A549'
@@ -46,12 +44,16 @@ settingsToOptimize = {
     'SegMinSumIntensity'
     };
 overWriteOldOptimizers = false;
-optimizerName = 'PerExperimentOptimizerCTC2021.mat';
+optimizerName = 'AllExperimentStOptimizerCTC2021.mat';
+
 
 exPaths = fullfile(basePath, exDirs);
 
 allSettings = AllSettings();
 
+allSeqPaths = {};
+allInitialImData = [];
+allOptimizedSettingsPaths = {};
 for i = 1:length(exPaths)
     fprintf('Processing experiment %d / %d %s\n', i, length(exDirs), exDirs{i})
     exPath = exPaths{i};
@@ -59,33 +61,37 @@ for i = 1:length(exPaths)
     seqPaths = fullfile(exPath, seqDirs);
     
     % Read initial settings which only have information about the images.
-    initialImData = [];
     for j = 1:length(seqDirs)
         seqPath = fullfile(exPaths{i}, seqDirs{j});
         settingsPath = fullfile(exPath, 'SettingsLinks_clean.csv');
         imData = ImageData(seqPath, 'SettingsFile', settingsPath);
-        initialImData = [initialImData; imData];
+        allInitialImData = [allInitialImData; imData];
     end
     
     % Specify where the optimized settings should be saved.
     optimizedSettingsPaths = cell(size(seqDirs));
     for j = 1:length(seqDirs)
-        optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_GT.csv');
+        optimizedSettingsPaths{j} = fullfile(exPath, 'SettingsLinks_trained_on_ST_all.csv');
     end
     
     % Specify where the segmentation optimizer should be saved.
-    optimizerSavePath = fullfile(exPath, 'Analysis', 'SegmentationOptimizers', optimizerName);
+    optimizerSavePath = fullfile(basePath, 'SegmentationOptimizers', optimizerName);
     if ~overWriteOldOptimizers
         assert(~exist(optimizerSavePath, 'file'),...
             'The optimizer ''%s'' already exists.', optimizerSavePath)
     end
     
-    optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
-        'SavePaths', optimizedSettingsPaths,...
-        'OptimizerSavePath', optimizerSavePath,...
-        'InitialImData', initialImData,...
-        'ScoringFunction', '0.9*SEG+0.1*DET',...
-        'Plot', true);
-    
-    optimizer.Optimize_coordinatedescent('MaxIter', maxIter)
+    allSeqPaths = [allSeqPaths; seqPaths];
+    allOptimizedSettingsPaths = [allOptimizedSettingsPaths; optimizedSettingsPaths];
 end
+
+optimizer = SEGOptimizerEx(allSeqPaths, settingsToOptimize,...
+    'NumImages', 32,...
+    'SavePaths', allOptimizedSettingsPaths,...
+    'OptimizerSavePath', optimizerSavePath,...
+    'InitialImData', allInitialImData,...
+    'ScoringFunction', '0.9*SEG+0.1*DET',...
+    'Suffix', '_ST',...
+    'Plot', true);
+
+optimizer.Optimize_coordinatedescent('MaxIter', maxIter)
