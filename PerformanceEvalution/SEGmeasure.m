@@ -37,52 +37,49 @@ else
 end
 
 jaccard = [];  % Jaccard indices for all ground truth regions.
-for i = 1:length(gtFiles)
-    % Ground truth label image.
-    
-    gtIm = ReadTifStack(fullfile(aGtPath, gtFiles{i}));
-    
-    % Extract the zero based frame index from the file name.
-    frame = regexpi(gtFiles{i}, '(?<=man_seg_?)\d+', 'match', 'once');
+for i = 1:length(resFiles)
+    frame = regexpi(resFiles{i}, '(?<=mask)\d+', 'match', 'once');
     frame = str2double(frame);
     
-    % Extract the zero based z-slice index from the file name. For 2D data,
-    % the slice index is set to 0.
-    slice = regexpi(gtFiles{i}, '(?<=man_seg_?\d+_)\d+', 'match', 'once');
-    if isempty(slice)
-        slice = nan;
-    else
-        slice = str2double(slice);
-    end
-    
-    % Load the corresponding label image with computer generated results.
-    resName = regexpi(resFiles, ['mask0*' num2str(frame) '.tif'],...
+    gtMatches = regexpi(gtFiles, ['man_seg_?0*' num2str(frame) '(_\d+|.tif)'],...
         'match', 'once');
-    if all(cellfun(@isempty, resName))
-        resIm = zeros(size(gtIm));
-    else
-        resName = resName{~cellfun(@isempty, resName)};
-        imPath = fullfile(aResPath, resName);
+    gtMatchingFiles = gtFiles(~cellfun(@isempty, gtMatches));
+    for j = 1:length(gtMatchingFiles)
+        gtFile = gtMatchingFiles{j};
+        % Load ground truth label image.
+        gtIm = ReadTifStack(fullfile(aGtPath, gtFile));
+        
+        % Extract the zero based z-slice index from the file name. For 2D data,
+        % the slice index is set to 0.
+        slice = regexpi(gtFile, '(?<=man_seg_?\d+_)\d+', 'match', 'once');
+        if isempty(slice)
+            slice = nan;
+        else
+            slice = str2double(slice);
+        end
+        
+        % Load the label image with computer generated results.
+        imPath = fullfile(aResPath, resFiles{i});
         if isnan(slice)
             resIm = ReadTifStack(imPath);
         else
             resIm = imread(imPath, slice+1);
         end
-    end
-    
-    % Compute the Jaccard indices for all ground truth regions.
-    jaccard_i = JSI(resIm, gtIm, aRelaxed);
-    
-    % Write the Jaccard indices for this frame to the log-file.
-    fprintf(fid, '----------T=%d Z=%d----------\r\n', frame, slice);
-    for j = 1:length(jaccard_i)
-        if isnan(jaccard_i(j))
-            continue
+        
+        % Compute the Jaccard indices for all ground truth regions.
+        jaccard_i = JSI(resIm, gtIm, aRelaxed);
+        
+        % Write the Jaccard indices for this frame to the log-file.
+        fprintf(fid, '----------T=%d Z=%d----------\r\n', frame, slice);
+        for k = 1:length(jaccard_i)
+            if isnan(jaccard_i(k))
+                continue
+            end
+            fprintf(fid, 'GT_label=%d J=%.6g\r\n', k, jaccard_i(k));
         end
-        fprintf(fid, 'GT_label=%d J=%.6g\r\n', j, jaccard_i(j));
+        
+        jaccard = [jaccard; jaccard_i]; %#ok<AGROW>
     end
-    
-    jaccard = [jaccard; jaccard_i]; %#ok<AGROW>
 end
 % Compute the SEG measure.
 SEG = mean(jaccard(~isnan(jaccard)));
