@@ -26,7 +26,7 @@ SegBgSubAtten,5
 SegTopHatRadius,Inf
 SegFillHoles,1
 SegMinHoleArea,Inf
-SegMinArea,125
+SegMinArea,445.3405
 SegMaxArea,Inf
 SegMinSumIntensity,14.4299
 SegClipping,1
@@ -35,7 +35,7 @@ SegSmooth,0
 SegMedFilt,1
 SegWatershed,intermediate
 SegWSmooth,0
-SegWHMax,0.33029
+SegWHMax,0.29754
 SegWThresh,-Inf
 SegWUpSampling,1
 SegWatershed2,shape
