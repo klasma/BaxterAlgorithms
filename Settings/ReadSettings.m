@@ -49,7 +49,7 @@ if nargin == 2 && ~iscell(aSeqDirs)
 end
 
 if ~isempty(regexpi(aInput, '.csv$'))
-    % A settings file or settings linnk file was given as input.
+    % A settings file or settings link file was given as input.
     settingsFile = aInput;
 else
     % An experiment folder was given as input.
