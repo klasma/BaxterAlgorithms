@@ -142,7 +142,7 @@ TrackSaveIterations,0
 TrackSavePTC,0
 TrackSaveCTC,0
 TrackSaveCSB,0
-TrackSaveMat,1
+TrackSaveMat,0
 TrackEvaluateCTC,0
 TrackSelectFromGT,0
 TrackRelinkSelectedCells,0
