@@ -24,9 +24,11 @@ classdef (Abstract) Optimizer < handle
         xMin = -inf;    % Array with lower bounds for the variables.
         xBest = [];     % Array with the current best point.
         xAll = [];      % Matrix where each column is an evaluated point.
+        xAllOld = [];
         f0 = [];        % Function value for the initial guess.
         fBest = [];     % Current best function value.
         fAll = [];      % Array with the function values for all points in xAll.
+        fAllOld = [];
     end
     
     methods
@@ -35,6 +37,11 @@ classdef (Abstract) Optimizer < handle
             %
             % The class is abstract, so objects of the class will never be
             % created.
+        end
+        
+        function PrepareToResumeOptimization(this, aIterationsToKeep)
+            this.xAllOld = this.xAll(:, 1:aIterationsToKeep);
+            this.fAllOld = this.fAll(1:aIterationsToKeep);
         end
         
         function oF = EvaluateObjective(this, aX)
@@ -67,8 +74,19 @@ classdef (Abstract) Optimizer < handle
                 end
             end
             
-            % Compute the function value.
-            oF = this.Objective(aX);
+            if ~isempty(this.xAllOld)
+                indexInXAllOld = find(ismember(this.xAllOld', aX', 'rows'), 1);
+            else
+                indexInXAllOld = [];
+            end
+            
+            if isempty(indexInXAllOld)
+                % Compute the function value.
+                oF = this.Objective(aX);
+            else
+                % Reuse a function value from a previous optmization.
+                oF = this.fAllOld(indexInXAllOld);
+            end
             this.fAll = [this.fAll oF];
             
             % Update the best solution if the current point is better than
