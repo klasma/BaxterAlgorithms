@@ -42,8 +42,8 @@ function oCells = SaveCellsTif(aImData, aCells, aVer, aForEvaluation, varargin)
 % LoadCellsTif, SaveCells
 
 % Parse property/value inputs.
-[aSaveDeaths, aSaveFP] =...
-    GetArgs({'SaveDeaths' 'SaveFP'}, {false false}, true, varargin);
+[aSaveDeaths, aSaveFP, aSuffix] =...
+    GetArgs({'SaveDeaths' 'SaveFP' 'Suffix'}, {false false ''}, true, varargin);
 
 % Point blobs can not be represented in the pixel labels.
 areCells = AreCells(aCells);
@@ -56,7 +56,7 @@ seqDir = aImData.GetSeqDir();
 if aForEvaluation
     % Save the data in correct directory for the competition.
     exPath = aImData.GetExPath();
-    writeDir = fullfile(exPath, [seqDir, '_RES']);
+    writeDir = fullfile(exPath, [seqDir, '_RES', aSuffix]);
 else
     % Save the data in a sub-directory of the CellData-directory.
     writeDir = fullfile(....
