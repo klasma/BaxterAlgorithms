@@ -129,7 +129,7 @@ TrackNumNeighbours,3
 TrackSingleIdleState,0
 TrackBipartiteMatch,1
 TrackFalsePos,1
-TrackSaveFPAsCells,0
+TrackSaveFPAsCells,1
 TrackCentroidOffset,0
 TrackMergeWatersheds,1
 TrackMergeOverlapMaxIter,0
