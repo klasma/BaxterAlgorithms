@@ -5,7 +5,7 @@ trainingOrChallenge = 'Training';
 
 dataSetFolder = ['C:\CTC2021\' trainingOrChallenge];
 
-suffix = '_trained_on_ST_all';
+suffix = '_trained_on_GT_all';
 
 settingsToKeep = {
     'numZ'
