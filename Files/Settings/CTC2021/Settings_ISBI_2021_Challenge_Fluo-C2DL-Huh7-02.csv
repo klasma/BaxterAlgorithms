@@ -137,10 +137,10 @@ TrackMergeOverlapThresh,0
 TrackMergeOverlapDeltaT,1
 TrackMergeBrokenMaxArea,0
 TrackMergeBrokenRatio,0.75
-foiErosion,0
+foiErosion,50
 TrackSaveIterations,0
 TrackSavePTC,0
-TrackSaveCTC,0
+TrackSaveCTC,1
 TrackSaveCSB,0
 TrackSaveMat,1
 TrackEvaluateCTC,0
