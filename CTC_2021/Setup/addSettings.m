@@ -1,6 +1,9 @@
 % Add default tracking settings to segmentation settings trained on GT.
 
-dataSetFolder = 'C:\CTC2021\Training';
+trainingOrChallenge = 'Training';
+suffix = '_trained_on_ST';
+
+dataSetFolder = ['C:\CTC2021\' trainingOrChallenge];
 
 % defaults = {
 %     'TrackSaveMat', '0',...
@@ -15,8 +18,6 @@ defaults = {
     'TrackZSpeedStd', '15',...
     'TrackSaveCTC', '1',...
     };
-
-suffix = '_trained_on_GT';
 
 currentPath = fileparts(mfilename('fullpath'));
 newSettingsPath = fullfile(currentPath, '..', '..', 'Files', 'Settings', ['CTC2021' suffix]);
@@ -48,7 +49,7 @@ for e = 1:length(exDirs)
         settings = ReadSettings(linkFilePath, seqDir);
         settings = SetSeqSettings(settings, seqDir, defaults{:});
         settingsFileName = sprintf('Settings_ISBI_2021_%s_%s-%s%s.csv',...
-                'Training', exDirs{e}, num, suffix);
+                trainingOrChallenge, exDirs{e}, num, suffix);
         WriteSettings(linkFilePath, settings)
     end
 end
