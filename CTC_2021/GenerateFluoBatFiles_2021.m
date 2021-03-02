@@ -46,13 +46,13 @@ for i = 1:length(exDirs)
             configuration = configurationsAndSuffixes{k,1};
             suffix = configurationsAndSuffixes{k,2};
             batFilename = sprintf('%s-%02d-%s.bat', exDirs{i}, j, configuration);
-            settingsName = sprintf('Settings_ISBI_2021_Training_%s-%02d%s.csv',...
+            settingsName = sprintf('Settings_ISBI_2021_Challenge_%s-%02d%s.csv',...
                 exDirs{i}, j, suffix);
             fid = fopen(fullfile(base, batFilename), 'w');
             
             fprintf(fid, '@echo off\r\n');
             fprintf(fid, '\r\n');
-            fprintf(fid, 'REM Prerequisities: MATLAB 2018b (x64)\r\n');
+            fprintf(fid, 'REM Prerequisities: MATLAB 2019b (x64)\r\n');
             fprintf(fid, '\r\n');
             fprintf(fid, 'matlab -wait -r "RunBaxterAlgorithms_ISBI_2021(''%s'', ''%02d'', ''%s'', ''-%s'')"\r\n', exDirs{i}, j, settingsName, configuration);
             
