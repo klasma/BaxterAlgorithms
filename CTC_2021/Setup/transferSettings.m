@@ -1,14 +1,16 @@
 % Creates settings without algorithm parameters, to start segmentation
 % optimization from.
 
-trainingOrChallenge = 'Challenge';
+trainingOrChallenge = 'Training';
 
 dataSetFolder = ['C:\CTC2021\' trainingOrChallenge];
 
-suffix = '_trained_on_ST';
+suffix = '_trained_on_ST_all';
 
 settingsToKeep = {
     'numZ'
+    'foiErosion'
+    'SegGbRamPerFrameCTC'
     };
 
 defaults = {
@@ -25,10 +27,6 @@ exDirs = {
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
-    'PhC-C2DH-U373'
-    'DIC-C2DH-HeLa'
-    'BF-C2DL-MuSC'
-    'BF-C2DL-HSC'
     'Fluo-N3DH-CE'
     'Fluo-C3DH-H157'
     };

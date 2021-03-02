@@ -14,7 +14,7 @@ use,1
 sequenceLength,
 SegOldVersion,none
 SegSave,1
-SegGbRamPerFrameCTC,16
+SegGbRamPerFrameCTC,10
 SegNumBlocks,1  1  1
 SegBlockMargin,50
 SegAlgorithm,Segment_bandpass3D
@@ -89,8 +89,8 @@ RCSegMaxDist,50
 RCSegMinArea,7500
 RCSegMinVar,0.0005
 SegImportFolder,
-TrackXSpeedStd,12
-TrackZSpeedStd,12
+TrackXSpeedStd,15
+TrackZSpeedStd,15
 countClassifier,none
 splitClassifier,none
 deathClassifier,none
@@ -101,8 +101,8 @@ pCnt2,0.1
 pCntExtrap,0.25
 pSplit,0.01
 pDeath,0.01
-TrackPAppear,0
-TrackPDisappear,0
+TrackPAppear,1E-3
+TrackPDisappear,1E-3
 TrackPMig,0.01
 TrackMotionModel,none
 TrackMigLogLikeList,MigLogLikeList_uniformClutter
@@ -129,7 +129,7 @@ TrackNumNeighbours,3
 TrackSingleIdleState,0
 TrackBipartiteMatch,1
 TrackFalsePos,1
-TrackSaveFPAsCells,0
+TrackSaveFPAsCells,1
 TrackCentroidOffset,0
 TrackMergeWatersheds,1
 TrackMergeOverlapMaxIter,0
@@ -137,10 +137,10 @@ TrackMergeOverlapThresh,0
 TrackMergeOverlapDeltaT,1
 TrackMergeBrokenMaxArea,0
 TrackMergeBrokenRatio,0.75
-foiErosion,0
+foiErosion,50
 TrackSaveIterations,0
 TrackSavePTC,0
-TrackSaveCTC,0
+TrackSaveCTC,1
 TrackSaveCSB,0
 TrackSaveMat,1
 TrackEvaluateCTC,0
