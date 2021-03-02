@@ -14,7 +14,7 @@ use,1
 sequenceLength,
 SegOldVersion,none
 SegSave,1
-SegGbRamPerFrameCTC,16
+SegGbRamPerFrameCTC,1
 SegNumBlocks,1  1  1
 SegBlockMargin,50
 SegAlgorithm,Segment_bandpass3D
