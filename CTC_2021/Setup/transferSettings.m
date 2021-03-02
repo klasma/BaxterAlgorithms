@@ -1,13 +1,14 @@
 % Creates settings without algorithm parameters, to start segmentation
 % optimization from.
 
-dataSetFolder = 'C:\CTC2021\Training';
+trainingOrChallenge = 'Challenge';
 
-suffix = '_trained_on_GT';
+dataSetFolder = ['C:\CTC2021\' trainingOrChallenge];
+
+suffix = '_trained_on_ST';
 
 settingsToKeep = {
-    'SegGbRamPerFrameCTC'
-    'foiErosion'
+    'numZ'
     };
 
 defaults = {
@@ -43,7 +44,7 @@ for e = 1:length(exDirs)
         settings_old = ReadSettings(exPath, seqDir);
         
         settingsFileName = sprintf('Settings_ISBI_2021_%s_%s-%s%s.csv',...
-            'Training', exDirs{e}, num, suffix);
+            trainingOrChallenge, exDirs{e}, num, suffix);
         settingsPath = fullfile(newSettingsPath, settingsFileName);
         
         linkFilePath = fullfile(exPath, sprintf('SettingsLinks%s.csv', suffix));
@@ -57,8 +58,6 @@ for e = 1:length(exDirs)
 
         WriteSettings(settingsPath, settings_new)
     end
-    
-    CreateSettingsLinkFile(exPath, 'Training', '_clean')
 end
 
-fprintf('Done creating clean settings files.\n')
+fprintf('Done transfering settings files.\n')
