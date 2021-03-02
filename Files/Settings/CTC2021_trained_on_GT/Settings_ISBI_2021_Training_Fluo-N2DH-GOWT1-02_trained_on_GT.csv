@@ -14,7 +14,7 @@ use,1
 sequenceLength,
 SegOldVersion,none
 SegSave,1
-SegGbRamPerFrameCTC,16
+SegGbRamPerFrameCTC,1
 SegNumBlocks,1  1  1
 SegBlockMargin,50
 SegAlgorithm,Segment_bandpass
@@ -26,7 +26,7 @@ SegBgSubAtten,5
 SegTopHatRadius,Inf
 SegFillHoles,1
 SegMinHoleArea,Inf
-SegMinArea,125
+SegMinArea,445.3405
 SegMaxArea,Inf
 SegMinSumIntensity,14.4299
 SegClipping,1
@@ -35,7 +35,7 @@ SegSmooth,0
 SegMedFilt,1
 SegWatershed,intermediate
 SegWSmooth,0
-SegWHMax,0.33029
+SegWHMax,0.29754
 SegWThresh,-Inf
 SegWUpSampling,1
 SegWatershed2,shape
@@ -89,8 +89,8 @@ RCSegMaxDist,50
 RCSegMinArea,7500
 RCSegMinVar,0.0005
 SegImportFolder,
-TrackXSpeedStd,12
-TrackZSpeedStd,12
+TrackXSpeedStd,15
+TrackZSpeedStd,15
 countClassifier,none
 splitClassifier,none
 deathClassifier,none
@@ -101,8 +101,8 @@ pCnt2,0.1
 pCntExtrap,0.25
 pSplit,0.01
 pDeath,0.01
-TrackPAppear,0
-TrackPDisappear,0
+TrackPAppear,1E-3
+TrackPDisappear,1E-3
 TrackPMig,0.01
 TrackMotionModel,none
 TrackMigLogLikeList,MigLogLikeList_uniformClutter
@@ -137,10 +137,10 @@ TrackMergeOverlapThresh,0
 TrackMergeOverlapDeltaT,1
 TrackMergeBrokenMaxArea,0
 TrackMergeBrokenRatio,0.75
-foiErosion,0
+foiErosion,50
 TrackSaveIterations,0
 TrackSavePTC,0
-TrackSaveCTC,0
+TrackSaveCTC,1
 TrackSaveCSB,0
 TrackSaveMat,1
 TrackEvaluateCTC,0

@@ -124,8 +124,8 @@ fclose(fid);
 
 % Extract the SEG measure from the contents of the saved file.
 if aRelaxed
-    oMeasure = str2double(regexp(results, '(?<=SEGR measure: )[\d\.]*', 'match'));
+    oMeasure = str2double(regexp(results, '(?<=SEGR measure: )[\d\.eE-+]*', 'match'));
 else
-    oMeasure = str2double(regexp(results, '(?<=SEG measure: )[\d\.]*', 'match'));
+    oMeasure = str2double(regexp(results, '(?<=SEG measure: )[\d\.eE-+]*', 'match'));
 end
 end

@@ -82,7 +82,11 @@ classdef ImageParameters < Map
                 this.availableSettingsFiles = GetSettingsFiles(this.GetExPath);
                 if isempty(this.globalSettingsFile)
                     % Read settings file from the default location.
-                    this.currentSettingsFile = this.availableSettingsFiles{1};
+                    if isempty(this.availableSettingsFiles)
+                        this.currentSettingsFile = [];
+                    else
+                        this.currentSettingsFile = this.availableSettingsFiles{1};
+                    end
                 else
                     % Read settings file from a specified location.
                     this.currentSettingsFile = this.globalSettingsFile;
@@ -92,7 +96,11 @@ classdef ImageParameters < Map
                             this.availableSettingsFiles];
                     end
                 end
-                spreadSheet = ReadSettings(this.currentSettingsFile, this.GetSeqDir());
+                if isempty(this.currentSettingsFile)
+                    spreadSheet = ReadSettings(this.GetExPath(), this.GetSeqDir());
+                else
+                    spreadSheet = ReadSettings(this.currentSettingsFile, this.GetSeqDir());
+                end
             end
             
             allSettings = AllSettings();
