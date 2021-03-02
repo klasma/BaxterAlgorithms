@@ -1738,7 +1738,7 @@ classdef ManualCorrectionPlayer < ZControlPlayer
             % Creates the dropdown menus at the top of the figure.
             
             % User menu options.
-            this.styleAlts = {'ISBI'; 'Default'; 'Save'};
+            this.styleAlts = {'Embryo'; 'ISBI'; 'Default'; 'Save'};
             this.coloringAlts = {'Rainbow'; 'Random Hues'; 'Random Colors'};
             this.treeAlts = {
                 'Frames'
@@ -3838,6 +3838,20 @@ classdef ManualCorrectionPlayer < ZControlPlayer
                     trajOpts.cMarkerFaceColor = {'none', 'none', 'none'};
                     trajOpts.fMarkerFaceColor = {'none', 'none', 'none'};
                     textOpts.fontWeight = 'normal';
+                    textOpts.fontSize = 10;
+                case 'Embryo'
+                    % This style is intended for embryos with many small
+                    % cells. All all cell nodes are small and filled.
+                    oParams.markerLineWidth = 1;
+                    outlineOpts.LineWidth =  0.5;
+                    trajOpts.LineWidth =  0.5;
+                    trajOpts.dMarkerSize =  [1.5 1.5 1.5];
+                    trajOpts.dMarkerFaceColor =  {[], [], []};
+                    trajOpts.cMarker = {'o', 'o', 'o'};
+                    trajOpts.cMarkerSize =  [1.5 1.5 1.5];
+                    trajOpts.cMarkerFaceColor = {[], [], []};
+                    trajOpts.fMarkerSize = [1.5 1.5 1.5];
+                    textOpts.fontWeight = 'bold';
                     textOpts.fontSize = 10;
                 otherwise
                     % The default plotting options are used for all other
