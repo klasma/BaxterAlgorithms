@@ -1,11 +1,11 @@
 % Creates settings without algorithm parameters, to start segmentation
 % optimization from.
 
-trainingOrChallenge = 'Training';
+trainingOrChallenge = 'Challenge';
 
 dataSetFolder = ['C:\CTC2021\' trainingOrChallenge];
 
-suffix = '_trained_on_GT_all';
+suffix = '_trained_on_ST_all';
 
 settingsToKeep = {
     'numZ'
