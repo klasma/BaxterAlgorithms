@@ -236,7 +236,7 @@ end
 
 % Merge blobs without cells into adjacent cells. This is useful to reduce
 % over segmentation caused by watershed transforms.
-if aImData.Get('TrackMergeWatersheds')
+if aImData.Get('TrackMergeWatersheds') && ~BlobsCoverEntireImage(blobSeq{end}, aImData)
     if aImData.numZ == 1  % 2D
         falseBlobSeq = MergeFPWatersheds(aImData, trueCells, falseBlobSeq);
     else  % 3D
