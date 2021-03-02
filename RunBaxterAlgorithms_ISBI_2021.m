@@ -1,5 +1,5 @@
-function RunBaxterAlgorithms_ISBI_2020(aExDir, aSeqDir)
-% Runs cell tracking on a specific image sequence in the ISBI 2020 Cell
+function RunBaxterAlgorithms_ISBI_2021(aExDir, aSeqDir, aSettingsName, aConfigurationSuffix)
+% Runs cell tracking on a specific image sequence in the ISBI 2021 Cell
 % Tracking Challenge data set. The function assumes that the program has
 % been put in a directory named SW in the directory containing all
 % training data or all challenge data. The function assumes that the folder
@@ -26,9 +26,9 @@ fprintf('Processing %s-%s\n', aExDir, aSeqDir)
 
 baxterAlgorithmDir = fileparts(mfilename('fullpath'));
 baseDir = fileparts(baxterAlgorithmDir);
-settingsName = sprintf('Settings_ISBI_2020_Challenge_%s-%s.csv', aExDir, aSeqDir);
+
 % Path of a settings file located in the program directory.
-settingsPath = GetSettingsPath(settingsName);
+settingsPath = GetSettingsPath(aSettingsName);
 
 % Path of the image sequence to be processed.
 seqPath = fullfile(baseDir, aExDir, aSeqDir);
@@ -66,7 +66,8 @@ else
         'Relink', imData.Get('TrackRelinkSelectedCells'));
     end
     
-    SaveCellsTif(imData, cells, [], true);
+    SaveCellsTif(imData, cells, [], true,...
+        'Suffix', aConfigurationSuffix);
 end
 
 % Close MATLAB so that there are not 38 MATLAB windows open after all image
