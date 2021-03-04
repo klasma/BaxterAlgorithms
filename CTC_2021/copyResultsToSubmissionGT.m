@@ -1,2 +1,2 @@
-version = '_210302_093121_trained_on_ST';
-CopyResultsToSubmission(version, '-ST')
+version = '_210302_074101_trained_on_GT_TrackSaveFPAsCells';
+CopyResultsToSubmission(version, '-GT')
