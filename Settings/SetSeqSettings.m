@@ -16,19 +16,19 @@ function oSett = SetSeqSettings(aSett, aSeqDir, varargin)
 % GetSeqSettings, ReadSeqSettings, WriteSeqSettings
 
 oSett = aSett;
-row = find(strcmpi(aSett(:,1), aSeqDir));
+row = find(strcmpi(oSett(:,1), aSeqDir));
 
 if isempty(row)
     % Add a new row if there is no existing row for the image sequence.
-    oSett = [oSett; [{aSeqDir} repmat({''}, 1, size(aSett,2)-1)]];
-    row = size(oSett, 1);
+    oSett = [oSett; [{aSeqDir} repmat({''}, 1, size(oSett,2)-1)]];
     % Sort the image sequence names alphabetically.
     [~, order] = sort(oSett(2:end,1));
     oSett = [oSett(1,:); oSett(order+1,:)];
+    row = find(strcmpi(oSett(:,1), aSeqDir));
 end
 
 for i = 1 : 2 : length(varargin)
-    col = find(strcmpi(aSett(1,:), varargin{i}));
+    col = find(strcmpi(oSett(1,:), varargin{i}));
     if isempty(col)
         % Add a new column if the specified setting does not exist in the
         % settings table.
