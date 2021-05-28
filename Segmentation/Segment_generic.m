@@ -64,6 +64,7 @@ if strcmp(aImData.Get('SegBgSubAlgorithm'), 'none')
         % Crop the input image if cropping instructions are given.
         I = I(aY1:aY2, aX1:aX2);
     end
+    oImages.intensityCorrected = I;
 else
     [I, bg] = BgSub_generic(aImData, aFrame,...
         'CorrectLight', aImData.Get('SegLightCorrect'),...

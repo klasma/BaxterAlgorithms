@@ -40,6 +40,8 @@ classdef ImageData < ImageParameters
         cachedImages = {};          % Cell array with cached images for one frame.
         cachedFrame = [];           % The frame for which images have been cached.
         segImData = [];             % ImageData object for a folder with a segmentation that can be loaded.
+        sequenceMaxIntensity = [];
+        sequenceMinIntensity = [];
     end
     
     methods
@@ -401,7 +403,40 @@ classdef ImageData < ImageParameters
                     oIm = im + 127.5 - mean(im(:));
                 case 'multiplicative'
                     oIm = im * 127.5 / mean(im(:));
+                case 'sequencerange'
+                    oIm = this.GetSequenceRescaledImage(aFrame, varargin{:});
             end
+        end
+        
+        function oIm = GetSequenceRescaledImage(this, aFrame, varargin)
+            % Rescales voxel values so that the min and max of the image
+            % sequence are 0 and 255 respectively.
+            
+            % Find min and max voxel values in the image sequence.
+            if isempty(this.sequenceMaxIntensity)
+                this.sequenceMaxIntensity = -inf;
+                this.sequenceMinIntensity = inf;
+                for t = 1:this.sequenceLength
+                    fprintf('Computing min and max in frame %d / %d\n',...
+                        t, this.sequenceLength)
+                    im = GetDoubleZStack(this, t);
+                    imMax = max(im(:));
+                    imMin = min(im(:));
+                    this.sequenceMaxIntensity =...
+                        max(this.sequenceMaxIntensity, imMax);
+                    this.sequenceMinIntensity =...
+                        min(this.sequenceMinIntensity, imMin);
+                    
+                end
+                fprintf('Sequence has voxels in the range [%f, %f]\n',...
+                    this.sequenceMinIntensity, this.sequenceMaxIntensity)
+            end
+            
+            oIm = GetDoubleZStack(this, aFrame, varargin{:});
+            % Rescale voxel values so that all voxel values are between 0
+            % and 255 in the image sequence.
+            oIm = (oIm - this.sequenceMinIntensity) /...
+                (this.sequenceMaxIntensity - this.sequenceMinIntensity) * 255;
         end
         
         function oLim = GetTLim(this, aUnit, varargin)
