@@ -18,7 +18,6 @@ basePath = 'C:\CTC2021\Training';
 % The fluorescence experiments are ordered so that the fastest ones are
 % processed first.
 exDirs = {
-    'Fluo-C2DL-Huh7'
     'Fluo-C2DL-MSC'
     'Fluo-N2DH-GOWT1'
     'Fluo-C3DH-A549'
@@ -46,7 +45,7 @@ settingsToOptimize = {
     'SegMinSumIntensity'
     };
 overWriteOldOptimizers = false;
-optimizerName = 'PerExperimentOptimizerCTC2021.mat';
+optimizerName = 'PerExperimentOptimizerCTC2021_June.mat';
 
 exPaths = fullfile(basePath, exDirs);
 

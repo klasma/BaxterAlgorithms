@@ -44,7 +44,7 @@ settingsToOptimize = {
     'SegMinSumIntensity'
     };
 overWriteOldOptimizers = false;
-optimizerName = 'AllExperimentStOptimizerCTC2021.mat';
+optimizerName = 'AllExperimentStOptimizerCTC2021_June.mat';
 
 
 exPaths = fullfile(basePath, exDirs);

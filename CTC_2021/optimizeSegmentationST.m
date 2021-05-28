@@ -17,10 +17,9 @@ addpath(subdirs{1}{:});
 basePath = 'C:\CTC2021\Training';
 exDirs = {
     'Fluo-C2DL-MSC'
-    'Fluo-C3DL-MDA231'
-    'Fluo-C3DH-H157'
     'Fluo-N2DH-GOWT1'
     'Fluo-C3DH-A549'
+    'Fluo-C3DL-MDA231'
     'Fluo-N2DL-HeLa'
     'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
@@ -29,6 +28,7 @@ exDirs = {
     'BF-C2DL-MuSC'
     'BF-C2DL-HSC'
     'Fluo-N3DH-CE'
+    'Fluo-C3DH-H157'
     };
 maxIter = 25;
 
@@ -44,7 +44,7 @@ settingsToOptimize = {
     'SegMinSumIntensity'
     };
 overWriteOldOptimizers = false;
-optimizerName = 'PerExperimentStOptimizerCTC2021.mat';
+optimizerName = 'PerExperimentStOptimizerCTC2021_June.mat';
 
 exPaths = fullfile(basePath, exDirs);
 
