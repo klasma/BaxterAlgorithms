@@ -1,6 +1,6 @@
 % Optimize segmentation jointly on the primary track datasets for CTC 2021.
 
-subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter', pathsep);
+subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
 
 % % Settings to test on.
