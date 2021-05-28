@@ -5,7 +5,8 @@ bits,12
 voxelHeight,3.9683
 channelMin,0
 channelMax,1
-SegMinArea,0
+SegLightCorrect,sequencerange
+SegMinArea,100
 BPSegHighStd,10
 BPSegLowStd,3
 BPSegThreshold,0.01
@@ -15,5 +16,4 @@ SegWHMax,0.01
 SegWatershed2,shape
 SegWSmooth2,0
 SegWHMax2,2
-SegMinArea,100
 SegMinSumIntensity,5
