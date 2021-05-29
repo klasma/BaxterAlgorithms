@@ -46,8 +46,9 @@ settingsToOptimize = {
 overWriteOldOptimizers = false;
 optimizerName = 'AllExperimentStOptimizerCTC2021_June.mat';
 
-
 exPaths = fullfile(basePath, exDirs);
+
+DeleteOldOptimizationCellData(exPaths)
 
 allSettings = AllSettings();
 

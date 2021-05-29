@@ -49,6 +49,8 @@ optimizerName = 'AllExperimentOptimizerCTC2021_June.mat';
 
 exPaths = fullfile(basePath, exDirs);
 
+DeleteOldOptimizationCellData(exPaths)
+
 allSettings = AllSettings();
 
 allSeqPaths = {};

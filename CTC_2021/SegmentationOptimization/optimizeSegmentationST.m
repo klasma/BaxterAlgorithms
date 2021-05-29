@@ -48,6 +48,8 @@ optimizerName = 'PerExperimentStOptimizerCTC2021_June.mat';
 
 exPaths = fullfile(basePath, exDirs);
 
+DeleteOldOptimizationCellData(exPaths)
+
 allSettings = AllSettings();
 
 for i = 1:length(exPaths)
