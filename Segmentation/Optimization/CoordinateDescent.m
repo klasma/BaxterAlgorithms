@@ -132,8 +132,8 @@ while any(~unchanged) && iter < aMaxIter
         if x(i) > aLowerBound(i)
             f_x_min = feval(aFun, x_min);
         else
-            % No need to compute the value if we are below the lower bound.
-            f_x_min = inf;
+            % No need to compute the value at the lower bound.
+            f_x_min = f;
         end
         
         x_max = x;
@@ -153,8 +153,8 @@ while any(~unchanged) && iter < aMaxIter
         if x(i) < aUpperBound(i)
             f_x_max = feval(aFun, x_max);
         else
-            % No need to compute the value if we are above the upper bound.
-            f_x_max = inf;
+            % No need to compute the value at the upper bound.
+            f_x_max = f;
         end
         
         if f_x_min < f && f_x_min < f_x_max
