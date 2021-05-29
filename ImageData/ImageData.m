@@ -408,10 +408,7 @@ classdef ImageData < ImageParameters
             end
         end
         
-        function oIm = GetSequenceRescaledImage(this, aFrame, varargin)
-            % Rescales voxel values so that the min and max of the image
-            % sequence are 0 and 255 respectively.
-            
+        function ComputeSequenceMinAndMax(this)
             % Find min and max voxel values in the image sequence.
             if isempty(this.sequenceMaxIntensity)
                 this.sequenceMaxIntensity = -inf;
@@ -431,6 +428,13 @@ classdef ImageData < ImageParameters
                 fprintf('Sequence has voxels in the range [%f, %f]\n',...
                     this.sequenceMinIntensity, this.sequenceMaxIntensity)
             end
+        end
+        
+        function oIm = GetSequenceRescaledImage(this, aFrame, varargin)
+            % Rescales voxel values so that the min and max of the image
+            % sequence are 0 and 255 respectively.
+            
+            this.ComputeSequenceMinAndMax()
             
             oIm = GetDoubleZStack(this, aFrame, varargin{:});
             % Rescale voxel values so that all voxel values are between 0

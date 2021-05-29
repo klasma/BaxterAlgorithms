@@ -134,6 +134,12 @@ else
     fmt = ['mask%0' num2str(digits) 'd.tif'];
 end
 
+% Pre-compute the min and max of the image sequence so that they are stored
+% permanently in imData. If the computation is performed inside the
+% for-loop, the computation is performed in each iteration and the values
+% are not stored outside the for-loop.
+imData.ComputeSequenceMinAndMax()
+
 parfor i = 1:length(gtFrames)
     fprintf('Segmenting frame %d / %d\n', i, length(gtFrames))
     t = gtFrames(i);
