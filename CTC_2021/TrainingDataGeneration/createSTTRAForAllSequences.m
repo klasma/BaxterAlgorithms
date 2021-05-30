@@ -1,4 +1,4 @@
-subdirs = textscan(genpath(fileparts(fileparts(mfilename('fullpath')))), '%s','delimiter', pathsep);
+subdirs = textscan(genpath(fileparts(fileparts(fileparts(mfilename('fullpath'))))), '%s','delimiter', pathsep);
 addpath(subdirs{1}{:});
 
 basePath = 'C:\CTC2021\Training';
