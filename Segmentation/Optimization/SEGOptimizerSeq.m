@@ -278,7 +278,7 @@ classdef SEGOptimizerSeq < Optimizer
                     settingsArgs{:})
                 
                 % Compute the SEG performance.
-                SEG = PerformanceSEG(this.seqPath, verName, false,...
+                SEG = PerformanceSEG(this.seqPath, verName, true,...
                     'Suffix', this.suffix);
                 
                 % Compute the objective value.
