@@ -1,4 +1,4 @@
-function DeleteOldOptimizationCellData(exPaths)
+function DeleteOldOptimizationCellData(aExPaths)
 % Deletes old CellData folders created by parameter optimization scripts.
 %
 % This should be done before starting a new parameter optimization script,
@@ -9,8 +9,8 @@ function DeleteOldOptimizationCellData(exPaths)
 % exPaths - Cell array with full paths of experiments for which CellData
 %           folders should be removed.
 
-for i = 1:length(exPaths)
-    exPath = exPaths{i};
+for i = 1:length(aExPaths)
+    exPath = aExPaths{i};
     analysisPath = fullfile(exPath, 'Analysis');
     folders = GetNames(analysisPath, '');
     optimizationFolders = regexp(folders, '^CellData_optimization\d+$', 'match', 'once');
