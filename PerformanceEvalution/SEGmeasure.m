@@ -1,4 +1,4 @@
-function SEGmeasure(aResPath, aGtPath, aRelaxed)
+function SEGmeasure(aResPath, aGtPath, aRelaxed, varargin)
 % Computes the SEG measure or the relaxed SEG measure for tracking results.
 %
 % The SEG measure is the measure of segmentation performance that was used
@@ -25,15 +25,22 @@ function SEGmeasure(aResPath, aGtPath, aRelaxed)
 % See also:
 % PerformanceSEG, PerformanceCTC14SEG
 
+% Parse property/value inputs.
+aResFilename = GetArgs({'ResFilename'}, {[]}, true, varargin);
+
 % Find the names of all tif-files with label images.
 resFiles = GetNames(aResPath, 'tif');
 gtFiles = GetNames(aGtPath, 'tif');
 
 % Create the log file.
-if aRelaxed
-    fid = fopen(fullfile(aResPath, 'SEGR_log.txt'), 'w');
+if ~isempty(aResFilename)
+    fid = fopen(fullfile(aResPath, aResFilename), 'w');
 else
-    fid = fopen(fullfile(aResPath, 'SEG_log.txt'), 'w');
+    if aRelaxed
+        fid = fopen(fullfile(aResPath, 'SEGR_log.txt'), 'w');
+    else
+        fid = fopen(fullfile(aResPath, 'SEG_log.txt'), 'w');
+    end
 end
 
 jaccard = [];  % Jaccard indices for all ground truth regions.
@@ -154,7 +161,7 @@ gtCounts = sum(overlaps,2);
 
 % Remove the background counts from the ground truth.
 overlaps = overlaps(2:end,:);
-gtCounts = gtCounts(2:end);
+gtCounts = gtCounts(2:end,:);
 gtNum = gtNum - 1;
 
 % Remove the background counts from the computer generated tracks.

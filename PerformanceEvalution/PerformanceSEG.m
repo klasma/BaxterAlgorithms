@@ -32,7 +32,8 @@ function oMeasure = PerformanceSEG(aSeqPaths, aTestVer, aRelaxed, varargin)
 % SEGmeasure
 
 % Parse property/value inputs.
-[aNumCores, aSuffix] = GetArgs({'NumCores', 'Suffix'}, {1, '_GT'}, true, varargin);
+[aNumCores, aSuffix, aResFilename] = GetArgs(...
+    {'NumCores', 'Suffix', 'ResFilename'}, {1, '_GT', []}, true, varargin);
 
 % Handle cell inputs through recursion.
 if iscell(aSeqPaths)
@@ -71,10 +72,14 @@ resPath = fullfile(imData.GetCellDataDir('Version', aTestVer),...
     'RES', [seqDir '_RES']);
 % File that the performance evaluation will be saved to, so that it does
 % not have to be recomputed the next time.
-if aRelaxed
-    resFile = fullfile(resPath, 'SEGR_log.txt');
+if ~isempty(aResFilename)
+    resFile = fullfile(resPath, aResFilename);
 else
-    resFile = fullfile(resPath, 'SEG_log.txt');
+    if aRelaxed
+        resFile = fullfile(resPath, 'SEGR_log.txt');
+    else
+        resFile = fullfile(resPath, 'SEG_log.txt');
+    end
 end
 
 % Check if the name of the ground truth folder has been abbreviated, if the
@@ -114,7 +119,7 @@ if ~exist(resFile, 'file')
         SaveCellsTif(imData, cells, aTestVer, false);
     end
     
-    SEGmeasure(resPath, gtPath, aRelaxed)
+    SEGmeasure(resPath, gtPath, aRelaxed, 'ResFilename', aResFilename)
 end
 
 % Read the saved file with performance data.
