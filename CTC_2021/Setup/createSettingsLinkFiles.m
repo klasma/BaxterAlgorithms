@@ -14,6 +14,8 @@ for d = 1:length(datasetFolders)
         CreateSettingsLinkFile(exPath, 'Training', '_trained_on_GT_all')
         CreateSettingsLinkFile(exPath, 'Training', '_trained_on_ST')
         CreateSettingsLinkFile(exPath, 'Training', '_trained_on_ST_all')
+        CreateSettingsLinkFile(exPath, 'Training', '_trained_on_GT_plus_ST')
+        CreateSettingsLinkFile(exPath, 'Training', '_trained_on_GT_plus_ST_all')
     end
 end
 

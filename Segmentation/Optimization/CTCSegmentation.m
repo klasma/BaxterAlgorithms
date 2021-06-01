@@ -50,10 +50,10 @@ function CTCSegmentation(aImData, aVer, varargin)
 
 % Parse property/value inputs.
 [evaluationArgs, settingsArgs] =...
-    SelectArgs(varargin, {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix'});
-[aNumImages, aMostCells, aScoringFunction, aSuffix] = GetArgs(...
-    {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix'},...
-    {nan, false, 'SEG', '_GT'}, true, evaluationArgs);
+    SelectArgs(varargin, {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix', 'Suffix2'});
+[aNumImages, aMostCells, aScoringFunction, aSuffix, aSuffix2] = GetArgs(...
+    {'NumImages', 'MostCells', 'ScoringFunction', 'Suffix', 'Suffix2'},...
+    {nan, false, 'SEG', '_GT', []}, true, evaluationArgs);
 
 imData = aImData;
 
@@ -109,6 +109,44 @@ switch aScoringFunction
                 end
             end
         end
+    case '0.45*SEG1+0.45*SEG2+0.1*DET'
+        % Find the frames in which there are segmentation ground truths.
+        
+        assert(~aMostCells,...
+            ['The alternative MostCells is not available for the '...
+            'scoring function 0.45*SEG1+0.45*SEG2+0.1*DET.'])
+        
+        seqDir = imData.GetSeqDir();
+        
+        gtPath1 = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
+        if ~exist(gtPath1, 'dir')
+            % If the ground truth folder is not found, we check if the folder
+            % name has been abbreviated.
+            gtPath1 = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
+        end
+        if ~exist(gtPath1, 'dir')
+            error('No ground truth exists for %s', imData.seqPath)
+        end
+        gtFrames1 = FindGtFrames(gtPath1);
+        
+        gtPath2 = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix2], 'SEG');
+        if ~exist(gtPath2, 'dir')
+            % If the ground truth folder is not found, we check if the folder
+            % name has been abbreviated.
+            gtPath2 = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix2], 'SEG');
+        end
+        if ~exist(gtPath2, 'dir')
+            error('No second ground truth exists for %s', imData.seqPath)
+        end
+        gtFrames2 = FindGtFrames(gtPath2);
+        assert(isempty(setdiff(gtFrames2, 1:length(gtFrames2))),...
+            ['The frames of the second ground truth must be '...
+            'consecutive and start with 1.'])
+        
+        numFramesWithGt = length(union(gtFrames1, gtFrames2));
+        gtFrames = FindFramesToSegment(gtFrames1,...
+            length(gtFrames2),...
+            max(length(gtFrames1), min(aNumImages, numFramesWithGt)));
     case '(SEG+TRA)/2'
         gtFrames = 1:imData.sequenceLength;
     otherwise
@@ -167,7 +205,8 @@ parfor i = 1:length(gtFrames)
 end
 
 % Convert to tracking format if the scoring function is '0.9*SEG+0.1*DET'.
-if strcmp(aScoringFunction, '0.9*SEG+0.1*DET')
+if strcmp(aScoringFunction, '0.9*SEG+0.1*DET') ||...
+        strcmp(aScoringFunction, '0.45*SEG1+0.45*SEG2+0.1*DET')
     totalCellCount = 0;
     frameCellCounts = zeros(1, imData.sequenceLength);
     for i = 1:length(gtFrames)
