@@ -146,7 +146,7 @@ switch aScoringFunction
         numFramesWithGt = length(union(gtFrames1, gtFrames2));
         gtFrames = FindFramesToSegment(gtFrames1,...
             length(gtFrames2),...
-            max(length(gtFrames1), min(aNumImages, numFramesWithGt)));
+            min(length(gtFrames1) + aNumImages, numFramesWithGt));
     case '(SEG+TRA)/2'
         gtFrames = 1:imData.sequenceLength;
     otherwise
