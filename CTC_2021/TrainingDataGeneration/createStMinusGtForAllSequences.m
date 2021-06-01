@@ -28,4 +28,4 @@ for i = 1:length(exDirs)
     end
 end
 
-fprintf('Done creating ST-TRA folders\n')
+fprintf('Done creating ST_minus_GT folders.\n')
