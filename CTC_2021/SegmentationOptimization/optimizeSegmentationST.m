@@ -16,12 +16,12 @@ addpath(subdirs{1}{:});
 % Real settings.
 basePath = 'C:\CTC2021\Training';
 exDirs = {
-    'Fluo-C2DL-MSC'
-    'Fluo-N2DH-GOWT1'
-    'Fluo-C3DH-A549'
-    'Fluo-C3DL-MDA231'
-    'Fluo-N2DL-HeLa'
-    'Fluo-N3DH-CHO'
+    %'Fluo-C2DL-MSC'
+    %'Fluo-N2DH-GOWT1'
+    %'Fluo-C3DH-A549'
+    %'Fluo-C3DL-MDA231'
+    %'Fluo-N2DL-HeLa'
+    %'Fluo-N3DH-CHO'
     'PhC-C2DL-PSC'
     'PhC-C2DH-U373'
     'DIC-C2DH-HeLa'
