@@ -3,22 +3,18 @@
 
 dataSetFolder = 'C:\CTC2021\Challenge';
 
-suffix = '_trained_on_GT_all';
+% suffix = '_trained_on_GT';
+% suffix = '_trained_on_GT_all';
+% suffix = '_trained_on_GT_plus_ST';
+% suffix = '_trained_on_GT_plus_ST_all';
+% suffix = '_trained_on_ST';
+suffix = '_trained_on_ST_all';
 
 currentPath = fileparts(mfilename('fullpath'));
 settingsFolder = fullfile(currentPath, '..', '..', 'Files', 'Settings', ['CTC2021' suffix]);
 
-exDirs = {
-    'Fluo-C2DL-MSC'
-    'Fluo-N2DH-GOWT1'
-    'Fluo-C3DH-A549'
-    'Fluo-C3DL-MDA231'
-    'Fluo-N2DL-HeLa'
-    'Fluo-N3DH-CHO'
-    'PhC-C2DL-PSC'
-    'Fluo-N3DH-CE'
-    'Fluo-C3DH-H157'
-    };
+exDirs = GetNames(dataSetFolder, '');
+exDirs = setdiff(exDirs, {'Fluo-C2DL-Huh7', 'SegmentationOptimizers'});
 
 for e = 1:length(exDirs)
     exPath = fullfile(dataSetFolder, exDirs{e});
