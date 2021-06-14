@@ -1,5 +1,5 @@
-version = '_210613_022234_trained_on_ST_all';
-versionCE = '_210614_015659_trained_on_ST_all';
+version = '_210613_022234_trained_on_GT_plus_ST_all';
+versionCE = '_210614_015659_trained_on_GT_plus_ST_all';
 
 exDirs = {...
     'BF-C2DL-HSC'
@@ -16,5 +16,5 @@ exDirs = {...
     'PhC-C2DH-U373'
     'PhC-C2DL-PSC'};
 
-CopyResultsToSubmission(exDirs, version, '-allST')
-CopyResultsToSubmission('Fluo-N3DH-CE', versionCE, '-allST')
+CopyResultsToSubmission(exDirs, version, '-allGT+allST')
+CopyResultsToSubmission('Fluo-N3DH-CE', versionCE, '-allGT+allST')
