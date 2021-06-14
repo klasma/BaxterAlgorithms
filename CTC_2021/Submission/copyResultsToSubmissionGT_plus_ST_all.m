@@ -16,4 +16,4 @@ exDirs = {...
     'PhC-C2DL-PSC'};
 
 CopyResultsToSubmission(exDirs, version, '-allGT+allST')
-CopyResultsToSubmission('Fluo-N3DH-CE', versionCE, '-allGT+allST')
+CopyResultsToSubmission({'Fluo-N3DH-CE'}, versionCE, '-allGT+allST')
