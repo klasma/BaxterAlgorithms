@@ -5,7 +5,6 @@ exDirs = {...
     'BF-C2DL-HSC'
     'BF-C2DL-MuSC'
     'DIC-C2DH-HeLa'
-    'Fluo-C2DL-Huh7'
     'Fluo-C2DL-MSC'
     'Fluo-C3DH-A549'
     'Fluo-C3DH-H157'
