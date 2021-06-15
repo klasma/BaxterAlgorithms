@@ -29,15 +29,19 @@ exDirs = {
     'PhC-C2DL-PSC'
     'Fluo-N3DH-CE'
     'Fluo-C3DH-H157'
+    'PhC-C2DH-U373'
+    'DIC-C2DH-HeLa'
+    'BF-C2DL-MuSC'
+    'BF-C2DL-HSC'
     };
 
 configurationsAndSuffixes = {
     'GT' '_trained_on_GT'
     'ST' '_trained_on_ST'
-    'GT+ST' '_trained_on_GT'
+    'GT+ST' '_trained_on_GT_plus_ST'
     'allGT' '_trained_on_GT_all'
     'allST' '_trained_on_ST_all'
-    'allGT+allST' '_trained_on_GT_all'
+    'allGT+allST' '_trained_on_GT_plus_ST_all'
     };
 
 for i = 1:length(exDirs)
