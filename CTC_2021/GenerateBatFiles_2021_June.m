@@ -20,6 +20,15 @@ addpath(subdirs{1}{:});
 base = fileparts(fileparts(mfilename('fullpath')));  % SW.
 
 exDirs = {
+    'Fluo-C2DL-MSC'
+    'Fluo-N2DH-GOWT1'
+    'Fluo-C3DH-A549'
+    'Fluo-C3DL-MDA231'
+    'Fluo-N2DL-HeLa'
+    'Fluo-N3DH-CHO'
+    'PhC-C2DL-PSC'
+    'Fluo-N3DH-CE'
+    'Fluo-C3DH-H157'
     'PhC-C2DH-U373'
     'DIC-C2DH-HeLa'
     'BF-C2DL-MuSC'
@@ -29,7 +38,10 @@ exDirs = {
 configurationsAndSuffixes = {
     'GT' '_trained_on_GT'
     'ST' '_trained_on_ST'
-    'GT+ST' '_trained_on_GT'
+    'GT+ST' '_trained_on_GT_plus_ST'
+    'allGT' '_trained_on_GT_all'
+    'allST' '_trained_on_ST_all'
+    'allGT+allST' '_trained_on_GT_plus_ST_all'
     };
 
 for i = 1:length(exDirs)

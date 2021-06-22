@@ -1,0 +1,6 @@
+copyResultsToSubmissionGT
+copyResultsToSubmissionGT_all
+copyResultsToSubmissionGT_plus_ST
+copyResultsToSubmissionGT_plus_ST_all
+copyResultsToSubmissionST
+copyResultsToSubmissionST_all
