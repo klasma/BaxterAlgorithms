@@ -66,7 +66,7 @@ imData = ImageData(aSeqPaths);
 seqDir = imData.GetSeqDir();
 
 % Folder with ground truth.
-gtPath = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
+gtPath = fullfile(imData.GetGroundTruthPath(aSuffix, true), 'SEG');
 % Folder with tracking results.
 resPath = fullfile(imData.GetCellDataDir('Version', aTestVer),...
     'RES', [seqDir '_RES']);
@@ -82,16 +82,6 @@ else
     end
 end
 
-% Check if the name of the ground truth folder has been abbreviated, if the
-% folder cannot be found.
-if ~exist(gtPath, 'dir')
-    alt = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
-    if exist(alt, 'dir')
-        gtPath = alt;
-    else
-        error('No ground truth folder found.')
-    end
-end
 
 % Check if the name of the folder with tracking results has been
 % abbreviated, if the folder cannot be found.

@@ -66,15 +66,7 @@ switch aScoringFunction
     case {'SEG' '0.9*SEG+0.1*DET'}
         % Find the frames in which there are segmentation ground truths.
         seqDir = imData.GetSeqDir();
-        gtPath = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
-        if ~exist(gtPath, 'dir')
-            % If the ground truth folder is not found, we check if the folder
-            % name has been abbreviated.
-            gtPath = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
-        end
-        if ~exist(gtPath, 'dir')
-            error('No ground truth exists for %s', imData.seqPath)
-        end
+        gtPath = fullfile(imData.GetGroundTruthPath(aSuffix, true), 'SEG');
         
         % Find the frames with ground truth segmentations.
         gtImages = GetNames(gtPath, 'tif');
@@ -118,27 +110,11 @@ switch aScoringFunction
         
         seqDir = imData.GetSeqDir();
         
-        gtPath1 = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix], 'SEG');
-        if ~exist(gtPath1, 'dir')
-            % If the ground truth folder is not found, we check if the folder
-            % name has been abbreviated.
-            gtPath1 = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix], 'SEG');
-        end
-        if ~exist(gtPath1, 'dir')
-            error('No ground truth exists for %s', imData.seqPath)
-        end
+        gtPath1 = fullfile(imData.GetGroundTruthPath(aSuffix, true), 'SEG');
         gtFrames1 = FindGtFrames(gtPath1);
-        
-        gtPath2 = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix2], 'SEG');
-        if ~exist(gtPath2, 'dir')
-            % If the ground truth folder is not found, we check if the folder
-            % name has been abbreviated.
-            gtPath2 = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix2], 'SEG');
-        end
-        if ~exist(gtPath2, 'dir')
-            error('No second ground truth exists for %s', imData.seqPath)
-        end
+        gtPath2 = fullfile(imData.GetGroundTruthPath(aSuffix2, true), 'SEG');
         gtFrames2 = FindGtFrames(gtPath2);
+        
         assert(isempty(setdiff(gtFrames2, 1:length(gtFrames2))),...
             ['The frames of the second ground truth must be '...
             'consecutive and start with 1.'])

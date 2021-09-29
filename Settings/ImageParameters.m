@@ -243,6 +243,55 @@ classdef ImageParameters < Map
             oPath = fullfile(this.GetExPath(), 'Analysis');
         end
         
+        function oPath = GetGroundTruthPath(this, aSuffix, aThrowIfNoGt)
+            % Finds the path of a ground truth folder if one exists.
+            %
+            % The ground truth folder can be located either in the analysis
+            % folder or in the same folder as the image sequence. The name
+            % of the ground truth folder is the name of the image sequence
+            % folder followed by the suffix. If the ground truth folder is
+            % in the analysis folder, the image sequence name may have been
+            % abbreviated to the two last letters ('01' or '02').
+            %
+            % Inputs:
+            % aSuffix - The suffix which specifies the type of ground
+            %           truth. Either '_GT' for gold or '_ST' for silver.
+            % aThrowIfNoGt - I true, an error is thrown if no ground truth
+            %                folder exists, otherwise, an empty array is
+            %                returned.
+            %
+            % Outputs:
+            % oPath - The full path of the ground truth folder.
+            
+            seqDir = this.GetSeqDir();
+            oPath = fullfile(this.GetAnalysisPath(), [seqDir aSuffix]);
+            
+            % Handle ground truth folders where only the two last letters
+            % of the image sequence name are included in the folder name.
+            % That naming was used in the cell tracking challenges, but
+            % does not make sense for image sequence names which do not end
+            % with two digits. 
+            if ~exist(oPath, 'dir')
+                oPath = fullfile(this.GetAnalysisPath(),...
+                    [seqDir(end-1:end) aSuffix]);
+            end
+            
+            % If the ground truth folder is not found, we check if the
+            % ground truth folder is next to the image sequence, as in the
+            % folder structure in the cell tracking challenges.
+            if ~exist(oPath, 'dir')
+                oPath = fullfile([this.seqPath aSuffix]);
+            end
+            
+            if ~exist(oPath, 'dir')
+                if aThrowIfNoGt
+                    error('No ground truth folder found.')
+                else
+                    oPath = [];
+                end
+            end
+        end
+        
         function oColor = GetColor(this, aChannel)
             % Returns the color used to display a specific channel.
             %

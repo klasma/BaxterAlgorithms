@@ -111,20 +111,7 @@ if ~HasVersion(aSeqPaths, aTestVer)
 end
 
 % Folder with ground truth.
-gtPath = fullfile(imData.GetAnalysisPath(), [seqDir aSuffix]);
-
-% Handle ground truth folders where only the two last letters of the image
-% sequence name are included in the folder name. That naming was used in
-% the cell tracking challenges, but does not make sense for image sequence
-% names which do not end with two digits.
-if ~exist(gtPath, 'dir')
-    alt = fullfile(imData.GetAnalysisPath(), [seqDir(end-1:end) aSuffix]);
-    if exist(alt, 'dir')
-        gtPath = alt;
-    else
-        error('No ground truth folder found.')
-    end
-end
+gtPath = imData.GetGroundTruthPath(aSuffix, true);
 
 % Folder with results.
 resPath = fullfile(imData.GetCellDataDir('Version', aTestVer),...
