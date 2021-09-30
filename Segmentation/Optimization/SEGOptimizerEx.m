@@ -73,7 +73,9 @@ classdef SEGOptimizerEx < Optimizer
             % NumImages - The maximum number of time points in each image
             %             sequence that will be included in the
             %             optimization. This input is only used if
-            %             ScoringFunction is 'SEG'.
+            %             ScoringFunction is 'SEG'. If this parameter is
+            %             set to NaN, all images with a segmentation ground
+            %             truth will be segmented.
             % MostCells - If this is set to true, the optimization will be
             %             performed on the images with most cells, when the
             %             number of time points with a segmentation ground

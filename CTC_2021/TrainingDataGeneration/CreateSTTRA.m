@@ -6,12 +6,7 @@ function CreateSTTRA(aSeqPath)
 
 imData = ImageData(aSeqPath);
 
-seqDir = imData.GetSeqDir();
-num = seqDir(end-1:end);
-pathST = fullfile(....
-    imData.GetExPath,...
-    'Analysis',...
-    [num, '_ST']);
+pathST = imData.GetGroundTruthPath('_ST', true);
 pathSEG = fullfile(pathST, 'SEG');
 pathTRA = fullfile(pathST, 'TRA');
 

@@ -10,10 +10,12 @@ switch aGtType
         suffix = '_GT';
         suffix2 = [];
         longName = 'GT';
+        numImages = nan;
     case 'ST'
         suffix = '_ST';
         suffix2 = [];
         longName = 'ST';
+        numImages = 32;
     case 'GT+ST'
         suffix = '_GT';
         suffix2 = '_ST_minus_GT';
@@ -69,7 +71,18 @@ for j = 1:length(seqDirs)
         sprintf('Settings_ISBI_2021_Challenge_%s-%s_trained_on_%s_new.csv', aExDir, seqDirs{j}, longName));
 end
 
+% Create faked TRA ground truths for ST-folders if necessary.
+if strcmp(aGtType, 'GT') || strcmp(aGtType, 'ST')
+    for j = 1:length(seqDirs)
+        fprintf('Creating a TRA folder for the ST-ground truth of image sequence %d / %d\n', j, length(seqDirs))
+        if ~exist(fullfile(initialImData(j).GetGroundTruthPath('_ST'), 'TRA'), 'dir')
+            CreateSTTRA(initialImData(j).seqPath)
+        end
+    end
+end
+
 optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
+    'NumImages', numImages,...
     'SavePaths', optimizedSettingsPaths,...
     'InitialImData', initialImData,...
     'ScoringFunction', '0.9*SEG+0.1*DET',...
