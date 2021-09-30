@@ -17,3 +17,11 @@ SegWatershed2,shape
 SegWSmooth2,0
 SegWHMax2,2
 SegMinSumIntensity,5
+foiErosion,0
+SegGbRamPerFrameCTC,1
+TrackSaveFPAsCells,1
+TrackPAppear,1E-3
+TrackPDisappear,1E-3
+TrackXSpeedStd,15
+TrackZSpeedStd,15
+TrackSaveCTC,1
