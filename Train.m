@@ -11,15 +11,19 @@ switch aGtType
         suffix2 = [];
         longName = 'GT';
         numImages = nan;
+        scoringFunction = '0.9*SEG+0.1*DET';
     case 'ST'
         suffix = '_ST';
         suffix2 = [];
         longName = 'ST';
         numImages = 32;
+        scoringFunction = '0.9*SEG+0.1*DET';
     case 'GT+ST'
         suffix = '_GT';
         suffix2 = '_ST_minus_GT';
         longName = 'GT_plus_ST';
+        numImages = 32;
+        scoringFunction = '0.45*SEG1+0.45*SEG2+0.1*DET';
     otherwise
         error('aGtType must be either ''GT'', ''ST'' or ''GT+ST''')
 end
@@ -72,7 +76,7 @@ for j = 1:length(seqDirs)
 end
 
 % Create faked TRA ground truths for ST-folders if necessary.
-if strcmp(aGtType, 'GT') || strcmp(aGtType, 'ST')
+if strcmp(aGtType, 'ST')
     for j = 1:length(seqDirs)
         fprintf('Creating a TRA folder for the ST-ground truth of image sequence %d / %d\n', j, length(seqDirs))
         if ~exist(fullfile(initialImData(j).GetGroundTruthPath('_ST'), 'TRA'), 'dir')
@@ -81,11 +85,22 @@ if strcmp(aGtType, 'GT') || strcmp(aGtType, 'ST')
     end
 end
 
+% Create an ST ground truth without objects that are present in the GT
+% ground truth if necessary.
+if strcmp(aGtType, 'GT+ST')
+    for j = 1:length(seqDirs)
+        fprintf('Creating a ST_minus_GT ground truth folder of image sequence %d / %d\n', j, length(seqDirs))
+        if ~exist(fullfile(initialImData(j).GetGroundTruthPath('_ST'), 'TRA'), 'dir')
+            CreateStMinusGt(initialImData(j).seqPath)
+        end
+    end
+end
+
 optimizer = SEGOptimizerEx(seqPaths, settingsToOptimize,...
     'NumImages', numImages,...
     'SavePaths', optimizedSettingsPaths,...
     'InitialImData', initialImData,...
-    'ScoringFunction', '0.9*SEG+0.1*DET',...
+    'ScoringFunction', scoringFunction,...
     'Suffix', suffix,...
     'Suffix2', suffix2,...
     'Plot', true);
