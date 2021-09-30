@@ -8,7 +8,7 @@ function Train(aExDirs, aGtType)
 %
 % To optimize segmentation parameters for a dataset, the dataset folder
 % must be placed next to the SW-folder (the top folder of the
-% git-repository). The settings are saved to a csv-file in one of the
+% git-repository). The settings are saved to csv-files in one of the
 % folders CTC2021_trained_on_GT, CTC2021_trained_on_ST,
 % CTC2021_trained_on_GT_plus_ST, CTC2021_trained_on_GT_all,
 % CTC2021_trained_on_ST_all and CTC2021_trained_on_GT_plus_ST_all in
