@@ -1,5 +1,27 @@
 function Train(aExDirs, aGtType)
-% Optimize segmentation on the primary track datasets for CTC 2021.
+% Optimizes segmentation on the primary track datasets for CTC 2021.
+%
+% For the challenge, the segmentation parameters were optimized using the
+% scripts in CTC_2021\SegmentationOptimization. This function was added
+% after the initial submission to make it easier to reproduce the training
+% of segmentation parameters.
+%
+% To optimize segmentation parameters for a dataset, the dataset folder
+% must be placed next to the SW-folder (the top folder of the
+% git-repository). The settings are saved to a csv-file in one of the
+% folders CTC2021_trained_on_GT, CTC2021_trained_on_ST,
+% CTC2021_trained_on_GT_plus_ST, CTC2021_trained_on_GT_all,
+% CTC2021_trained_on_ST_all and CTC2021_trained_on_GT_plus_ST_all in
+% Files\Settings. The csv-files are given the same names as the existing
+% csv-files for the training data, but '_new' is added as a suffix.
+%
+% Inputs:
+% aExDirs - Cell array with dataset names (e.g. {'Fluo-C2DL-MSC'}). The
+%           input must be a cell array even if a single dataset is
+%           processed. If multiple datasets are given as input, the
+%           segmentation parameters are optimized jointly on all datasets.
+% aGtType - The type of ground truth that should be used for training
+%           ('GT', 'ST', 'GT+ST', 'allGT', 'allST' or 'allGT+allST').
 
 swPath = fileparts(mfilename('fullpath'));
 subdirs = textscan(genpath(swPath), '%s', 'delimiter', pathsep);
