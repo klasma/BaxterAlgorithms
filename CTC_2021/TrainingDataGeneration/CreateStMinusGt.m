@@ -2,27 +2,15 @@ function CreateStMinusGt(aSeqPath)
 
 imData = ImageData(aSeqPath);
 
-seqDir = imData.GetSeqDir();
-num = seqDir(end-1:end);
-
-gtPath = fullfile(....
-    imData.GetExPath(),...
-    'Analysis',...
-    [num, '_GT']);
+gtPath = imData.GetGroundTruthPath('_GT', true);
 gtSegPath = fullfile(gtPath, 'SEG');
 gtTraPath = fullfile(gtPath, 'TRA');
 gtSegFiles = GetNames(gtSegPath, 'tif');
 
-stPath = fullfile(....
-    imData.GetExPath(),...
-    'Analysis',...
-    [num, '_ST']);
+stPath = imData.GetGroundTruthPath('_ST', true);
 stSegPath = fullfile(stPath, 'SEG');
 
-stMinusGtPath = fullfile(....
-    imData.GetExPath(),...
-    'Analysis',...
-    [num, '_ST_minus_GT']);
+stMinusGtPath = [stPath '_minus_GT'];
 stMinusGtSegPath = fullfile(stMinusGtPath, 'SEG');
 
 if imData.sequenceLength <= 1000
