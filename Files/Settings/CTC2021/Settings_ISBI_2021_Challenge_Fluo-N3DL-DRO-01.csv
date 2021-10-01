@@ -72,7 +72,7 @@ foiErosion,0
 TrackComputeAllFeatures,0
 TrackSaveIterations,0
 TrackSavePTC,0
-TrackSaveCTC,0
+TrackSaveCTC,1
 condition,Unspecified
 pixelSize,6.496
 magnification,16
@@ -110,7 +110,7 @@ SegWThresh2,-Inf
 SegWUpSampling2,3
 TrackGMmahal_thresh,1
 SegTopHatRadius,Inf
-TrackSaveCSB,1
+TrackSaveCSB,0
 TrackRelinkSelectedCells,1
 SegGbRamPerFrameCTC,20
 SegNumBlocks,1  1  1

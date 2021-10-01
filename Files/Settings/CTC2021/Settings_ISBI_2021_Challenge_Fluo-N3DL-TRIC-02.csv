@@ -68,7 +68,7 @@ TrackMergeBrokenRatio,0.75
 foiErosion,0
 TrackSaveIterations,0
 TrackSavePTC,0
-TrackSaveCTC,0
+TrackSaveCTC,1
 TrackEvaluateCTC,0
 TrackSelectFromGT,1
 condition,Unspecified
@@ -111,7 +111,7 @@ TrackGMr,2
 TrackGMq,0.5
 TrackGMReductionMethod,GMMmergeKLdiv
 TrackGMmahal_thresh,1
-TrackSaveCSB,1
+TrackSaveCSB,0
 TrackRelinkSelectedCells,0
 SegNumBlocks,1  1  1
 TrackSaveMat,0
