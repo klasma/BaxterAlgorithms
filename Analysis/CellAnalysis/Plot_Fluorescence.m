@@ -66,6 +66,8 @@ for i = 1:length(aCells)
             fluor = c.regionProps.(['FluorMax' aChannel]);
         case 'avg'
             fluor = c.regionProps.(['FluorAvg' aChannel]);
+        case 'test'
+            fluor = c.regionProps.(['FluorAvg' aChannel]);    
         case 'tot'
             fluor = c.regionProps.(['FluorTot' aChannel]);
             if strcmpi(aYUnit, 'microns')
