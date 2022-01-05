@@ -46,8 +46,9 @@ for i = 1:length(bp) - 1
         % Plot a normal line.
         start = bp(i);
         stop = bp(i + 1) - 1;
-        plot3(aAxes, aX(start : stop), aY(start : stop),aZ(start : stop), varargin{:})
+        plot3(aAxes, aX(start : stop), aY(start : stop),aZ(start : stop),varargin{:})
         alpha(.1);
+        grid on
         hold(aAxes, 'on')
     end
 end

@@ -39,7 +39,7 @@ function Plot_Fluorescence(aCells, aAxes, aChannel,aChannel2,Color, varargin)
     {'XUnit', 'YUnit', 'Metric'},...
     {'hours', 'microns', 'max'},...
     true, varargin);
-
+aMetric= 'avg';
 % Clear the previous plot.
 % cla(aAxes)
 % hold(aAxes, 'off')
@@ -48,10 +48,9 @@ if isempty(aCells)
     return
 end
 imData = aCells(1).imageData;
-
+%     BronkBox=cell(length(cells2),max([cells2.stopT]));
 for i = 1:length(aCells)
     c = aCells(i);
-    
     % Time (x-coordinates of plot).
     switch aXUnit
         case 'hours'
@@ -97,7 +96,11 @@ for i = 1:length(aCells)
             end
     end
     % Plot the fluorescence over time for one cell.
-    PlotWithNan3D(aAxes, t, fluor,fluor2,'color',Color,...
+    Color=Color;
+    Color2=Color+0.4*((i-1)/length(aCells));
+    Color2(Color2>1)=1;
+    Color2(Color2<0)=1;
+    PlotWithNan3D(aAxes, t, fluor,fluor2,'color',Color2,...
         'LineWidth', 2);
 %     alpha(.5);
     hold(aAxes, 'on')
