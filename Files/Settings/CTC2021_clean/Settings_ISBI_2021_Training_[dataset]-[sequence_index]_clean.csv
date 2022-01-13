@@ -1,0 +1,27 @@
+setting,[the name of the image sequence folder, called [sequence_index] in Readme.md]
+numZ,[number of z-planes in each z-stack, 1 for 2D data]
+zStacked,[0 for 2D data and 1 for 3D data]
+bits,[the number of camera bits]
+voxelHeight,[ratio between voxel height and voxel width]
+channelMin,0
+channelMax,1
+SegLightCorrect,sequencerange
+SegMinArea,100
+BPSegHighStd,10
+BPSegLowStd,3
+BPSegThreshold,0.01
+SegWatershed,intermediate
+SegWSmooth,0
+SegWHMax,0.01
+SegWatershed2,shape
+SegWSmooth2,0
+SegWHMax2,2
+SegMinSumIntensity,5
+foiErosion,[minimum distance in pixels that an object has to extend into the image from the image boundary to be segmented]
+SegGbRamPerFrameCTC,[number of GB of RAM needed to segment one frame, try 1 for small 2D data and 10 for large z-stacks]
+TrackSaveFPAsCells,1
+TrackPAppear,1E-3
+TrackPDisappear,1E-3
+TrackXSpeedStd,15
+TrackZSpeedStd,15
+TrackSaveCTC,1
