@@ -2,7 +2,7 @@ setting,[the name of the image sequence folder, called [sequence_index] in Readm
 numZ,[number of z-planes in each z-stack, 1 for 2D data]
 zStacked,[0 for 2D data and 1 for 3D data]
 bits,[the number of camera bits]
-voxelHeight,[ratio between voxel height and voxel width]
+voxelHeight,[ratio between the distance between z-planes and the pixel size for 3D data, use 1 for 2D data]
 channelMin,0
 channelMax,1
 SegLightCorrect,sequencerange
