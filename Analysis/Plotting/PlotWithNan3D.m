@@ -1,4 +1,4 @@
-function PlotWithNan3D(aAxes, aX, aY,aZ, varargin)
+function PlotWithNan3D(aAxes,aX, aY,aZ, varargin)
 % Plots a curve and fills in gaps of NaNs with dotted lines.
 %
 % The built in plot function in MATLAB will create gaps in the lines in
@@ -21,7 +21,7 @@ if isempty(aX)
 end
 
 % Get the original hold-setting.
-hSet = ishold(aAxes);
+% hSet = ishold(aAxes);
 
 % Find breakpoints between NaN-values and other values. There will be 1s at
 % each start of a new interval and at the first and the last element.
@@ -33,8 +33,7 @@ for i = 1:length(bp) - 1
             % Plot a dotted line over a NaN-gap.
             start = bp(i)-1;
             stop = bp(i + 1);
-            plot3(aAxes,...
-                [aX(start);  aX(stop)],...
+            plot3([aX(start);  aX(stop)],...
                 [aY(start);  aY(stop)],...
                 [aZ(start);  aZ(stop)],...
                 varargin{:},...
@@ -46,15 +45,14 @@ for i = 1:length(bp) - 1
         % Plot a normal line.
         start = bp(i);
         stop = bp(i + 1) - 1;
-        plot3(aAxes, aX(start : stop), aY(start : stop),aZ(start : stop),varargin{:})
+        plot3(aX(start : stop), aY(start : stop),aZ(start : stop),'o',varargin{:})
         alpha(.1);
         grid on
-        hold(aAxes, 'on')
+%         hold(aAxes, 'on')
     end
 end
 
 % Restore the original hold-setting.
-if ~hSet
-    hold(aAxes, 'off')
-end
+% if ~hSet
+%     hold(aAxes, 'off')
 end

@@ -1,5 +1,5 @@
-seqPath = 'D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isa\2021-10-02-BigPRoteinScreen\2021-12-31-TestMultiTimepoint\Baxter\';
-TrackVersion='_211231_152842';
+seqPath = 'D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isa\2021-10-11-BigProteinFollowUp\Analysis\Baxter\';
+TrackVersion='_220105_121225';
 FilePath=fullfile(seqPath,'Analysis',strcat('CellData',TrackVersion),'Compact');
 a=dir(fullfile(FilePath,'*.mat'));
 b={a.name};
@@ -19,7 +19,7 @@ for m=1:length(d)
     fluorProps = cellfun(@fieldnames, fluorProps,'UniformOutput', false);
     fluorProps = unique(cat(1,fluorProps{:}))';
     
-    Plot_Fluorescence3D(cells,ax2,'Cyt','Debris',rand(1,3));
+%     Plot_Fluorescence3D(cells,ax2,'Cyt','Debris',rand(1,3));
 %      BronkBox=cell(length(cells),max([cells.stopT]),length(fluorProps),NumWells);
 for k=1:length(fluorProps);
     currProp=fluorProps{k};
@@ -46,8 +46,13 @@ sums=sum(Data(:,:,:,:),'omitnan');
 CVs=stds./means;
 figure, ax1 = axes('Position',[0.1 0.1 0.7 0.7]);
 % figure,
+xbar=categorical(d);
+ybar=[];
 for n=1:length(d)
-PlotWithNan3D(ax1,1:length(d),means(:,:,1,n),means(:,:,6,n));
+% PlotWithNan3D(ax1,n*ones(size(Data(:,:,6,n))),Data(:,:,1,n),Data(:,:,6,n));
+% swarmchart(n*ones(size(sums(:,:,6,n))),sums(:,:,1,n));
+ybar=cat(2,ybar,[sums(:,:,1,n)]);
+
 %   scatter(means(:,:,1,n),means(:,:,6,n));
 hold on
 end

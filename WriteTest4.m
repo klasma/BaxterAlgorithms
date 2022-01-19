@@ -1,27 +1,32 @@
-seqPath = 'D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isa\2021-10-02-BigPRoteinScreen\2021-12-31-TestMultiTimepoint\Baxter\';
-TrackVersion='_211231_152842';
+seqPath = 'D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-11-15-Ai9CMAX PRotein Screen\Analysis\Baxter';
+TrackVersion='_220106_115446';
 FilePath=fullfile(seqPath,'Analysis',strcat('CellData',TrackVersion),'Compact');
 a=dir(fullfile(FilePath,'*.mat'));
 b={a.name};
 HasCells=[a.bytes];
-c=~(HasCells>185);
+blank=~(HasCells>185);
 d=b;
-d(c) =[];
+d(blank) =[];
 
 
-figure, ax2 = axes('Position',[0.1 0.1 0.7 0.7]);
-for m=1:length(d)
-        Run=d{1,m};
-        Run=Run(1:end-4)
-        cellPath=strcat(seqPath,Run);
-        cells = LoadCells (cellPath , TrackVersion,'AreCells', true, 'Compact', true);
+ax2 = axes;
+for m=1:length(b)
+    Run=b{1,m};
+    Run=Run(1:end-4)
+    if blank(m)
+        BronkBox{1,1,1,m}={};    
+    else
+    
+        cellPath=strcat(seqPath,'\',Run);
+        cells = LoadCells(cellPath, TrackVersion, 'Compact', true);
         fluorProps = {cells.regionProps};
     fluorProps = cellfun(@fieldnames, fluorProps,'UniformOutput', false);
     fluorProps = unique(cat(1,fluorProps{:}))';
-    
-    Plot_Fluorescence3D(cells,ax2,'Cyt','Debris',rand(1,3));
+        x_in=m;
+%      Plot_Fluorescence3D_2(cells,ax2,'c01','c01',rand(1,3),x_in);
+     hold on
 %      BronkBox=cell(length(cells),max([cells.stopT]),length(fluorProps),NumWells);
-for k=1:length(fluorProps);
+for k=1:length(fluorProps)
     currProp=fluorProps{k};
     Test='MinorAxisLength';
 for j=1:length(cells)
@@ -34,6 +39,7 @@ for j=1:length(cells)
     end
 end
 end
+    end
 end
 empties=cellfun('isempty',BronkBox);
 BronkBox(empties) = {NaN};
@@ -44,10 +50,15 @@ stds=std(Data(:,:,:,:),'omitnan');
 vars=var(Data(:,:,:,:),'omitnan');
 sums=sum(Data(:,:,:,:),'omitnan');
 CVs=stds./means;
-figure, ax1 = axes('Position',[0.1 0.1 0.7 0.7]);
-% figure,
-for n=1:length(d)
-PlotWithNan3D(ax1,1:length(d),means(:,:,1,n),means(:,:,6,n));
-%   scatter(means(:,:,1,n),means(:,:,6,n));
-hold on
-end
+% figure, ax1 = axes('Position',[0.1 0.1 0.7 0.7]);
+% % figure,
+% xbar=categorical(d);
+% ybar=[];
+% for n=1:length(d)
+% % PlotWithNan3D(ax1,n*ones(size(Data(:,:,6,n))),Data(:,:,1,n),Data(:,:,6,n));
+% % swarmchart(n*ones(size(sums(:,:,6,n))),sums(:,:,1,n));
+% % ybar=cat(2,ybar,[sums(:,:,1,n)]);
+% 
+% %   scatter(means(:,:,1,n),means(:,:,6,n));
+% hold on
+% end
