@@ -157,7 +157,7 @@ for j=0:NumSeries-1% Number of images in ND2 File
     % %The next few lines are specific to 2 page TIF images. Edit from here
     % if you have alternate arrangements.
 %     currfile=strcat(workingdir,listing(j,1).name);
-    CurrSeries=j
+    CurrSeries=j;
     reader.setSeries(CurrSeries);
     fname = reader.getSeries;
     Well=num2str(fname,'%05.f');  

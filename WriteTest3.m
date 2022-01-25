@@ -50,7 +50,7 @@ xbar=categorical(d);
 ybar=[];
 for n=1:length(d)
 % PlotWithNan3D(ax1,n*ones(size(Data(:,:,6,n))),Data(:,:,1,n),Data(:,:,6,n));
-% swarmchart(n*ones(size(sums(:,:,6,n))),sums(:,:,1,n));
+swarmchart(n*ones(size(sums(:,:,6,n))),sums(:,:,1,n));
 ybar=cat(2,ybar,[sums(:,:,1,n)]);
 
 %   scatter(means(:,:,1,n),means(:,:,6,n));
