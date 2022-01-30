@@ -1,4 +1,4 @@
-function Plot_Fluorescence(aCells, aAxes, aChannel, varargin)
+function Plot_Fluorescence3D_2(aCells, aAxes, aChannel,aChannel2,Color,x_in, varargin)
 % Plots the fluorescence intensity of cells over time.
 %
 % The function can be used to plot the maximum intensity, the average
@@ -41,17 +41,16 @@ function Plot_Fluorescence(aCells, aAxes, aChannel, varargin)
     true, varargin);
 
 % Clear the previous plot.
-cla(aAxes)
-hold(aAxes, 'off')
+% cla(aAxes)
+% hold(aAxes, 'off')
 
 if isempty(aCells)
     return
 end
 imData = aCells(1).imageData;
-
+%     BronkBox=cell(length(cells2),max([cells2.stopT]));
 for i = 1:length(aCells)
     c = aCells(i);
-    
     % Time (x-coordinates of plot).
     switch aXUnit
         case 'hours'
@@ -59,8 +58,9 @@ for i = 1:length(aCells)
         case 'frames'
             t = c.firstFrame : c.lastFrame;
     end
-    
+    t=x_in;
     % Fluorescence (y-coordinates of plot).
+    aMetric= 'avg';
     switch lower(aMetric)
         case 'max'
             fluor = c.regionProps.(['FluorMax' aChannel]);
@@ -78,55 +78,80 @@ for i = 1:length(aCells)
                 end
             end
     end
-    
+    aMetric2= 'tot';
+    % Fluorescence (z-coordinates of plot).
+    switch lower(aMetric2)
+        case 'max'
+            fluor2 = c.regionProps.(['FluorMax' aChannel2]);
+        case 'avg'
+            fluor2 = c.regionProps.(['FluorAvg' aChannel2]);
+        case 'test'
+            fluor2 = c.regionProps.(['FluorAvg' aChannel2]);    
+        case 'tot'
+            fluor2 = c.regionProps.(['FluorTot' aChannel2]);
+            if strcmpi(aYUnit, 'microns')
+                if imData.GetDim() == 2
+                    fluor2 = imData.Pixel2ToMicroM2(fluor2);
+                else
+                    fluor2 = imData.VoxelToMicroM3(fluor2);
+                end
+            end
+    end
     % Plot the fluorescence over time for one cell.
-    PlotWithNan(aAxes, t, fluor,...
-        'Color', c.color,...
+    Color=Color;
+    Color2=Color+0.4*((i-1)/length(aCells));
+    Color2(Color2>1)=1;
+    Color2(Color2<0)=1;
+%     PlotWithNan3D(aAxes, t, fluor,fluor2,'color',Color2,...
+%         'LineWidth', 2);
+    PlotWithNan3D(aAxes, t, fluor,fluor2,'color',Color2,...
         'LineWidth', 2);
-    hold(aAxes, 'on')
+%     alpha(.5);
+%     hold(aAxes, 'on')
+%     testing=Color;
 end
 
-% Set the limits of the plot.
-SetYLimits(aAxes)
-xlim(aAxes, imData.GetTLim(aXUnit, 'Margins', [0.01 0.01]))
+% % Set the limits of the plot.
+% % SetYLimits(aAxes)
+% xlim(aAxes, imData.GetTLim(aXUnit, 'Margins', [0.01 0.01]))
+% 
+% % x-label.
+% switch lower(aXUnit)
+%     case 'frames'
+%         xlabel(aAxes, 'Time (frames)')
+%     case 'hours'
+%         xlabel(aAxes, 'Time (hours)')
+% end
+% 
+% % y-label and title.
+% switch lower(aMetric1)
+%     case 'max'
+%         title(aAxes, sprintf('Maximum fluorescence (%s)',...
+%             SpecChar(imData.GetSeqDir(), 'matlab')))
+%         ylabel(aAxes, 'Fluorescence (relative to max)')
+%     case 'avg'
+%         title(aAxes, sprintf('Average fluorescence (%s)',...
+%             SpecChar(imData.GetSeqDir(), 'matlab')))
+%         ylabel(aAxes, 'Fluorescence (relative to max)')
+%     case 'tot'
+%         title(aAxes, sprintf('Integrated fluorescence (%s)',...
+%             SpecChar(imData.GetSeqDir(), 'matlab')))
+%         if imData.GetDim() == 2
+%             switch aYUnit
+%                 case 'pixels'
+%                     ylabel(aAxes, 'Fluorescence (relative to max) * Area in pixels')
+%                 case 'microns'
+%                     ylabel(aAxes, 'Fluorescence (relative to max) * Area in \mum^2')
+%             end
+%         else
+%             switch aYUnit
+%                 case 'pixels'
+%                     ylabel(aAxes, 'Fluorescence (relative to max) * Volume in voxels')
+%                 case 'microns'
+%                     ylabel(aAxes, 'Fluorescence (relative to max) * Volume in \mum^3')
+%             end
+%         end
+% end
 
-% x-label.
-switch lower(aXUnit)
-    case 'frames'
-        xlabel(aAxes, 'Time (frames)')
-    case 'hours'
-        xlabel(aAxes, 'Time (hours)')
-end
-
-% y-label and title.
-switch lower(aMetric)
-    case 'max'
-        title(aAxes, sprintf('Maximum fluorescence (%s)',...
-            SpecChar(imData.GetSeqDir(), 'matlab')))
-        ylabel(aAxes, 'Fluorescence (relative to max)')
-    case 'avg'
-        title(aAxes, sprintf('Average fluorescence (%s)',...
-            SpecChar(imData.GetSeqDir(), 'matlab')))
-        ylabel(aAxes, 'Fluorescence (relative to max)')
-    case 'tot'
-        title(aAxes, sprintf('Integrated fluorescence (%s)',...
-            SpecChar(imData.GetSeqDir(), 'matlab')))
-        if imData.GetDim() == 2
-            switch aYUnit
-                case 'pixels'
-                    ylabel(aAxes, 'Fluorescence (relative to max) * Area in pixels')
-                case 'microns'
-                    ylabel(aAxes, 'Fluorescence (relative to max) * Area in \mum^2')
-            end
-        else
-            switch aYUnit
-                case 'pixels'
-                    ylabel(aAxes, 'Fluorescence (relative to max) * Volume in voxels')
-                case 'microns'
-                    ylabel(aAxes, 'Fluorescence (relative to max) * Volume in \mum^3')
-            end
-        end
-end
-
-PrintStyle(aAxes)
+% PrintStyle(aAxes)
 end

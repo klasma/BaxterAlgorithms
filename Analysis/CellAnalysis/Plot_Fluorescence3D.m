@@ -1,4 +1,4 @@
-function Plot_Fluorescence(aCells, aAxes, aChannel, varargin)
+function Plot_Fluorescence(aCells, aAxes, aChannel,aChannel2,Color, varargin)
 % Plots the fluorescence intensity of cells over time.
 %
 % The function can be used to plot the maximum intensity, the average
@@ -35,33 +35,33 @@ function Plot_Fluorescence(aCells, aAxes, aChannel, varargin)
 % Plot_TotalDistance, PrintStyle
 
 % Get property/value inputs.
-[aXUnit, aYUnit, aMetric] = GetArgs(...
+[aXUnit, aYUnit, aMetric1] = GetArgs(...
     {'XUnit', 'YUnit', 'Metric'},...
     {'hours', 'microns', 'max'},...
     true, varargin);
 
 % Clear the previous plot.
-cla(aAxes)
-hold(aAxes, 'off')
+% cla(aAxes)
+% hold(aAxes, 'off')
 
 if isempty(aCells)
     return
 end
 imData = aCells(1).imageData;
-
+%     BronkBox=cell(length(cells2),max([cells2.stopT]));
 for i = 1:length(aCells)
     c = aCells(i);
-    
     % Time (x-coordinates of plot).
-    switch aXUnit
-        case 'hours'
-            t = imData.FrameToT(c.firstFrame : c.lastFrame);
-        case 'frames'
-            t = c.firstFrame : c.lastFrame;
-    end
-    
+%     switch aXUnit
+%         case 'hours'
+%             t = imData.FrameToT(c.firstFrame : c.lastFrame);
+%         case 'frames'
+%             t = c.firstFrame : c.lastFrame;
+%     end
+    t=1;
     % Fluorescence (y-coordinates of plot).
-    switch lower(aMetric)
+    aMetric1= 'avg';
+    switch lower(aMetric1)
         case 'max'
             fluor = c.regionProps.(['FluorMax' aChannel]);
         case 'avg'
@@ -78,12 +78,35 @@ for i = 1:length(aCells)
                 end
             end
     end
-    
+    aMetric2= 'tot';
+    % Fluorescence (z-coordinates of plot).
+    switch lower(aMetric2)
+        case 'max'
+            fluor2 = c.regionProps.(['FluorMax' aChannel2]);
+        case 'avg'
+            fluor2 = c.regionProps.(['FluorAvg' aChannel2]);
+        case 'test'
+            fluor2 = c.regionProps.(['FluorAvg' aChannel2]);    
+        case 'tot'
+            fluor2 = c.regionProps.(['FluorTot' aChannel2]);
+            if strcmpi(aYUnit, 'microns')
+                if imData.GetDim() == 2
+                    fluor2 = imData.Pixel2ToMicroM2(fluor2);
+                else
+                    fluor2 = imData.VoxelToMicroM3(fluor2);
+                end
+            end
+    end
     % Plot the fluorescence over time for one cell.
-    PlotWithNan(aAxes, t, fluor,...
-        'Color', c.color,...
+    Color=Color;
+    Color2=Color+0.4*((i-1)/length(aCells));
+    Color2(Color2>1)=1;
+    Color2(Color2<0)=1;
+    PlotWithNan3D(aAxes, t, fluor,fluor2,'color',Color2,...
         'LineWidth', 2);
+%     alpha(.5);
     hold(aAxes, 'on')
+%     testing=Color;
 end
 
 % Set the limits of the plot.
@@ -99,7 +122,7 @@ switch lower(aXUnit)
 end
 
 % y-label and title.
-switch lower(aMetric)
+switch lower(aMetric1)
     case 'max'
         title(aAxes, sprintf('Maximum fluorescence (%s)',...
             SpecChar(imData.GetSeqDir(), 'matlab')))
