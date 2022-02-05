@@ -48,9 +48,9 @@
                 %Explore Data using JMP's Graphbuilder.
                 %Graph Data in Prism.
 %% Image Folder Location
-clc, clear;
-reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-11-15-Ai9CMAX PRotein Screen\ProteinScreen.nd2');
-exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-11-15-Ai9CMAX PRotein Screen\Analysis';
+clc, clear all, close all
+reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen003.nd2');
+exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\2022_02_04';
 % filetype='tif';
 % listing=dir(strcat(workingdir,'*.TIF'));
 % ds=imageDatastore(workingdir);
@@ -127,18 +127,19 @@ CellSize=1; %Scale as needed for different Cells
     bitdepthin= 12; %Bit depth of original image, usually 8, 12, or 16
     
 %Input Planes
-    ImagePlanes=[1,2];
-    ImageAnalyses={{'Bax'},{'Bax'}};
+    ImagePlanes=[1,3];
+    ImageAnalyses={{'Bax' 'green' 'cytgal'},{},{'Bax' 'red' 'drug'}};
+    MakeOverlayImage=1;
 %Nuclear Stain
         NucMax=0.8;%Number 0-1, removes Cell Debris brighter than this value in order to allow low end to remain visible. 0.2 is usually a good start 
         NucLow=100;%
      %Cytosol    
         CytMax= 0.5; %Number 0-1, removes Cell Debris brighter than this value. 0.2 is usually a good start  
-        CytLow=1; %Choose number 0-20, start at 0. Higher numbers remove more dim cells and background.
+        CytLow=0; %Choose number 0-20, start at 0. Higher numbers remove more dim cells and background.
     %Gal8
-        Gal8MinThreshold=0.08;%Number 0-1, removes Puncta Dimmer than this value. 0.05 is usually a good start 
+        Gal8MinThreshold=0.2;%Number 0-1, removes Puncta Dimmer than this value. 0.05 is usually a good start 
     %Rhodamine
-        Rhoda_threshold = 0.4; %Number 0-1, removes rhodamine signal dimmer than threshold
+        Rhoda_threshold = 0.01; %Number 0-1, removes rhodamine signal dimmer than threshold
 %         Rhoda_threshold_Big = 100;
 %% Analysis Variables
 bitConvert=(2^16/2^bitdepthin);
@@ -153,7 +154,8 @@ NumImg=NumSeries*NumTimepoint*NumColors;
 
 C = cell(NumImg,length(Categories));
 %% Analysis Program 
-for j=0:NumSeries-1% Number of images in ND2 File  
+%j=0:NumSeries-1%
+for j=4% Number of images in ND2 File  
     %% Import TIFs
     % %The next few lines are specific to 2 page TIF images. Edit from here
     % if you have alternate arrangements.
@@ -175,7 +177,7 @@ for j=0:NumSeries-1% Number of images in ND2 File
     BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well);
     mkdir(BaxSegFolderCell);
     
-    for i=4
+    for i=1:T_Value
     
 %     T_Value = reader.getSizeT();
             Timepoint = num2str(i,'%03.f');
@@ -191,72 +193,96 @@ for j=0:NumSeries-1% Number of images in ND2 File
             for n=ImagePlanes             
                 Img= bitConvert*bfGetPlane(reader,iplane+n);
                 CurrPlane=ImageAnalyses{n};
-                 
-                
-                if contains(CurrPlane,'Bax')
+              
+                if any(contains(CurrPlane,'Bax'))
                     my_field = strcat('c',num2str(n,'%02.f'));
                     imwrite(Img, strcat(ImageName,my_field,'.tif'),'tif');
+                    
                 end
-                if contains(CurrPlane,'nuc')
+                if any(contains(CurrPlane,'nuc'))
                 [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk);  
-                x='hell0'
-                end
-                if contains(CurrPlane,'cyt')
-                [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
-                end
-                 if contains(CurrPlane,'gal')
-                [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(Img,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,Cyt_WS,CytPos,Gal8OutlineDisk);  
-                end
-                 if contains(CurrPlane,'drug')
-                [RhodBright,areaRhod, Rhodsum, RhodAvgInCell, RhodAvgOutCell,rhod_eq,RhodMask] = Rhoda(Img, Rhoda_threshold, cyt_bw4);
-                   end  
-                   
-            end    
-                 %% Test  
-%                 %% Analyze Images
-%             %%Nuclear Stain Code    
-%             [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk);   
-%             %     NucStats=regionprops(Nuc_bw4,'Centroid','Area');
                 
-%             %%Cytosol Code
+                end
+                                          
+                if any(contains(CurrPlane,'cyt'))
+                        [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
+                end
+                
+                if any(contains(CurrPlane,'cytgal'))
+                    [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);    
+                    [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(Img,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,CytPos,Gal8OutlineDisk);  
+                        
+                end
+                
+                 if any(contains(CurrPlane,'drug'))
+                [RhodBright,areaRhod, Rhodsum, RhodAvgInCell, RhodAvgOutCell,rhod_eq,RhodMask] = Rhoda(Img, Rhoda_threshold, cyt_bw4);
+                 end
+                 
+                 if any(contains(CurrPlane,'blue'))
+                 blue=imadjust(Img);
+%                  else
+%                      blue=zeros(size(Img),'like',Img);
+                 end  
+                 if any(contains(CurrPlane,'green'))
+                 green=imadjust(Img);
+%                  else
+%                      green=zeros(size(Img),'like',Img);
+                 end  
+                 if any(contains(CurrPlane,'red'))
+                 red=imadjust(Img);
+%                   else
+%                      red=zeros(size(Img),'like',Img);
+                 end  
+                 
+            end
+            if logical(MakeOverlayImage)
+            if ~exist('blue','var')
+                blue=zeros(size(Img),'like',Img);
+            end
+            if ~exist('green','var')
+                green=zeros(size(Img),'like',Img);
+            end
+            if ~exist('red','var')
+                red=zeros(size(Img),'like',Img);
+            end
+            RGBExportImage=cat(3,red,green,blue);
+             if exist('cyt_bw4_perim','var')
+               RGBExportImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
+             end
+               RGBExportImage=imoverlay(RGBExportImage,Gal8Quant5,'m');
+%                     ExportImage=imoverlay(ExportImage,Nuc_bw4_perim, [0.3010 0.7450 0.9330]);
+%                     ExportImage=imoverlay(ExportImage,rhodPerim, 'y');    
 %             
-% 
-%             %WaterShed Segmentation of Individual Cells
-%             [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(cyt,Nuc_bw4,CytTopHat,cyt_bw4);
-%             %   figure; imshow(imoverlay(cyt_eq,Cyt_WS, [.3 .3 1]));
-%             %Gal8 Puncta Segmentation
-%             [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(cyt,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,Cyt_WS,CytPos,Gal8OutlineDisk);    
-%             %     figure; imshow(imoverlay(cyt_eq,Gal8Quant5, [.3 .3 1]));
-% 
-%             %Rhodamine Code
-%             [RhodBright,areaRhod, Rhodsum, RhodAvgInCell, RhodAvgOutCell,rhod_eq,RhodMask] = Rhoda(drug, Rhoda_threshold, cyt_bw4);
-%             rhodPerim=bwperim(RhodMask);
-% 
-%                 %All Data Images
-%                 RGBExportImage=cat(3,rhod_eq,cyt_eq,Nuc_eq);
+%             
+            imshow(RGBExportImage)
+            end
+                 %% Test  
+                
+                %All Data Images
+                
 %                 WSArea = imoverlay(RGBExportImage, Cyt_WS_perim,[0.8500 0.3250 0.0980]);
 %                 ExportImage=imoverlay(WSArea,Gal8Quant5,'m');
 %                     ExportImage=imoverlay(ExportImage,Nuc_bw4_perim, [0.3010 0.7450 0.9330]);
 %                     ExportImage=imoverlay(ExportImage,rhodPerim, 'y');
-%             %         figure; imshow(ExportImage);
-%             %
-% 
-%                 %% Measure Image Data
-% 
-%                 % measurement
+            %         figure; imshow(ExportImage);
+            %
+
+                %% Measure Image Data
+
+                % measurement
 %                 areacell=bwarea(Nuc_bw4(:));
 %                 CellSum=sum(Nuc(Nuc_bw4));
 %                 areaGal8=sum((vertcat(Puncta.Area)));
-%             %    
-%             % C(j,:)=[{run},{WellTime},{areacell},{CellSum},{areaGal8},{Gal8Signal},{areaRhod},{Rhodsum},{RhodAvgInCell},{RhodAvgOutCell}];
-    %% Write Images to File
-       %name file relative to that directory
+            %    
+            % C(j,:)=[{run},{WellTime},{areacell},{CellSum},{areaGal8},{Gal8Signal},{areaRhod},{Rhodsum},{RhodAvgInCell},{RhodAvgOutCell}];
+    % Write Images to File
+%        name file relative to that directory
 %     imwrite(ExportImage, fulldestination);  %save the file there directory
+%     
+%     BaxterImages    
     
-    %BaxterImages    
     
-    
-%     imwrite(GalPals, strcat(ImageName,'c03','.tif'),'tif');
+   
 %     imwrite(drug, strcat(ImageName,'c04','.tif'),'tif');
 %     imwrite(RhodBright, strcat(ImageName,'c05','.tif'),'tif');
 %      
@@ -267,9 +293,10 @@ for j=0:NumSeries-1% Number of images in ND2 File
 %     
 %     SegNameCell=fullfile(BaxSegFolderCell,BaxterName);
 %     imwrite(Cyt_WS, strcat(SegNameCell,'c01','.tif'),'tif');
-%     
+% %     
     
     end   
+    
 end
 %% Write Analysis Data to File
 %  

@@ -20,7 +20,7 @@ function [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,
           cyt_bw3 = bwareaopen(cyt_bw2, 2000); %%Be sure to check this threshold
           cyt_bw4 = imclose(cyt_bw3, CytCloseDisk);
           CytPos(~cyt_bw4)=0;
-        cyt_bw4_perim = imdilate(bwperim(cyt_bw4),strel('disk',3));
+        cyt_bw4_perim = imdilate(bwperim(cyt_bw4),strel('disk',2));
        CytArea = imoverlay(cyt_eq, cyt_bw4_perim, [.3 1 .3]);
         CytCytOverlay = imoverlay(cyt_eq, cyt_bw4_perim, [.3 1 .3]);
 end
