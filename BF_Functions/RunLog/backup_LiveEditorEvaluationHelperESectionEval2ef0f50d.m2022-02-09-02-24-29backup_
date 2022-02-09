@@ -39,7 +39,7 @@ LogFile=strcat(LogDirectory,'\');
 FileNameAndLocation=[mfilename('fullpath')];
 newbackup=sprintf('%sbackup_%s.m',LogFile,Version);
 Gitdir=fullfile(pwd,'RunLog\');
-GitLog=sprintf('%sbackup_%s.m',Gitdir,Version);
+GitLog=sprintf('%sbackup_%s.m',Gitdir,mfilename,Version);
 % GitLog=sprintf('%sbackup_%s.m',LogFolder,Version);
 % mkdir(RunLog);
 currentfile=strcat(FileNameAndLocation, '.m');
@@ -58,23 +58,23 @@ copyfile(currentfile,GitLog)
 % For conveience, a number of sizes of disk shaped structural elements are
 % generated for data exploration.
 %## Can probably delete this section after checking on all of the functions
-% sr1=strel('square',1);
-% se1=strel('disk',1);
-% sr2=strel('square',2);
-% se2=strel('disk',2);
-% se3=strel('disk',3);
-% sr3=strel('square',3);
-% se4=strel('disk',4);
-% se5=strel('disk',5);
-% se6=strel('disk',6);
-% se7=strel('disk',7);
-% se8=strel('disk',8);
-% se9=strel('disk',9);
-% se10=strel('disk',10);
-% se12=strel('disk',12);
-% se20=strel('disk',20);
-% se25=strel('disk',25);
-% se100=strel('disk',100);
+sr1=strel('square',1);
+se1=strel('disk',1);
+sr2=strel('square',2);
+se2=strel('disk',2);
+se3=strel('disk',3);
+sr3=strel('square',3);
+se4=strel('disk',4);
+se5=strel('disk',5);
+se6=strel('disk',6);
+se7=strel('disk',7);
+se8=strel('disk',8);
+se9=strel('disk',9);
+se10=strel('disk',10);
+se12=strel('disk',12);
+se20=strel('disk',20);
+se25=strel('disk',25);
+se100=strel('disk',100);
 %% Sizing/Resolution Parameters EDIT HERE ADVANCED
 
         %NEED TO ADD microns per Pixel %NEED TO ADD Cell size (Small, Medium, Large)%Go through this and make all disks calculated on the microns per pixel and %the Cell Size
@@ -128,12 +128,12 @@ CellSize=1; %Scale as needed for different Cells
         CytLow=0; %Choose number 0-20, start at 0. Higher numbers remove more dim cells and background.
     %Gal8
         Gal8MinThreshold=0.2;%Number 0-1, removes Puncta Dimmer than this value. 0.05 is usually a good start 
-    %Drugamine
-        Drug_threshold = 0.01; %Number 0-1, removes Drugmine signal dimmer than threshold
-%         Drug_threshold_Big = 100;
+    %Rhodamine
+        Rhoda_threshold = 0.01; %Number 0-1, removes rhodamine signal dimmer than threshold
+%         Rhoda_threshold_Big = 100;
 %% Analysis Variables
 
-Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaDrug'},{'Drugsum'},{'DrugAvgInCell'},{'DrugAvgOutCell'}]; 
+Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaRhod'},{'Rhodsum'},{'RhodAvgInCell'},{'RhodAvgOutCell'}]; 
 %##Categories are manually typed out here, but it should integrate so that
 %these are auto-populated or selectable within the GUI, might have to get
 %clever for this to work
@@ -206,7 +206,7 @@ for j=0:NumSeries-1% Number of wells in ND2 File
                 end           
                 
                  if any(contains(CurrPlane,'drug'))
-                [DrugBright,areaDrug, Drugsum, DrugAvgInCell, DrugAvgOutCell,Drug_eq,DrugMask] = Drug(Img, Drug_threshold, cyt_bw4);
+                [RhodBright,areaRhod, Rhodsum, RhodAvgInCell, RhodAvgOutCell,rhod_eq,RhodMask] = Rhoda(Img, Rhoda_threshold, cyt_bw4);
                  end
 
                  %Secondary Analyses
