@@ -49,8 +49,9 @@
                 %Graph Data in Prism.
 %% Image Folder Location
 clc, clear all, close all
-reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen003.nd2');
-exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\2022_02_04';
+string()
+reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen004.nd2');
+exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\2022_02_04_SarahHelp';
 % filetype='tif';
 % listing=dir(strcat(workingdir,'*.TIF'));
 % ds=imageDatastore(workingdir);
@@ -127,9 +128,14 @@ CellSize=1; %Scale as needed for different Cells
     bitdepthin= 12; %Bit depth of original image, usually 8, 12, or 16
     
 %Input Planes
-    ImagePlanes=[1,3];
-    ImageAnalyses={{'Bax' 'green' 'cytgal'},{},{'Bax' 'red' 'drug'}};
-    MakeOverlayImage=1;
+    ImagePlanes=[1,2,3]; %Which image Planes to analyze
+    ImageAnalyses={{'Bax'},{},{'Bax'}}; %Which Image analysis/functions to call. NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+    MakeOverlayImage=1;%Logical Yes or no to make overlay image
+    % Add selection for what to overlay on the overlay image, for example,
+    % showing the cytosol perimeter analysis or Not
+
+    % Add selection for data of interest from each analysis
+    %
 %Nuclear Stain
         NucMax=0.8;%Number 0-1, removes Cell Debris brighter than this value in order to allow low end to remain visible. 0.2 is usually a good start 
         NucLow=100;%
@@ -146,6 +152,7 @@ bitConvert=(2^16/2^bitdepthin);
 run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
             % export file names and in the DataCells array. Note: it is a character
             % array / string!
+
 Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaRhod'},{'Rhodsum'},{'RhodAvgInCell'},{'RhodAvgOutCell'}];
 NumSeries=reader.getSeriesCount();
 NumColors=reader.getEffectiveSizeC();
@@ -155,7 +162,8 @@ NumImg=NumSeries*NumTimepoint*NumColors;
 C = cell(NumImg,length(Categories));
 %% Analysis Program 
 %j=0:NumSeries-1%
-for j=4% Number of images in ND2 File  
+
+for j=0:NumSeries-1% Number of images in ND2 File  
     %% Import TIFs
     % %The next few lines are specific to 2 page TIF images. Edit from here
     % if you have alternate arrangements.
@@ -176,9 +184,9 @@ for j=4% Number of images in ND2 File
     
     BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well);
     mkdir(BaxSegFolderCell);
-    
-    for i=1:T_Value
-    
+
+    for i=0:T_Value
+
 %     T_Value = reader.getSizeT();
             Timepoint = num2str(i,'%03.f');
             iplane=reader.getIndex(0,0,i);
@@ -194,10 +202,11 @@ for j=4% Number of images in ND2 File
                 Img= bitConvert*bfGetPlane(reader,iplane+n);
                 CurrPlane=ImageAnalyses{n};
               
+             %Primary Analyses   
                 if any(contains(CurrPlane,'Bax'))
                     my_field = strcat('c',num2str(n,'%02.f'));
                     imwrite(Img, strcat(ImageName,my_field,'.tif'),'tif');
-                    
+                 
                 end
                 if any(contains(CurrPlane,'nuc'))
                 [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk);  
@@ -206,17 +215,25 @@ for j=4% Number of images in ND2 File
                                           
                 if any(contains(CurrPlane,'cyt'))
                         [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
-                end
-                
-                if any(contains(CurrPlane,'cytgal'))
-                    [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);    
-                    [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(Img,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,CytPos,Gal8OutlineDisk);  
-                        
-                end
+                end           
                 
                  if any(contains(CurrPlane,'drug'))
                 [RhodBright,areaRhod, Rhodsum, RhodAvgInCell, RhodAvgOutCell,rhod_eq,RhodMask] = Rhoda(Img, Rhoda_threshold, cyt_bw4);
                  end
+
+                 %Secondary Analyses
+                     if any(contains(CurrPlane,'cytgal'))
+                    [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);    
+                    [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(Img,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,CytPos,Gal8OutlineDisk);  
+                     end
+
+                     if any(contains(CurrPlane,'nucWS'))
+                      [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk); 
+                     end
+                    if any(contains(CurrPlane,'cytWS'))
+                        [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
+                        [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(cyt,Nuc_bw4,CytTopHat,cyt_bw4);
+                    end   
                  
                  if any(contains(CurrPlane,'blue'))
                  blue=imadjust(Img);
@@ -249,7 +266,8 @@ for j=4% Number of images in ND2 File
              if exist('cyt_bw4_perim','var')
                RGBExportImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
              end
-               RGBExportImage=imoverlay(RGBExportImage,Gal8Quant5,'m');
+% UNIVERSALIZE THIS CODE AND MAKE IT SO THAT WE FROM THE GUI CALL WHICH PERIMETER OF WHICH MASK WE WANT TO OVERLAY IN WHICH COLOR            
+% RGBExportImage=imoverlay(RGBExportImage,Gal8Quant5,'m');
 %                     ExportImage=imoverlay(ExportImage,Nuc_bw4_perim, [0.3010 0.7450 0.9330]);
 %                     ExportImage=imoverlay(ExportImage,rhodPerim, 'y');    
 %             
@@ -303,3 +321,5 @@ end
 % D=[Categories;C];
 % WritingHere=strcat(exportdir,'\','Gal8','_',run);
 %  writecell(D,strcat(WritingHere,'.xlsx')); % Exports an XLSX sheet of your data
+% 
+%% add code that writes the text of this code with the timestamp to a record every time it is run

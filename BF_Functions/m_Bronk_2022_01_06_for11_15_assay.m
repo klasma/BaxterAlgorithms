@@ -175,7 +175,7 @@ for j=0:NumSeries-1% Number of images in ND2 File
     BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well);
     mkdir(BaxSegFolderCell);
     
-    for i=4
+    for i=1:T_Value
     
 %     T_Value = reader.getSizeT();
             Timepoint = num2str(i,'%03.f');
