@@ -102,7 +102,7 @@ CellSize=1; %Scale as needed for different Cells
     bitConvert=(2^16/2^bitdepthin); %This assures that whatever the bit depth of the input image, the analyzed images are all 16 bit.
 %Input Planes
     ImagePlanes=[1,2,3]; %Which image Planes to analyze ##Integrate with GUI 
-    ImageAnalyses={{},{},{}}; %Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+    ImageAnalyses={{'cytgal'},{},{}}; %Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
     MakeOverlayImage=0;%Logical Yes or no to make overlay image #Integrate with GUI
     % ##Add selection for what to overlay on the overlay image, for example,
     % showing the cytosol perimeter analysis or Not
@@ -207,7 +207,7 @@ for j=0:NumSeries-1% Number of wells in ND2 File
                  %Secondary Analyses
                      if any(contains(CurrPlane,'cytgal'))
                     [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);    
-                    [GalPals,Gal8Signal,RingMeanInt,Gal8Quant5,Gal8Quant4,Gal8Quant3,Gal8Open,Gal8TH,Gal8Quant2,Puncta,Ring] = Gal8(Img,Gal8TophatDisk,Gal8OpenDisk,Gal8DilateDisk,Gal8MinThreshold,CytPos,Gal8OutlineDisk);  
+                    [GalPals,Gal8Signal,Gal8Quant5] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix);  
                      end
 
                      if any(contains(CurrPlane,'nucWS'))
