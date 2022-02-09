@@ -1,90 +1,58 @@
 %% Gal8 Recruitment MATLAB Program
-
-% Written by Brock Fletcher in the Biomedical Engineering Department at
-% Vanderbilt University 2017 - 2022 in the course of his PhD studies
-% advised by Craig Duvall (https://my.vanderbilt.edu/duvall/). 
-%Adapted from work by Kameron V Kilchrist, 2015 - 2018 in the course of his PhD studies
-% advised by Craig Duvall (https://my.vanderbilt.edu/duvall/), published in
-% Kilchrist, Dimobi, ..., Duvall; "Gal8
-% Visualization of Endosome Disruption Predicts Carrier-mediated Biologic
-% Drug Intracellular Bioavailability".
-%hello world
-
-% University Email: brock.fletcher@vanderbilt.edu 
-% Permanent Email: brockfletch@gmail.com 
-
-% This code may be reused at will for non-commercial purposes. 
-% Licensed under a Creative Commons Attribution 4.0 International License.
-
-% Derivative code should be published at GitHub or FigShare. Derivative
-% scientific works should cite _______________
-%% Usage Guide (TL/DR):
-    %Steps
-        %Export your fluorescent microscopy as multipage TIFs
-        %Grab a few example TIFs to test your parameters and put them
-        %into a folder. (..\Test)
-        %Create a Second Folder to output to (..\TestExports)
-        
-        %Copy the file paths from file explorer and paste them into the
-        %"workingdir" and "exportdir"
-        
-        %Enter your "Calibration" value
-        %Enter what programs to run on each Channel ("C1=[]")
-        %Set your thresholds to a starting value
-        %Run Program
-        %Check output Images and Excel File
-        %Change Threshold Values and Re-Run until results are good enough
-            %If good analysis cannot be reached, edit advanced Values
-            %If still not good enough, edit actual bulk of code
-        %Once ready, change "workingdir" to a folder containing all images
-        %to be analyzed, and "exportdir" to a new, empty folder
-        
-        %Run Program and wait. If too hard on your CPU, change "parfor" to
-        %"for"
-        
-        %Review output images and analyze Data. 
-            %Reccomended Analysis Steps:
-                %Label Each row of Data using VLOOKUP in Excel.
-                %Explore Data using JMP's Graphbuilder.
-                %Graph Data in Prism.
 %% Image Folder Location
 clc, clear all, close all
-string()
 reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen004.nd2');
 exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\2022_02_04_SarahHelp';
-% filetype='tif';
-% listing=dir(strcat(workingdir,'*.TIF'));
-% ds=imageDatastore(workingdir);
+
 %% Directory Code
+
+run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
+          
 readeromeMeta=reader.getMetadataStore();
-destdirectory1 = fullfile(exportdir,'Overlaid');
-BaxtDirectory= fullfile(exportdir,'Baxter');
-exportbaseBAXTSegNuc=fullfile(BaxtDirectory,'Analysis','Segmentation_Nuc');
-exportbaseBAXTSegCell=fullfile(BaxtDirectory,'Analysis','Segmentation_Cell');
-mkdir(destdirectory1);   %create the directory
+RunDirectory= fullfile(exportdir,run);
+mkdir(RunDirectory); 
+
+destdirectory1 = fullfile(RunDirectory,'Overlaid');
+mkdir(destdirectory1); 
+
+BaxtDirectory = fullfile(RunDirectory,'Baxter');
 mkdir(BaxtDirectory);
+
+LogDirectory = fullfile(RunDirectory,'Log');
+mkdir(LogDirectory);
+
+SegDirectory = fullfile(RunDirectory,'Segmentation');
+mkdir(SegDirectory);
+
+exportbaseBAXTSegNuc=fullfile(SegDirectory,'Segmentation_Nuc');
 mkdir(exportbaseBAXTSegNuc);
+
+exportbaseBAXTSegCell=fullfile(SegDirectory,'Segmentation_Cell');
 mkdir(exportbaseBAXTSegCell);
-%% 
-% This will measure the total Gal8 recruited to puncta and count cell
-% nuclei or cytosol in each frame.
+            %##Need to universalize the Segmentation stuff for whatever the
+            %GUI needs, so that it can be arbitrarily named and assigned.
+            %Might be a good idea to write this all into a function
 
-% This code assumes you have exported images as multipage TIF files, with
-% any of the following stains in each channel:
-    % nuclear Stain
-    % Difuse Cytosolic Stain
-    % Punctate Cytosolic Stain
-    % Labeled Drug or other exogenous molecule (Cas9, siRNA)
+%%Log Data
+Version=run;
+LogFile=strcat(LogDirectory,'\');
+FileNameAndLocation=[mfilename('fullpath')];
+newbackup=sprintf('%sbackup_%s.m',LogFile,Version);
+currentfile=strcat(FileNameAndLocation, '.m');
+copyfile(currentfile,newbackup);
+A = exist(newbackup,'file');
+if (A~=0)
+warning('Backup already exists for the current version')
+end
+%##This may not be the best way to be logging the data and directory, since
+%it's in a new folder every time, but we can figure htis otu later. Also
+%might be possible to write this all into a function
 
-% Images were exported to 2 page TIF images using Nikon NIS Elements. If
-% you use alternate file formats or use separate export files for each
-% channel, please edit the code as appropriate.
 
-% You *must* edit the workingdir and exportdir variables for this code to
-% work. 
 %% Structuring Elements
 % For conveience, a number of sizes of disk shaped structural elements are
 % generated for data exploration.
+%## Can probably delete this section after checking on all of the functions
 sr1=strel('square',1);
 se1=strel('disk',1);
 sr2=strel('square',2);
@@ -123,20 +91,31 @@ CellSize=1; %Scale as needed for different Cells
             Gal8OpenDisk =strel('square',round(2*(0.34/MiPerPix)));
             Gal8DilateDisk=strel('disk',round(1*(0.34/MiPerPix)));
             Gal8OutlineDisk=strel('disk',round(2*(0.34/MiPerPix)));
-%% Image Thresholding EDIT HERE BASIC
+            
+            %##Probabloy possible and better to integrate all of this into
+            %a single function for the "round" section and then have ll of
+            %the indivual disks just created in each function based on the
+            %relative pixel size with a cell size correction
+%% Analysis Functions
 %Bit Depth    
     bitdepthin= 12; %Bit depth of original image, usually 8, 12, or 16
-    
+    bitConvert=(2^16/2^bitdepthin); %This assures that whatever the bit depth of the input image, the analyzed images are all 16 bit.
 %Input Planes
-    ImagePlanes=[1,2,3]; %Which image Planes to analyze #Integrate with 
-    ImageAnalyses={{'Bax'},{},{'Bax'}}; %Which Image analysis/functions to call. NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
-    MakeOverlayImage=1;%Logical Yes or no to make overlay image
-    % Add selection for what to overlay on the overlay image, for example,
+    ImagePlanes=[1,2,3]; %Which image Planes to analyze ##Integrate with GUI 
+    ImageAnalyses={{},{},{}}; %Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+    MakeOverlayImage=0;%Logical Yes or no to make overlay image #Integrate with GUI
+    % ##Add selection for what to overlay on the overlay image, for example,
     % showing the cytosol perimeter analysis or Not
 
-    % Add selection for data of interest from each analysis
+    % ##Add selection for data of interest from each analysis, i.e. what to
+    % export from each function
     %
-%Nuclear Stain
+    
+%% Image Thresholding EDIT HERE BASIC 
+    %##Need to make these into GUI, and make universal so that as we call
+    %each function we can set the function parameters in the GUI. I believe
+    %Baxter has a very good solution for doing this
+    %Nuclear Stain
         NucMax=0.8;%Number 0-1, removes Cell Debris brighter than this value in order to allow low end to remain visible. 0.2 is usually a good start 
         NucLow=100;%
      %Cytosol    
@@ -148,55 +127,59 @@ CellSize=1; %Scale as needed for different Cells
         Rhoda_threshold = 0.01; %Number 0-1, removes rhodamine signal dimmer than threshold
 %         Rhoda_threshold_Big = 100;
 %% Analysis Variables
-bitConvert=(2^16/2^bitdepthin);
-run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
-            % export file names and in the DataCells array. Note: it is a character
-            % array / string!
 
-Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaRhod'},{'Rhodsum'},{'RhodAvgInCell'},{'RhodAvgOutCell'}];
-NumSeries=reader.getSeriesCount();
-NumColors=reader.getEffectiveSizeC();
-NumTimepoint=(reader.getImageCount())/NumColors;
-NumImg=NumSeries*NumTimepoint*NumColors;
+Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaRhod'},{'Rhodsum'},{'RhodAvgInCell'},{'RhodAvgOutCell'}]; 
+%##Categories are manually typed out here, but it should integrate so that
+%these are auto-populated or selectable within the GUI, might have to get
+%clever for this to work
 
-C = cell(NumImg,length(Categories));
+NumSeries=reader.getSeriesCount(); %The number of different wells you imaged
+NumColors=reader.getEffectiveSizeC(); %The number of colors of each well you imaged
+NumTimepoint=(reader.getImageCount())/NumColors; %The number of timepoints you imaged
+NumImg=NumSeries*NumTimepoint*NumColors; %The total number of images, combining everything
+
+C = cell(NumImg,length(Categories)); 
+%##C is something that will probably have be edited to allow data output
+%from this scale of the analysis. Don't even know if it's correct right now
+%or even neccessary at all
 %% Analysis Program 
-%j=0:NumSeries-1%
-
-for j=0:NumSeries-1% Number of images in ND2 File  
-    %% Import TIFs
-    % %The next few lines are specific to 2 page TIF images. Edit from here
-    % if you have alternate arrangements.
-%     currfile=strcat(workingdir,listing(j,1).name);
-    CurrSeries=j;
-    reader.setSeries(CurrSeries);
-    fname = reader.getSeries;
-    Well=num2str(fname,'%05.f');  
+for j=0:NumSeries-1% Number of wells in ND2 File  
+    % Set Current Well and other important values
+    %##Would be very useful to figure out how to make this work as a parfor
+    %loop, but might be quite difficult
+    CurrSeries=j; %The current well that we're looking at
+    reader.setSeries(CurrSeries); %##uses BioFormats function, can be swapped with something else (i forget what) if it's buggy with the GUI
+    fname = reader.getSeries; %gets the name of the series using BioFormats
+    Well=num2str(fname,'%05.f'); %Formats the well name for up to 5 decimal places of different wells, could increase but 5 already feels like overkill 
+    PositionX = readeromeMeta.getPlanePositionX(CurrSeries,1).value(); %May be useful someday, but not needed here
+    PositionY = readeromeMeta.getPlanePositionY(CurrSeries,1).value(); %May be useful someday, but not needed yet. Get's the position of the actual image. Useful for checking stuff
+    T_Value = reader.getSizeT()-1; %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
     
-    BaxWellFolder=fullfile(BaxtDirectory,Well);
-    mkdir(BaxWellFolder);
-    PositionX = readeromeMeta.getPlanePositionX(CurrSeries,1).value();
-    PositionY = readeromeMeta.getPlanePositionY(CurrSeries,1).value();
-    T_Value = reader.getSizeT()-1;
+    %CreateFolders for Baxter to read data
+        %##Important work: generalize this folder creation and put into GUI, so
+        %that whatever segmentations the user creates can be saved for baxter
+        %analysis. The "BaxSegFolderCell" is probably the most important and
+        %default, but this should be customizable
     
-    BaxSegFolderNuc=fullfile(exportbaseBAXTSegNuc,Well);
-    mkdir(BaxSegFolderNuc);
+    BaxWellFolder=fullfile(BaxtDirectory,Well); %Creates a filename that's compatible with both PC and Mac (##Check and see if any of the strcat functions need to be replaced with fullfile functions) 
+    mkdir(BaxWellFolder); %makes a new folder on your hard drive for the baxter stuff   
     
-    BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well);
+    BaxSegFolderNuc=fullfile(exportbaseBAXTSegNuc,Well); %Creates a filename that's compatible with both PC and Mac
+    mkdir(BaxSegFolderNuc); %makes a new folder on your hard drive for the nuclear segmentaiton for Baxter
+    
+    BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well); %Creates a filename that's compatible with both PC and Mac
     mkdir(BaxSegFolderCell);
 
-    for i=0:T_Value
-
-%     T_Value = reader.getSizeT();
-            Timepoint = num2str(i,'%03.f');
-            iplane=reader.getIndex(0,0,i);
-            WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value()));
-            Img=[];
-            %overlaid Image
-                        BaxterName=strcat('w',Well,'t',Timepoint) ;
-                         exportbase=strcat(destdirectory1,'\',run,'_',BaxterName);
-                        fulldestination = strcat(exportbase,'.png');
-                        ImageName=fullfile(BaxWellFolder,BaxterName);
+    for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
+            %Set up the particular timepoint image
+        Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
+       iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
+       WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
+       Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
+                         
+                        BaxterName=strcat('w',Well,'t',Timepoint) ; %Very important, creates a name in the format that Baxter Algorithms prefers
+                        
+                        ImageName=fullfile(BaxWellFolder,BaxterName); %Creates a name for each particular image
                         
             for n=ImagePlanes             
                 Img= bitConvert*bfGetPlane(reader,iplane+n);
@@ -266,7 +249,7 @@ for j=0:NumSeries-1% Number of images in ND2 File
              if exist('cyt_bw4_perim','var')
                RGBExportImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
              end
-% UNIVERSALIZE THIS CODE AND MAKE IT SO THAT WE FROM THE GUI CALL WHICH PERIMETER OF WHICH MASK WE WANT TO OVERLAY IN WHICH COLOR            
+% ##UNIVERSALIZE THIS CODE AND MAKE IT SO THAT WE FROM THE GUI CALL WHICH PERIMETER OF WHICH MASK WE WANT TO OVERLAY IN WHICH COLOR            
 % RGBExportImage=imoverlay(RGBExportImage,Gal8Quant5,'m');
 %                     ExportImage=imoverlay(ExportImage,Nuc_bw4_perim, [0.3010 0.7450 0.9330]);
 %                     ExportImage=imoverlay(ExportImage,rhodPerim, 'y');    
