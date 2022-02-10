@@ -69,9 +69,9 @@ CellSize=1; %Scale as needed for different Cells
     numPlanes=3; %Which image Planes to analyze ##Integrate with GUI 
     Nuc_bw4_perim=0;
     ImageAnalyses=    {
-                        {{'Nuc'},{3},{0.8 1200},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
+                        {{'Nuc'},{3},{0.8 100},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
                         {{'CytWS'},{1},{0.8 100},{2},{}};
-                        {{'Gal'},{1},{0.1},{},{'Gal_bw_Perim' [0.4940, 0.1840, 0.5560]}};
+                        {{'Gal'},{1},{0.2},{},{'Gal_bw_Perim' [0.4940, 0.1840, 0.5560]}};
                         {{'Drug'},{2},{0.01},{1},{}};
                                                 };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
         
