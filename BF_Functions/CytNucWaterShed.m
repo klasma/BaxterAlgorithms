@@ -1,7 +1,7 @@
-function [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(cyt,Nuc_bw4,CytTopHat,cyt_bw4)
+function [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
-cytsize=size(cyt);
+    cytsize=size(CytTopHat);
 	border = ones(cytsize);
     border(2:end-1,2:end-1) = 0;
     n_maxs=imerode(Nuc_bw4,strel('disk',1));

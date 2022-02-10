@@ -1,9 +1,9 @@
 %% Gal8 Recruitment MATLAB Program
 %% Image Folder Location
 clc, clear all, close all
-reader = bfGetReader('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen004.nd2');
-exportdir='D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\2022_02_04_SarahHelp';
-
+reader = bfGetReader(char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\PSINPsDB Screen001.nd2"));
+exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\2022-02-09-Crazy');
+mkdir(exportdir);
 %% Directory Code
 
 run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
@@ -54,27 +54,6 @@ copyfile(currentfile,GitLog)
 %might be possible to write this all into a function
 
 
-%% Structuring Elements
-% For conveience, a number of sizes of disk shaped structural elements are
-% generated for data exploration.
-%## Can probably delete this section after checking on all of the functions
-% sr1=strel('square',1);
-% se1=strel('disk',1);
-% sr2=strel('square',2);
-% se2=strel('disk',2);
-% se3=strel('disk',3);
-% sr3=strel('square',3);
-% se4=strel('disk',4);
-% se5=strel('disk',5);
-% se6=strel('disk',6);
-% se7=strel('disk',7);
-% se8=strel('disk',8);
-% se9=strel('disk',9);
-% se10=strel('disk',10);
-% se12=strel('disk',12);
-% se20=strel('disk',20);
-% se25=strel('disk',25);
-% se100=strel('disk',100);
 %% Sizing/Resolution Parameters EDIT HERE ADVANCED
 
         %NEED TO ADD microns per Pixel %NEED TO ADD Cell size (Small, Medium, Large)%Go through this and make all disks calculated on the microns per pixel and %the Cell Size
@@ -82,32 +61,23 @@ copyfile(currentfile,GitLog)
 MiPerPix=0.34;        
 CellSize=1; %Scale as needed for different Cells        
             %Disks
-            NucTophatDisk=strel('disk',round(250*(0.34/MiPerPix)));
-            NucOpenDisk= strel('disk',round(5*(0.34/MiPerPix)));
-            NucErodeDisk=strel('disk',round(6*(0.34/MiPerPix)));
-            NucCloseDisk=strel('disk',round(4*(0.34/MiPerPix)));
-
-            CytTophatDisk=strel('disk',round(250*(0.34/MiPerPix))); % EditHere
-            CytOpenDisk =strel('disk',round(5*(0.34/MiPerPix)));
-            CytErodeDisk=strel('disk',round(5*(0.34/MiPerPix)));
-            CytCloseDisk=strel('disk',round(5*(0.34/MiPerPix)));
-
-            Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
-            Gal8OpenDisk =strel('square',round(2*(0.34/MiPerPix)));
-            Gal8DilateDisk=strel('disk',round(1*(0.34/MiPerPix)));
-            Gal8OutlineDisk=strel('disk',round(2*(0.34/MiPerPix)));
-            
-            %##Probabloy possible and better to integrate all of this into
-            %a single function for the "round" section and then have ll of
-            %the indivual disks just created in each function based on the
-            %relative pixel size with a cell size correction
 %% Analysis Functions
 %Bit Depth    
     bitdepthin= 12; %Bit depth of original image, usually 8, 12, or 16
     bitConvert=(2^16/2^bitdepthin); %This assures that whatever the bit depth of the input image, the analyzed images are all 16 bit.
 %Input Planes
-    ImagePlanes=[1,2,3]; %Which image Planes to analyze ##Integrate with GUI 
-    ImageAnalyses={{'cytgal'},{},{}}; %Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+    numPlanes=3; %Which image Planes to analyze ##Integrate with GUI 
+     ImageAnalyses=    {
+                        {{'Nuc'},{3},{5000 0.8},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
+                        {{'Cyt'},{1},{0.8 100},{2},{}};
+                        {{'CytWS'},{},{},{},{}};
+                        {{'Gal'},{1},{0.2},{},{}};
+                        {{'Drug'},{2},{0.01},{1},{}};
+                                                };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+        
+        ExampleImage=[2 1 3]; %Corresponds to red Green Blue CHannels of example Image
+    BaxExport=0;
+    MakeExampleImage=1;
     MakeOverlayImage=0;%Logical Yes or no to make overlay image #Integrate with GUI
     % ##Add selection for what to overlay on the overlay image, for example,
     % showing the cytosol perimeter analysis or Not
@@ -148,7 +118,8 @@ C = cell(NumImg,length(Categories));
 %from this scale of the analysis. Don't even know if it's correct right now
 %or even neccessary at all
 %% Analysis Program 
-for j=0:NumSeries-1% Number of wells in ND2 File  
+% j=0:NumSeries-1
+for j=0:1% Number of wells in ND2 File  
     % Set Current Well and other important values
     %##Would be very useful to figure out how to make this work as a parfor
     %loop, but might be quite difficult
@@ -186,84 +157,77 @@ for j=0:NumSeries-1% Number of wells in ND2 File
                         
                         ImageName=fullfile(BaxWellFolder,BaxterName); %Creates a name for each particular image
                         
-            for n=ImagePlanes             
-                Img= bitConvert*bfGetPlane(reader,iplane+n);
-                CurrPlane=ImageAnalyses{n};
-              
-             %Primary Analyses   
-                if any(contains(CurrPlane,'Bax'))
+            for n=1:numPlanes             
+                Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
+                    if logical(BaxExport)
                     my_field = strcat('c',num2str(n,'%02.f'));
-                    imwrite(Img, strcat(ImageName,my_field,'.tif'),'tif');
-                 
-                end
-                if any(contains(CurrPlane,'nuc'))
-                [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk);  
-                
-                end
-                                          
-                if any(contains(CurrPlane,'cyt'))
-                        [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
-                end           
-                
-                 if any(contains(CurrPlane,'drug'))
-                [DrugBright,areaDrug, Drugsum, DrugAvgInCell, DrugAvgOutCell,Drug_eq,DrugMask] = Drug(Img, Drug_threshold, cyt_bw4);
-                 end
+                    imwrite(Img(:,:,n), strcat(ImageName,my_field,'.tif'),'tif');
+                    end                   
+            end
+            
+            for k=1:length(ImageAnalyses)
+                    Analysis=ImageAnalyses{k,:}{1}{1};
+                    AnaImage=uint16(Img(:,:,ImageAnalyses{k,:}{2}{1}));
+                    AnaSettings= ImageAnalyses{k,:}{3};
 
-                 %Secondary Analyses
-                     if any(contains(CurrPlane,'cytgal'))
-                    [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);    
-                    [GalPals,Gal8Signal,Gal8Quant5] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix);  
-                     end
-
-                     if any(contains(CurrPlane,'nucWS'))
-                      [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,NucTophatDisk,NucMax,NucOpenDisk,NucErodeDisk,NucLow,NucCloseDisk); 
-                     end
-                    if any(contains(CurrPlane,'cytWS'))
-                        [CytBright,CytArea,CytNucOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(Img,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk);
-                        [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(cyt,Nuc_bw4,CytTopHat,cyt_bw4);
+                    switch Analysis
+                        case 'Nuc'
+                         [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(AnaImage,AnaSettings{2},AnaSettings{1},MiPerPix);   
+                                if ~isempty(ImageAnalyses{k,:}{4})
+                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Nuc_eq;
+                                end
+                        case 'Cyt'
+                         [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(AnaImage,AnaSettings{2},AnaSettings{1});   
+                        case 'CytWS'
+                        [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4);
+                        case 'Drug'
+                            [DrugBright,areaDrug, Drugsum, DrugMask] = Drug(AnaImage, AnaSettings{1});
+                        case 'Gal'    
+                            [GalPals,Gal8Signal,Gal8Quant5] = Gal8(AnaImage,AnaSettings{1},CytPos,MiPerPix);
+                    end
+                    if logical(MakeExampleImage)
+                   
                     end
                     
+                    if ~isempty(ImageAnalyses{k,:}{5})
+                        RGBExportImage=imoverlay(RGBExportImage,eval(ImageAnalyses{1,:}{5}{1}),ImageAnalyses{1,:}{5}{2});
+                    end
+         end
+            
             %Make RGB Image
-                    
-                    if any(contains(CurrPlane,'blue'))
-                 blue=imadjust(Img);
-%                  else
-%                      blue=zeros(size(Img),'like',Img);
-                 end  
-                 if any(contains(CurrPlane,'green'))
-                 green=imadjust(Img);
-%                  else
-%                      green=zeros(size(Img),'like',Img);
-                 end  
-                 if any(contains(CurrPlane,'red'))
-                 red=imadjust(Img);
-%                   else
-%                      red=zeros(size(Img),'like',Img);
-                 end  
-                 
-            end
+%               Img(:,:,n)      
+%                     if any(contains(CurrPlane,'blue'))
+%                  blue=imadjust(Img);
+% %                  else
+% %                      blue=zeros(size(Img),'like',Img);
+%                  end  
+%                  if any(contains(CurrPlane,'green'))
+%                  green=imadjust(Img);
+% %                  else
+% %                      green=zeros(size(Img),'like',Img);
+%                  end  
+%                  if any(contains(CurrPlane,'red'))
+%                  red=imadjust(Img);
+% %                   else
+% %                      red=zeros(size(Img),'like',Img);
+%                  end  
+%                  
+%             end
             
         %Make Overlay Image
             %#UNIVERSALIZE THIS CODE AND MAKE IT SO THAT WE FROM THE GUI 
             %CALL WHICH PERIMETER OF WHICH MASK WE WANT TO OVERLAY IN WHICH
             %COLOR
-            
-            if logical(MakeOverlayImage)
-            if ~exist('blue','var')
-                blue=zeros(size(Img),'like',Img);
-            end
-            if ~exist('green','var')
-                green=zeros(size(Img),'like',Img);
-            end
-            if ~exist('red','var')
-                red=zeros(size(Img),'like',Img);
-            end
-            RGBExportImage=cat(3,red,green,blue);
-             if exist('cyt_bw4_perim','var')
-               RGBExportImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
-             end
-             imshow(RGBExportImage)
-            end
+          
+%             RGBExportImage=cat(3,Img(:,:,ExampleImage(1)),Img(:,:,ExampleImage(2)),Img(:,:,ExampleImage(3)));
+%              if exist('cyt_bw4_perim','var')
+%                OverlayImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
+%              end
+%               if exist('cyt_bw4_perim','var')
+%                RGBExportImage=imoverlay(RGBExportImage,cyt_bw4_perim,[0.8500 0.3250 0.0980]);
+%              end
+%              imshow(RGBExportImage)
+%             end
                 %% Measure Image Data
             %##Write Code here that uses parameters set in the GUI to take
             %all of the data we'd be interested in analyzing. Will probably

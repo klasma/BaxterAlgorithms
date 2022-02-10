@@ -1,7 +1,12 @@
-function [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(cyt,CytTophatDisk,CytMax,CytOpenDisk,CytErodeDisk,CytLow,CytCloseDisk)
+function [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(cyt,CytMax,CytLow,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
- CytTopHat=imtophat(cyt,CytTophatDisk); % Clean image with tophat filter for thresholding 
+            CytTophatDisk=strel('disk',round(250*(0.34/MiPerPix))); % EditHere
+            CytOpenDisk =strel('disk',round(5*(0.34/MiPerPix)));
+            CytErodeDisk=strel('disk',round(5*(0.34/MiPerPix)));
+            CytCloseDisk=strel('disk',round(5*(0.34/MiPerPix))); 
+
+CytTopHat=imtophat(cyt,CytTophatDisk); % Clean image with tophat filter for thresholding 
     CytOpen=imerode(CytTopHat,CytOpenDisk);
      CytOpen=imreconstruct(CytOpen,CytTopHat);
     cyt_eq =imadjust(CytTopHat,[0 0.25],[]);   %Make it easy to see

@@ -1,7 +1,7 @@
 function [GalPals,Gal8Signal,Gal8Quant5] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
-Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
+            Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
             Gal8OpenDisk =strel('square',round(2*(0.34/MiPerPix)));
             Gal8DilateDisk=strel('disk',round(1*(0.34/MiPerPix)));
             Gal8OutlineDisk=strel('disk',round(2*(0.34/MiPerPix)));
