@@ -69,7 +69,7 @@ CellSize=1; %Scale as needed for different Cells
     numPlanes=3; %Which image Planes to analyze ##Integrate with GUI 
     Nuc_bw4_perim=0;
     ImageAnalyses=    {
-                        {{'Nuc'},{3 1},{0.6 1400},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
+                        {{'Nuc'},{3},{0.6 1400},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
                         {{'CytWS'},{1},{0.8 100},{2},{}};
                         {{'Gal'},{1},{0.1},{},{'Gal_bw_Perim' [0.4940, 0.1840, 0.5560]}};
                         {{'Drug'},{2},{0.01},{1},{}};
@@ -173,25 +173,17 @@ for j=0:1% Number of wells in ND2 File
                     switch Analysis
                         case 'Nuc'
                          [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Img_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(AnaImage,AnaSettings{2},AnaSettings{1},MiPerPix);   
-                                Nuc=AnaImage;
                                 if ~isempty(ImageAnalyses{k,:}{4})
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end
                         case 'Cyt'
                          [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,Img_eq,CytTopHat,cyt_bw4_perim] = Cytosol(AnaImage,AnaSettings{2},AnaSettings{1},MiPerPix);   
-                                Cyt=AnaImage;
                                 if ~isempty(ImageAnalyses{k,:}{4})
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end
-                        case 'Nuc_Less_Cyt'
-                            [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Img_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(AnaImage,AnaSettings{2},AnaSettings{1},MiPerPix,AnaImage2);   
-                                
-                            if ~isempty(ImageAnalyses{k,:}{4})
-                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                                end      
-                                
                         case 'CytWS'
-                            [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(Nuc_bw4,Cyt,cyt_bw4);
+                            [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,Img_eq,CytTopHat,cyt_bw4_perim] = Cytosol(AnaImage,AnaSettings{2},AnaSettings{1},MiPerPix);   
+                            [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4);
                                 if ~isempty(ImageAnalyses{k,:}{4})
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end
