@@ -1,9 +1,9 @@
-function [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(cyt,CytMax,CytLow,MiPerPix)
+function [CytBright,CytArea,CytCytOverlay,cyt_bw4,CytPos,CytBrightEnough,CytMT1,CytOpen,cyt_eq,CytTopHat,cyt_bw4_perim] = Cytosol(cyt,CytLow,CytMax,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             CytTophatDisk=strel('disk',round(250*(0.34/MiPerPix))); % EditHere
             CytOpenDisk =strel('disk',round(5*(0.34/MiPerPix)));
-            CytErodeDisk=strel('disk',round(5*(0.34/MiPerPix)));
+            CytErodeDisk=strel('disk',round(2*(0.34/MiPerPix)));
             CytCloseDisk=strel('disk',round(5*(0.34/MiPerPix))); 
 
 CytTopHat=imtophat(cyt,CytTophatDisk); % Clean image with tophat filter for thresholding 
@@ -14,14 +14,15 @@ CytTopHat=imtophat(cyt,CytTophatDisk); % Clean image with tophat filter for thre
     CytMaxValue= CytMax*intmax(class(cyt));
     CytOverbright=CytOpen>CytMaxValue;
     CytBright=CytOpen;
-    CytBright(CytOverbright)=0;
+    CytAvg=mean(CytOpen,'all');
+    CytBright(CytOverbright)=CytAvg;
         CytMT1=multithresh(CytBright,20); %Calculate 20 brightness thresholds for image 
         CytQuant1=imquantize(CytBright,CytMT1); %Divide Image into the 20 brightness baskets
         CytBrightEnough=CytQuant1>CytLow;
         
-        CytPos=CytBright;
-        CytPos(~CytBrightEnough)=0;
-          cyt_bw2=imerode(CytPos,CytErodeDisk);
+        CytPos=CytOpen;
+%         CytPos(~CytBrightEnough)=0;
+           cyt_bw2=imerode(CytPos,CytErodeDisk);
           cyt_bw3 = bwareaopen(cyt_bw2, 2000); %%Be sure to check this threshold
           cyt_bw4 = imclose(cyt_bw3, CytCloseDisk);
           CytPos(~cyt_bw4)=0;

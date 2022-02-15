@@ -1,4 +1,4 @@
-function [GalPals,Gal8Signal,Gal_bw_Perim,Puncta,Background] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix)
+function [GalPals,Gal8Signal,Gal_bw_Perim,Puncta,Background] = Gal8_perCell(Img,Gal8MinThreshold,CytPos,MiPerPix,Cyt_WS)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
@@ -26,7 +26,13 @@ GalPals(~Gal8Quant3)=0;
  Gal8Fuzz=imopen(Img,NucOpenDisk);
 
 Puncta=regionprops(Gal8Quant3,Img,'Area','Centroid','MeanIntensity');
-Background=regionprops(Gal8Quant3,Gal8Fuzz,'Area','Centroid','MeanIntensity'); %need to figure out way to subtract out surrounding brightness for each individual Point
+Background=regionprops(Gal8Quant3,Gal8Fuzz,'Area','Centroid','MeanIntensity');
+for i=1:length([Puncta(:).MeanIntensity])
+    Puncta(i).Background = Background(i).MeanIntensity;
+    CellNumber=round(Puncta(i).Centroid);
+    Puncta(i).Cell = Cyt_WS(CellNumber(1),CellNumber(2));
+end
+%need to figure out way to subtract out surrounding brightness for each individual Point
 RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
 Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
 % Gal8Signal=Gal8Signal';
