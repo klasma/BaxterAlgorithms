@@ -208,7 +208,7 @@ for j=0:1% Number of wells in ND2 File
                                                     
                     
                          case 'Partition'    
-                                Channels=ImageAnalyses{k,:}{2};
+                                
                                 S=struct;
                                 WellField=strcat('W',char(Well));
                                 TimeField=strcat('T',char(Timepoint));
