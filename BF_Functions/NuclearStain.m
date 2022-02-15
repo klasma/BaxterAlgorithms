@@ -1,10 +1,12 @@
-function [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = NuclearStain(Img,Low,Max,MiPerPix)
+function [Nuc_bw4,Nuc_bw4_perim,NucLabel] = NuclearStain(Img,AnaSettings,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             NucTophatDisk=strel('disk',round(250*(0.34/MiPerPix)));
             NucOpenDisk= strel('disk',round(5*(0.34/MiPerPix)));
             NucErodeDisk=strel('disk',round(6*(0.34/MiPerPix)));
             NucCloseDisk=strel('disk',round(4*(0.34/MiPerPix)));    
+ Low=AnaSettings{1};
+    Max=AnaSettings{2};
 
 NucWeiner=wiener2(Img);
     NucTopHat=imtophat(NucWeiner,NucTophatDisk); % Clean image with tophat filter for thresholding 

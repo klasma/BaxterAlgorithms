@@ -33,8 +33,8 @@ for i=1:length([Puncta(:).MeanIntensity])
     Puncta(i).Cell = Cyt_WS(CellNumber(1),CellNumber(2));
 end
 %need to figure out way to subtract out surrounding brightness for each individual Point
-RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
-Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
+% RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
+% Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
 % Gal8Signal=Gal8Signal';
 end
 

@@ -1,4 +1,4 @@
-function [Cyt_WS,Cyt_WS_perim,L_n] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
+function [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
     cytsize=size(CytTopHat);

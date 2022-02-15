@@ -1,4 +1,4 @@
-function [GalPals,Gal8Signal,Gal_bw_Perim,Puncta,Background] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix)
+function [Gal_bw_Perim,Gal8Quant3] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
@@ -27,8 +27,8 @@ GalPals(~Gal8Quant3)=0;
 
 Puncta=regionprops(Gal8Quant3,Img,'Area','Centroid','MeanIntensity');
 Background=regionprops(Gal8Quant3,Gal8Fuzz,'Area','Centroid','MeanIntensity'); %need to figure out way to subtract out surrounding brightness for each individual Point
-RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
-Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
+% RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
+% Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
 % Gal8Signal=Gal8Signal';
 end
 

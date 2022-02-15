@@ -1,4 +1,4 @@
-function [NucLabel,Nuc_bw4,NucPos,NucBrightEnough,NucMT1,NucOpen,Nuc_eq,NucTopHat,Nuc_bw4_perim,NucOverbright,NucQuant1,NucWeiner,NucArea] = Nuc_Cyt(Img,Low,Max,Scaling,CytTopHat,cyt_bw4,MiPerPix)
+function [Nuc_bw4,Nuc_bw4_perim,NucLabel] = Nuc_Cyt(Img,AnaSettings,Cyt,cyt_bw4,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             NucTophatDisk=strel('disk',round(250*(0.34/MiPerPix)));
@@ -11,19 +11,21 @@ NucWeiner=wiener2(Img);
 %     NucOpen=imerode(NucTopHat,NucOpenDisk);
 %      NucOpen=imreconstruct(NucOpen,NucTopHat);
     Nuc_eq =imadjust(NucTopHat);   %Make it easy to see
-    
+    Low=AnaSettings{1};
+    Max=AnaSettings{2};
+    Scaling=AnaSettings{3};
      NucMaxValue= Max*intmax(class(Img));
     
     NucOverbright=NucTopHat>NucMaxValue;
     
     NucTopHat(NucOverbright)=mean(NucTopHat,'all');
    NucOpen=NucTopHat;
-    CytTopHat(~cyt_bw4)=0;
+    Cyt(~cyt_bw4)=0;
     NucOpen(~cyt_bw4)=0;
     NucMed=median(NucOpen(NucOpen>1),'all');
-CytMed=median(CytTopHat(CytTopHat>1),'all');
+CytMed=median(Cyt(Cyt>1),'all');
 Ratio=double(NucMed)/double(CytMed);
-NucOpen=NucOpen-CytTopHat.*Ratio.*Scaling;
+NucOpen=NucOpen-Cyt.*Ratio.*Scaling;
     NucOpen=imopen(NucOpen,NucOpenDisk);
     
         NucMT1=multithresh(NucOpen,20); %Calculate 20 brightness thresholds for image 
