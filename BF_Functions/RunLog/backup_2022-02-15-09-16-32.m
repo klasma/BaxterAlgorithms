@@ -134,7 +134,7 @@ NumImg=NumSeries*NumTimepoint*NumColors; %The total number of images, combining 
 % 
 % 
 % end
-for j=0:1% Number of wells in ND2 File  
+parfor j=0:1% Number of wells in ND2 File  
     % Set Current Well and other important values
     %##Would be very useful to figure out how to make this work as a parfor
     %loop, but might be quite difficult
@@ -161,14 +161,12 @@ for j=0:1% Number of wells in ND2 File
 %     BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well); %Creates a filename that's compatible with both PC and Mac
 %     mkdir(BaxSegFolderCell);
 
-%     data = bfopen('/path/to/data/file')
+    
     for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
             %Set up the particular timepoint image
         Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
        iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
-
-       data= bfopen(
-       %        WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
+%        WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
        Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
                          
                         BaxterName=strcat('w',Well,'t',Timepoint) ; %Very important, creates a name in the format that Baxter Algorithms prefers

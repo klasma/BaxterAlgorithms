@@ -1,4 +1,4 @@
-function [cyt_bw4,cyt_bw4_perim,CytBright] = Cytosol(AnaImage,AnaSettings,MiPerPix)
+function [cyt_bw4,cyt_bw4_perim] = Cytosol(AnaImage,AnaSettings,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             CytTophatDisk=strel('disk',round(250*(0.34/MiPerPix))); % EditHere

@@ -1,6 +1,6 @@
 %% Gal8 Recruitment MATLAB Program
 %% Image Folder Location
-clc, clear all, close all
+clc, clear, close all
 reader = bfGetReader(char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\PSINPsDB Screen001.nd2"));
 exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\2022-02-09-Crazy');
 if ~exist(exportdir,'file')
@@ -35,7 +35,7 @@ SegDirectory = fullfile(BaxtDirectory,'Analysis','Segmentation_');
 %%Log Data
 Version=run;
 LogFile=strcat(LogDirectory,'\');
-FileNameAndLocation=[mfilename('fullpath')];
+FileNameAndLocation=[mfilename('fullpath')]; %#ok<NBRAK>
 newbackup=sprintf('%sbackup_%s.m',LogFile,Version);
 Gitdir=fullfile(pwd,'RunLog\');
 GitLog=sprintf('%sbackup_%s.m',Gitdir,Version);
@@ -80,6 +80,8 @@ CellSize=1; %Scale as needed for different Cells
                         
     BaxExport=true; %#Integrate with GUI
     
+    
+%     eval(ImageAnalyses{z,:}{5}{1})
 %     if BaxExport
 %         for z=1:length(ImageAnalyses)
 %             exportbaseBAXTSeg=fullfile(SegDirectory,strcat(ImageAnalyses{z,:}{1}{1},'_',num2str(z)));
@@ -88,7 +90,7 @@ CellSize=1; %Scale as needed for different Cells
 %     end
     
     BaxMask='Cyt_WS';
-    MakeExampleImage=1; %#Integrate with GUI
+    MakeExampleImage=0; %#Integrate with GUI
     MakeOverlayImage=0;%Logical Yes or no to make overlay image #Integrate with GUI
     % ##Add selection for what to overlay on the overlay image, for example,
     % showing the cytosol perimeter analysis or Not
@@ -134,7 +136,7 @@ NumImg=NumSeries*NumTimepoint*NumColors; %The total number of images, combining 
 % 
 % 
 % end
-for j=0:1% Number of wells in ND2 File  
+for j=0% Number of wells in ND2 File  
     % Set Current Well and other important values
     %##Would be very useful to figure out how to make this work as a parfor
     %loop, but might be quite difficult
@@ -162,27 +164,37 @@ for j=0:1% Number of wells in ND2 File
 %     mkdir(BaxSegFolderCell);
 
 %     data = bfopen('/path/to/data/file')
-    for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
+Img=zeros(1,1,3);
+for i=0:T_Value 
+% Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
+iplane=reader.getIndex(0,0,i);
+    for n=1:numPlanes             
+                    Img(:,:,n,i+1)= bitConvert*bfGetPlane(reader,iplane+n);
+    end
+end
+Img=uint16(Img);
+
+parfor i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
             %Set up the particular timepoint image
         Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
-       iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
+%        iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
 
-       data= bfopen(
+%        data= bfopen(
        %        WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
-       Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
+%        Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
                          
                         BaxterName=strcat('w',Well,'t',Timepoint) ; %Very important, creates a name in the format that Baxter Algorithms prefers
-                        
+ Img2=Img(:,:,:,i);                       
                         ImageName=fullfile(BaxWellFolder,BaxterName); %Creates a name for each particular image
                         
             for n=1:numPlanes             
-                Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
+%                 Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
             
             if logical(BaxExport)
            
-                    Img2=uint16(Img(:,:,n));
+                    
                     my_field = strcat('c',num2str(n,'%02.f'));
-                    imwrite(Img2, strcat(ImageName,my_field,'.tif'),'tif');
+                    imwrite(Img2(:,:,n), strcat(ImageName,my_field,'.tif'),'tif');
             end
             end
             
@@ -191,7 +203,7 @@ for j=0:1% Number of wells in ND2 File
             for k=1:length(ImageAnalyses)
                     Analysis=ImageAnalyses{k,:}{1}{1};
                     AnaChan=ImageAnalyses{k,:}{2}{1};
-                    AnaImage=uint16(Img(:,:,AnaChan));
+                    AnaImage=Img2(:,:,AnaChan);
                     AnaSettings= ImageAnalyses{k,:}{3};
 
                     switch Analysis
@@ -228,11 +240,11 @@ for j=0:1% Number of wells in ND2 File
                              end
                               
                         case 'Nuc_Cyt'
-                               [Nuc_bw4,Nuc_bw4_perim,NucLabel] = Nuc_Cyt(AnaImage,AnaSettings,Cyt,Cyt_bw4,MiPerPix);
+                               [Nuc_bw4,erim,NucLabel] = Nuc_Cyt(AnaImage,AnaSettings,Cyt,Cyt_bw4,MiPerPix);
                            if ~isempty(ImageAnalyses{k,:}{4})
                                     Img_eq=imadjust(AnaImage);
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
+                           end
                              if ImageAnalyses{k,:}{6}{1}
                                     SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
                                         if ~exist(SegDir,'file')
@@ -260,10 +272,11 @@ for j=0:1% Number of wells in ND2 File
                               end
                                 
                         case 'Gal8'    
-                            [Gal_bw4_Perim,Gal_bw4] = Gal8(AnaImage,AnaSettings,Cyt_bw4,MiPerPix);
+                            [Gal_bw4_Perim,Gal_bw4,Gal_Label] = Gal8(AnaImage,AnaSettings,Cyt_bw4,MiPerPix);
                             if ~isempty(ImageAnalyses{k,:}{4})
                                     Img_eq=imadjust(AnaImage);
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
+                                    PerimeterImg=Gal_bw4_Perim;
                              end
                              if ImageAnalyses{k,:}{6}{1}
                                     SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
@@ -272,10 +285,16 @@ for j=0:1% Number of wells in ND2 File
                                         end
                                     ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
                                     SegFile=fullfile(SegDir,ImName);
-                                    imwrite(Gal_bw4,SegFile);   
+                                    imwrite(Gal_Label,SegFile);
+                                    
+%                                         if ~isempty(ImageAnalyses{z,:}{5})
+%                                             ImageAnalyses{k,:}{5}{2}
+%                                         end
                               end
                     end
-        end
+                    
+             
+            end
     %% ExportSegment        
     
 %     SegFile=strcat(BaxSegFolderCell,'\',BaxterName,'.tif');
@@ -285,17 +304,17 @@ for j=0:1% Number of wells in ND2 File
     
 
 
-             for z=1:length(ImageAnalyses)
-                        if ~isempty(ImageAnalyses{z,:}{5})
-                            RGBExportImage=imoverlay(RGBExportImage,eval(ImageAnalyses{z,:}{5}{1}),ImageAnalyses{z,:}{5}{2});
-                        end
-            end  
+%              for z=1:length(ImageAnalyses)
+%                         if ~isempty(ImageAnalyses{z,:}{5})
+%                             RGBExportImage=imoverlay(RGBExportImage,ImageAnalyses{z,:}{5}{2}),ImageAnalyses{z,:}{5}{2});
+%                         end
+%                 end  
              if  logical(MakeExampleImage)               
                         
                     %##Need to add more if statements here
                     OverlayName=fullfile(OverlaidDirectory,BaxterName);
                     imwrite(RGBExportImage, strcat(OverlayName,'.tif'),'tif');
-                   clear RGBExportImage
+                    RGBExportImage=[];
              end
            
     
@@ -306,7 +325,7 @@ for j=0:1% Number of wells in ND2 File
             %order to make it all work with an arbitrary number of analyses
             %and image planes
     
-    end   
+end   
 end   
 
 %% Write Analysis Data to File

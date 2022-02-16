@@ -3,9 +3,7 @@
 clc, clear all, close all
 reader = bfGetReader(char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\PSINPsDB Screen001.nd2"));
 exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\2022-02-09-Crazy');
-if ~exist(exportdir,'file')
 mkdir(exportdir);
-end
 %% Directory Code
 
 run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
@@ -24,7 +22,7 @@ LogDirectory = fullfile(RunDirectory,'Log');
 mkdir(LogDirectory);
 
 SegDirectory = fullfile(BaxtDirectory,'Analysis','Segmentation_');
-% mkdir(SegDirectory);
+mkdir(SegDirectory);
 
 
 
@@ -70,22 +68,22 @@ CellSize=1; %Scale as needed for different Cells
     %{{'function'},{ImageToAnalyze},{InputParameter},{OverlayImage(1=Red
     %Plane 2=G 3=B)},{Mask/Perimeter to Overlay});
     ImageAnalyses=    {
-                        {{'Cyt'},{1},{0.8 0.4},{2},{},{false}};
-                         {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true}};
-                        {{'CytWS'},{1},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
-                        {{'Gal8'},{1},{0.1},{},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true}};
-         
+                        {{'Cyt'},{1},{0.8 0.4},{2},{}};
+                         {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
+                        {{'CytWS'},{1},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]}};
+                        {{'Gal_perCell'},{1},{0.1},{},{'Gal_bw_Perim' [0.4940, 0.1840, 0.5560]}};
+                        {{'Drug'},{2},{0},{1},{}};
                             };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
     
                         
     BaxExport=true; %#Integrate with GUI
     
-%     if BaxExport
-%         for z=1:length(ImageAnalyses)
-%             exportbaseBAXTSeg=fullfile(SegDirectory,strcat(ImageAnalyses{z,:}{1}{1},'_',num2str(z)));
-%             mkdir(exportbaseBAXTSeg);
-%         end 
-%     end
+    if BaxExport
+        for z=1:length(ImageAnalyses)
+            exportbaseBAXTSeg=fullfile(SegDirectory,'Segmentation_',strcat(ImageAnalyses{z,:}{1}{1},'_',num2str(z)));
+            mkdir(exportbaseBAXTSeg);
+        end 
+    end
     
     BaxMask='Cyt_WS';
     MakeExampleImage=1; %#Integrate with GUI
@@ -130,10 +128,6 @@ NumImg=NumSeries*NumTimepoint*NumColors; %The total number of images, combining 
 %or even neccessary at all
 %% Analysis Program 
 % j=0:NumSeries-1
-% for j=0:1
-% 
-% 
-% end
 for j=0:1% Number of wells in ND2 File  
     % Set Current Well and other important values
     %##Would be very useful to figure out how to make this work as a parfor
@@ -142,8 +136,8 @@ for j=0:1% Number of wells in ND2 File
     reader.setSeries(CurrSeries); %##uses BioFormats function, can be swapped with something else (i forget what) if it's buggy with the GUI
     fname = reader.getSeries; %gets the name of the series using BioFormats
     Well=num2str(fname,'%05.f'); %Formats the well name for up to 5 decimal places of different wells, could increase but 5 already feels like overkill 
-%     PositionX = readeromeMeta.getPlanePositionX(CurrSeries,1).value(); %May be useful someday, but not needed here
-%     PositionY = readeromeMeta.getPlanePositionY(CurrSeries,1).value(); %May be useful someday, but not needed yet. Get's the position of the actual image. Useful for checking stuff
+    PositionX = readeromeMeta.getPlanePositionX(CurrSeries,1).value(); %May be useful someday, but not needed here
+    PositionY = readeromeMeta.getPlanePositionY(CurrSeries,1).value(); %May be useful someday, but not needed yet. Get's the position of the actual image. Useful for checking stuff
     T_Value = reader.getSizeT()-1; %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
     
     %CreateFolders for Baxter to read data
@@ -161,14 +155,12 @@ for j=0:1% Number of wells in ND2 File
 %     BaxSegFolderCell=fullfile(exportbaseBAXTSegCell,Well); %Creates a filename that's compatible with both PC and Mac
 %     mkdir(BaxSegFolderCell);
 
-%     data = bfopen('/path/to/data/file')
+    
     for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
             %Set up the particular timepoint image
         Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
        iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
-
-       data= bfopen(
-       %        WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
+       WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
        Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
                          
                         BaxterName=strcat('w',Well,'t',Timepoint) ; %Very important, creates a name in the format that Baxter Algorithms prefers
@@ -177,16 +169,11 @@ for j=0:1% Number of wells in ND2 File
                         
             for n=1:numPlanes             
                 Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
-            
-            if logical(BaxExport)
-           
-                    Img2=uint16(Img(:,:,n));
+                    if logical(BaxExport)
                     my_field = strcat('c',num2str(n,'%02.f'));
-                    imwrite(Img2, strcat(ImageName,my_field,'.tif'),'tif');
-            end
-            end
-            
-            
+                    imwrite(Img(:,:,n), strcat(ImageName,my_field,'.tif'),'tif');
+                    end                   
+    end    
             
             for k=1:length(ImageAnalyses)
                     Analysis=ImageAnalyses{k,:}{1}{1};
@@ -197,84 +184,64 @@ for j=0:1% Number of wells in ND2 File
                     switch Analysis
                         case 'Nuc'
                          [bw4,bw4_perim,Label]= NuclearStain(AnaImage,AnaSettings,MiPerPix);   
-                             if ~isempty(ImageAnalyses{k,:}{4})
+%                             
+                                if ~isempty(ImageAnalyses{k,:}{4})
                                     Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
-                             if ImageAnalyses{k,:}{6}{1}
                                     SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
                                         if ~exist(SegDir,'file')
                                         mkdir(SegDir);
                                         end
                                     ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
                                     SegFile=fullfile(SegDir,ImName);
-                                    imwrite(Label,SegFile);   
-                              end
+                                    imwrite(Label,SegFile);
+                                    
+                                end
                         case 'Cyt'
-                         [Cyt_bw4,bw4_perim] = Cytosol(AnaImage,AnaSettings,MiPerPix);   
+                         [bw4,bw4_perim] = Cytosol(AnaImage,AnaSettings,MiPerPix);   
                                 Cyt=AnaImage;
-                             if ~isempty(ImageAnalyses{k,:}{4})
-                                    Img_eq=imadjust(AnaImage);
+                                if ~isempty(ImageAnalyses{k,:}{4})
+                                    Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
-                             if ImageAnalyses{k,:}{6}{1}
                                     SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
                                         if ~exist(SegDir,'file')
                                         mkdir(SegDir);
                                         end
                                     ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
                                     SegFile=fullfile(SegDir,ImName);
-                                    imwrite(Cyt_bw4,SegFile);   
-                             end
-                              
+                                    imwrite(bw4,SegFile);
+                                end 
                         case 'Nuc_Cyt'
-                               [Nuc_bw4,Nuc_bw4_perim,NucLabel] = Nuc_Cyt(AnaImage,AnaSettings,Cyt,Cyt_bw4,MiPerPix);
-                           if ~isempty(ImageAnalyses{k,:}{4})
-                                    Img_eq=imadjust(AnaImage);
-                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
-                             if ImageAnalyses{k,:}{6}{1}
-                                    SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
+                               [Nuc_bw4,Nuc_bw4_perim,NucLabel] = Nuc_Cyt(AnaImage,AnaSettings,Cyt,bw4,MiPerPix);
+                            if ~isempty(ImageAnalyses{k,:}{4})
+                                Img_eq=AnaImage;    
+                                RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
+                                SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
                                         if ~exist(SegDir,'file')
                                         mkdir(SegDir);
                                         end
                                     ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
                                     SegFile=fullfile(SegDir,ImName);
-                                    imwrite(NucLabel,SegFile);   
-                              end
+                                    imwrite(NucLabel,SegFile);
+                            end  
                                 
                         case 'CytWS'
-                            [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,Cyt,Cyt_bw4);
-                            if ~isempty(ImageAnalyses{k,:}{4})
-                                    Img_eq=imadjust(AnaImage);
+                            [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,Cyt,bw4);
+                                if ~isempty(ImageAnalyses{k,:}{4})
+                                    Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
-                             if ImageAnalyses{k,:}{6}{1}
                                     SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
                                         if ~exist(SegDir,'file')
                                         mkdir(SegDir);
                                         end
                                     ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
                                     SegFile=fullfile(SegDir,ImName);
-                                    imwrite(Cyt_WS,SegFile);   
-                              end
-                                
-                        case 'Gal8'    
-                            [Gal_bw4_Perim,Gal_bw4] = Gal8(AnaImage,AnaSettings,Cyt_bw4,MiPerPix);
-                            if ~isempty(ImageAnalyses{k,:}{4})
-                                    Img_eq=imadjust(AnaImage);
-                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                             end
-                             if ImageAnalyses{k,:}{6}{1}
-                                    SegDir=strcat(SegDirectory,Analysis,'_',num2str(k));
-                                        if ~exist(SegDir,'file')
-                                        mkdir(SegDir);
-                                        end
-                                    ImName=strcat(BaxterName,'c',num2str(AnaChan,'%02.f'),'.tif');
-                                    SegFile=fullfile(SegDir,ImName);
-                                    imwrite(Gal_bw4,SegFile);   
-                              end
+                                    imwrite(Cyt_WS,SegFile);
+                                end
+                       
                     end
+                  
+                     
         end
     %% ExportSegment        
     

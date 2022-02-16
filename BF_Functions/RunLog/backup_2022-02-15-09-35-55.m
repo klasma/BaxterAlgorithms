@@ -162,25 +162,33 @@ for j=0:1% Number of wells in ND2 File
 %     mkdir(BaxSegFolderCell);
 
 %     data = bfopen('/path/to/data/file')
-    for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
+Img=[];
+for i=0:T_Value 
+% Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
+iplane=reader.getIndex(0,0,i);
+    for n=1:numPlanes             
+                    Img(:,:,n,i+1)= bitConvert*bfGetPlane(reader,iplane+n);
+    end
+end
+parfor i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
             %Set up the particular timepoint image
         Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
-       iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
+%        iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint
 
-       data= bfopen(
+%        data= bfopen(
        %        WellTime = round(str2double(readeromeMeta.getPlaneDeltaT(CurrSeries,iplane).value())); %The time that the well image was taken. Very useful for sanity checks
-       Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
+%        Img=[];%Creates an empty array for the image ##Check and see if this is necessary or if there's a more efficient way of doing this.
                          
                         BaxterName=strcat('w',Well,'t',Timepoint) ; %Very important, creates a name in the format that Baxter Algorithms prefers
                         
                         ImageName=fullfile(BaxWellFolder,BaxterName); %Creates a name for each particular image
                         
             for n=1:numPlanes             
-                Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
+%                 Img(:,:,n)= bitConvert*bfGetPlane(reader,iplane+n);
             
             if logical(BaxExport)
            
-                    Img2=uint16(Img(:,:,n));
+                    Img2=uint16(Img(:,:,n,i+1));
                     my_field = strcat('c',num2str(n,'%02.f'));
                     imwrite(Img2, strcat(ImageName,my_field,'.tif'),'tif');
             end
@@ -191,7 +199,7 @@ for j=0:1% Number of wells in ND2 File
             for k=1:length(ImageAnalyses)
                     Analysis=ImageAnalyses{k,:}{1}{1};
                     AnaChan=ImageAnalyses{k,:}{2}{1};
-                    AnaImage=uint16(Img(:,:,AnaChan));
+                    AnaImage=uint16(Img(:,:,AnaChan,i+1));
                     AnaSettings= ImageAnalyses{k,:}{3};
 
                     switch Analysis
