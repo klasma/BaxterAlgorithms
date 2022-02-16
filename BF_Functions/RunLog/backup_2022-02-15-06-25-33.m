@@ -1,7 +1,7 @@
 %% Gal8 Recruitment MATLAB Program
 %% Image Folder Location
 clc, clear all, close all
-reader = bfGetReader(char("Z:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\PSINPsDB Screen001.nd2"));
+reader = bfGetReader(char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-06-29-PolymerScreen\PolyScreen004.nd2"));
 exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\2022-02-09-Crazy');
 mkdir(exportdir);
 %% Directory Code
@@ -74,14 +74,11 @@ CellSize=1; %Scale as needed for different Cells
                         {{'Cyt'},{1},{0.8 0.4},{2},{}};
                          {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]}};
                         {{'CytWS'},{1},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]}};
-                        {{'Gal_perCell'},{1},{0.1},{},{'Gal_bw_Perim' [0.4940, 0.1840, 0.5560]}};
-                        {{'Drug'},{2},{0},{1},{}};
-                        
-                                                };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
-%         {{'Partition'},{2},{'Nuc_bw4' 'cyt_bw4' '~cyt_bw4'},{},{}};
-%         ExampleImage=[2 1 3]; %Corresponds to red Green Blue CHannels of example Image
-    BaxExport=1;
-    MakeExampleImage=1;
+                            };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+
+    BaxExport=1; %#Integrate with GUI
+    BaxMask='Cyt_WS';
+    MakeExampleImage=1; %#Integrate with GUI
     MakeOverlayImage=0;%Logical Yes or no to make overlay image #Integrate with GUI
     % ##Add selection for what to overlay on the overlay image, for example,
     % showing the cytosol perimeter analysis or Not
@@ -107,7 +104,7 @@ CellSize=1; %Scale as needed for different Cells
 %         Drug_threshold_Big = 100;
 %% Analysis Variables
 
-Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaDrug'},{'Drugsum'},{'DrugAvgInCell'},{'DrugAvgOutCell'}]; 
+% Categories=[{'run'},{'well'},{'areacell'},{'CellSum'},{'areaGal8'},{'galsum'},{'areaDrug'},{'Drugsum'},{'DrugAvgInCell'},{'DrugAvgOutCell'}]; 
 %##Categories are manually typed out here, but it should integrate so that
 %these are auto-populated or selectable within the GUI, might have to get
 %clever for this to work
@@ -117,7 +114,7 @@ NumColors=reader.getEffectiveSizeC(); %The number of colors of each well you ima
 NumTimepoint=(reader.getImageCount())/NumColors; %The number of timepoints you imaged
 NumImg=NumSeries*NumTimepoint*NumColors; %The total number of images, combining everything
 
-C = cell(NumImg,length(Categories)); 
+% C = cell(NumImg,length(Categories)); 
 %##C is something that will probably have be edited to allow data output
 %from this scale of the analysis. Don't even know if it's correct right now
 %or even neccessary at all
@@ -167,7 +164,7 @@ for j=0:1% Number of wells in ND2 File
                     my_field = strcat('c',num2str(n,'%02.f'));
                     imwrite(Img(:,:,n), strcat(ImageName,my_field,'.tif'),'tif');
                     end                   
-            end
+    end    
             
             for k=1:length(ImageAnalyses)
                     Analysis=ImageAnalyses{k,:}{1}{1};
@@ -179,80 +176,41 @@ for j=0:1% Number of wells in ND2 File
                          [Nuc_bw4,Nuc_bw4_perim,NucLabel]= NuclearStain(AnaImage,AnaSettings,MiPerPix);   
 %                                 Nuc=AnaImage;
                                 if ~isempty(ImageAnalyses{k,:}{4})
+                                    Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end
                         case 'Cyt'
                          [cyt_bw4,cyt_bw4_perim,CytBright] = Cytosol(AnaImage,AnaSettings,MiPerPix);   
                                 Cyt=AnaImage;
                                 if ~isempty(ImageAnalyses{k,:}{4})
+                                    Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end 
                         case 'Nuc_Cyt'
                                [Nuc_bw4,Nuc_bw4_perim,NucLabel] = Nuc_Cyt(AnaImage,AnaSettings,Cyt,cyt_bw4,MiPerPix);
                             if ~isempty(ImageAnalyses{k,:}{4})
-                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
+                                Img_eq=AnaImage;    
+                                RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                             end  
                                 
                         case 'CytWS'
                             [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,Cyt,cyt_bw4);
                                 if ~isempty(ImageAnalyses{k,:}{4})
+                                    Img_eq=AnaImage;
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                 end
-                        
-                        case 'Drug'
-                           [DrugMask,Drug_Perim] = Drug(Img, Drug_threshold);
-                                if ~isempty(ImageAnalyses{k,:}{4})
-                                    RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
-                                end
-                        
-                        case 'Gal8'    
-                            [Gal8Quant3,Gal_bw_Perim] = Gal8(Img,Gal8MinThreshold,CytPos,MiPerPix);
-                                                    
-                    
-%                          case 'Partition'    
-%                                 Channels=ImageAnalyses{k,:}{2};
-%                                 S=struct;
-%                                 WellField=strcat('W',char(Well));
-%                                 TimeField=strcat('T',char(Timepoint));
-%                                 for j= 1:length(Channels)
-%                                     PartChan=Channels{j};
-%                                     PartChan = strcat('Chan',num2str(PartChan,'%02.f'));
-%                                 for i= 1:length(AnaSettings(:))
-%                                     PartMask=(AnaSettings{i});
-%                                     PartMaskField=strrep(PartMask,'~','Inverse_');
-% 
-%                                     a=eval(PartMask);
-%                                         if ~exist('Cyt_WS','var')
-%                                         Cyt_WS=ones(size(a));
-%                                         end
-%                                         Cyt_WS_Part=Cyt_WS+4;
-%                                         Test_1 = Cyt_WS==0 & a ==0;
-%                                         Test_2 = Cyt_WS>0 & a ==0;
-%                                         Test_3 = Cyt_WS==0 & a>0;
-%                                         Cyt_WS_Part(Test_1)=1;
-%                                         Cyt_WS_Part(Test_2)=2;
-%                                         Cyt_WS_Part(Test_3)=3;
-%                                         for h = 1:max(Cyt_WS_Part,[],'all','omitnan')
-%                                             CellField=strcat('Cell',num2str(h,'%02.f'));
-%                                             CurrCell=Cyt_WS_Part==h;
-%                                             CellValues=AnaImage(CurrCell);
-%                                                 CellName(1,h) = h; 
-%                                                 Sum(1,h)= sum(CellValues,'all');
-%                                                 Mean(1,h)= mean(CellValues,'all');
-%                                                 varNames = {'Cell','Sum','Mean'};         
-%                                 %             S=setfield(S,WellField,TimeField,PartChan,PartMaskField,CellField,'Max',Max);
-%                                         end
-%                                         CellTable=table(CellName',Sum',Mean','VariableNames',varNames);
-%                                         S=setfield(S,WellField,TimeField,PartChan,PartMaskField,CellTable);
-
-
-%                                 end
-% 
-%                                 end      
-                        end
+                       
+                    end
                   
                      
-end
+        end
+    %% ExportSegment        
+    
+    TimeSeg=fullfile(exportbaseBAXTSegCell,Timepoint); 
+    mkdir(TimeSeg)
+    imwrite(eval(BaxMask),strcat(ImageName,my_field,'.tif'),'tif');
+    %%
+    
 
 
              for z=1:length(ImageAnalyses)
@@ -260,14 +218,14 @@ end
                             RGBExportImage=imoverlay(RGBExportImage,eval(ImageAnalyses{z,:}{5}{1}),ImageAnalyses{z,:}{5}{2});
                         end
             end  
-             if  t logical(MakeExampleImage)               
+             if  logical(MakeExampleImage)               
                         
                     %##Need to add more if statements here
                     OverlayName=fullfile(OverlaidDirectory,BaxterName);
                     imwrite(RGBExportImage, strcat(OverlayName,'.tif'),'tif');
                    clear RGBExportImage
              end
-            
+           
     
                 %% Measure Image Data
             %##Write Code here that uses parameters set in the GUI to take
