@@ -70,7 +70,7 @@ CellSize=1; %Scale as needed for different Cells
     %{{'function'},{ImageToAnalyze},{InputParameter},{OverlayImage(1=Red
     %Plane 2=G 3=B)},{Mask/Perimeter to Overlay});
     ImageAnalyses=    {
-                        {{'Cyt'},{1},{4 0.4},{2},{},{false}};
+                        {{'Cyt'},{2},{1.5 0.4},{2},{},{false}};
                          {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true}};
                         {{'CytWS'},{1},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
                         {{'Gal8'},{1},{0.1},{},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true}};
@@ -165,7 +165,7 @@ for j=0:1% Number of wells in ND2 File
 
 %     data = bfopen('/path/to/data/file')
 Img=zeros(2048,2048,numPlanes,T_Value+1);
-for i=0:T_Value
+for i=0:2 
 % Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
 iplane=reader.getIndex(0,0,i);
     for n=1:numPlanes             
@@ -174,7 +174,7 @@ iplane=reader.getIndex(0,0,i);
 end
 Img=uint16(Img);
 
-parfor i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
+parfor i=0:2 %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
             %Set up the particular timepoint image
         Timepoint = num2str(i,'%03.f'); %Creates a string so taht the BioFormats can read it
 %        iplane=reader.getIndex(0,0,i); %Gets the particular timepoint image, so now we're in a particular well at a particular timepoint

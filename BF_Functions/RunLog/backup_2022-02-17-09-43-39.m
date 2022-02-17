@@ -70,7 +70,7 @@ CellSize=1; %Scale as needed for different Cells
     %{{'function'},{ImageToAnalyze},{InputParameter},{OverlayImage(1=Red
     %Plane 2=G 3=B)},{Mask/Perimeter to Overlay});
     ImageAnalyses=    {
-                        {{'Cyt'},{1},{4 0.4},{2},{},{false}};
+                        {{'Cyt'},{1},{3 0.4},{2},{},{false}};
                          {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true}};
                         {{'CytWS'},{1},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
                         {{'Gal8'},{1},{0.1},{},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true}};
