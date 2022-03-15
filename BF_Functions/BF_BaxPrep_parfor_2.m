@@ -71,10 +71,9 @@ CellSize=1; %Scale as needed for different Cells
     %Plane 2=G 3=B)},{Mask/Perimeter to Overlay});
     ImageAnalyses=    {
                         {{'Cyt'},{2},{4 0.4},{2},{},{false}};
-                        {{'Nuc_Cyt'},{1},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true}};
-                        {{'CytWS'},{2},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
-                        {{'Gal8'},{2},{0.1},{},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true}};
-                        
+                        {{'Nuc_Cyt'},{1},{4 0.4 0.2},{3},{[0.8500 0.3250 0.0980]},{true}};
+                        {{'CytWS'},{2},{0.1},{},{[0.4940, 0.1840, 0.5560]},{true}};
+                        {{'Gal8'},{2},{0.1},{},{[0.4940, 0.1840, 0.5560]},{true}};
 %                         {{'Drug'},{3},{0.01},{1},{}};
                             };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
     
@@ -224,7 +223,7 @@ parfor i=0:T_Value %For all of the time points in the series, should start at ze
                                     imwrite(Label,SegFile);   
                               end
                         case 'Cyt'
-                         [Cyt_bw4,bw4_perim] = Cytosol(AnaImage,AnaSettings,MiPerPix);   
+                         [bw4,bw4_perim] = Cytosol(AnaImage,AnaSettings,MiPerPix);   
                                 Cyt=AnaImage;
                              if ~isempty(ImageAnalyses{k,:}{4})
                                     Img_eq=imadjust(AnaImage);
@@ -278,7 +277,8 @@ parfor i=0:T_Value %For all of the time points in the series, should start at ze
                                     Img_eq=imadjust(AnaImage);
                                     RGBExportImage(:,:,ImageAnalyses{k,:}{4}{1})=Img_eq;
                                     PerimeterImg=Gal_bw4_Perim;
-                             end
+                            end
+
                              if ImageAnalyses{k,:}{6}{1}
                                      SegDir=fullfile(strcat(SegDirectory,Analysis,'_',num2str(k)),Well);
                                         if ~exist(SegDir,'file')

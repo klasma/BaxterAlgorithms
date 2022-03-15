@@ -72,9 +72,8 @@ CellSize=1; %Scale as needed for different Cells
     ImageAnalyses=    {
                         {{'Cyt'},{2},{4 0.4},{2},{},{false}};
                         {{'Nuc_Cyt'},{1},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true}};
-                        {{'CytWS'},{2},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
+                       {{'CytWS'},{2},{0.1},{},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true}};
                         {{'Gal8'},{2},{0.1},{},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true}};
-                        
 %                         {{'Drug'},{3},{0.01},{1},{}};
                             };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
     
@@ -305,11 +304,11 @@ parfor i=0:T_Value %For all of the time points in the series, should start at ze
     
 
 
-             for z=1:length(ImageAnalyses)
-                        if ~isempty(ImageAnalyses{z,:}{5})
-                            RGBExportImage=imoverlay(RGBExportImage,ImageAnalyses{z,:}{5}{2});
-                        end
-             end  
+%              for z=1:length(ImageAnalyses)
+%                         if ~isempty(ImageAnalyses{z,:}{5})
+%                             RGBExportImage=imoverlay(RGBExportImage,ImageAnalyses{z,:}{5}{2}),ImageAnalyses{z,:}{5}{2});
+%                         end
+%                 end  
              if  MakeExampleImage              
                         
                     %##Need to add more if statements here
