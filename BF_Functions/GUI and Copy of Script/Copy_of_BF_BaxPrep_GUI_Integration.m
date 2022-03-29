@@ -2,10 +2,10 @@
 %% Image Folder Location
 clc, clear, close all
 
-ImgFile=char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\PSINPsDB Screen001.nd2");
+ImgFile=char('/Users/sarahreilly/Desktop/Research/PolyScreen004.nd2');
 r = loci.formats.Memoizer(bfGetReader(),0);
 r.setId(ImgFile);
-exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-21-DB-Addition\2022-02-09-Crazy');
+exportdir=char('/Users/sarahreilly/Desktop/Research');
 if ~exist(exportdir,'file')
 mkdir(exportdir);
 end
@@ -233,13 +233,24 @@ for i=0:T_Value %For all of the time points in the series, should start at zero 
             end
             end
             
+ ImageAnalyses=    {
+                        {{'Cyt'},{1},{4 0.4},{2},{},{false},{'Cytosol'}};
+                         {{'Nuc_Cyt'},{3},{4 0.4 0.2},{3},{'Nuc_bw4_perim' [0.8500 0.3250 0.0980]},{true},{}};
+                        {{'CytWS'},{1},{0.1},{'Cytosol'},{'Cyt_WS_perim' [0.4940, 0.1840, 0.5560]},{true},{}};
+                        {{'Gal8'},{1},{0.1},{'Cytosol'},{'Gal_bw4_Perim' [0.4940, 0.1840, 0.5560]},{true},{}};
+         
+                            };%Which Image analysis/functions to call. ##NEed to solve problem of secondary analyses like watershed of Nuc and Cytosol or gal8 and cytosol
+                
             
-            
-            for k=1:length(ImageAnalyses)
-                    Analysis=ImageAnalyses{k,:}{1}{1};
-                    AnaChan=ImageAnalyses{k,:}{2}{1};
+            for k=1:size(table,1)
+                % length(ImageAnalyses) = size(table,1)
+                    Analysis=char(table{k,1});
+                    % ImageAnalyses{k,:}{1}{1} = char(table{k,1})
+                    AnaChan=char(table{k,2});
+                    % ImageAnalyses{k,:}{2}{1} = char(table{k,2})
                     AnaImage=Img2(:,:,AnaChan);
                     AnaSettings= ImageAnalyses{k,:}{3};
+                    % ImageAnalyses{k,:}{3} = thresholding parameters
                     Storage
                     switch Analysis
                         case 'Nuc'
