@@ -19,12 +19,11 @@ NucWeiner=wiener2(Img);
     NucOverbright=NucTopHat>NucMaxValue;
     
     NucOpen(NucOverbright)=0;
-%         NucMT1=multithresh(NucOpen,20); %Calculate 20 brightness thresholds for image 
-%         NucQuant1=imquantize(NucOpen,NucMT1); %Divide Image into the 20 brightness baskets
-        NucMT1=1;
-        NucQuant1=1;
-%         NucBrightEnough=NucQuant1>NucLow;
-        NucBrightEnough=NucOpen>Low;
+        NucMT1=multithresh(NucOpen,20); %Calculate 20 brightness thresholds for image          NucQuant1=imquantize(NucOpen,NucMT1); %Divide Image into the 20 brightness baskets
+%        NucMT1=1;
+%       NucQuant1=1;
+         NucBrightEnough=NucQuant1>NucLow;
+%        NucBrightEnough=NucOpen>Low;
         NucPos=NucOpen;
         NucPos(~NucBrightEnough)=0;
 %         NucPos=imadjust(NucPos);
