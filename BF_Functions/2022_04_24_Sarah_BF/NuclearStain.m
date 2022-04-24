@@ -1,4 +1,4 @@
-function [Nuc_bw4,Nuc_bw4_perim,NucLabel] = NuclearStain(Img,AnaSettings,MiPerPix)
+function [Nuc_bw4,Nuc_bw4_perim,NucLabel,Data] = NuclearStain(Img,AnaSettings,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             NucTophatDisk=strel('disk',round(250*(0.34/MiPerPix)));
@@ -12,18 +12,19 @@ NucWeiner=wiener2(Img);
     NucTopHat=imtophat(NucWeiner,NucTophatDisk); % Clean image with tophat filter for thresholding 
 %     NucOpen=imerode(NucTopHat,NucOpenDisk);
 %      NucOpen=imreconstruct(NucOpen,NucTopHat);
-    Nuc_eq =imadjust(NucTopHat);   %Make it easy to see
+%     Nuc_eq =imadjust(NucTopHat);   %Make it easy to see
     NucOpen=imopen(NucTopHat,NucOpenDisk);
      NucMaxValue= Max*intmax(class(Img));
 
     NucOverbright=NucTopHat>NucMaxValue;
     
     NucOpen(NucOverbright)=0;
-        NucMT1=multithresh(NucOpen,20); %Calculate 20 brightness thresholds for image          NucQuant1=imquantize(NucOpen,NucMT1); %Divide Image into the 20 brightness baskets
-%        NucMT1=1;
-%       NucQuant1=1;
-         NucBrightEnough=NucQuant1>NucLow;
-%        NucBrightEnough=NucOpen>Low;
+%         NucMT1=multithresh(NucOpen,20); %Calculate 20 brightness thresholds for image 
+%         NucQuant1=imquantize(NucOpen,NucMT1); %Divide Image into the 20 brightness baskets
+%         NucMT1=1;
+%         NucQuant1=1;
+%         NucBrightEnough=NucQuant1>NucLow;
+        NucBrightEnough=NucOpen>Low;
         NucPos=NucOpen;
         NucPos(~NucBrightEnough)=0;
 %         NucPos=imadjust(NucPos);
@@ -35,7 +36,8 @@ NucWeiner=wiener2(Img);
        
        NucConn=bwconncomp(Nuc_bw4);
        NucLabel = labelmatrix(NucConn);
-       NucArea = imoverlay(Nuc_eq, Nuc_bw4_perim, [.3 1 .3]);
+%        NucArea = imoverlay(Nuc_eq, Nuc_bw4_perim, [.3 1 .3]);
        
+Data = {};
 end
 

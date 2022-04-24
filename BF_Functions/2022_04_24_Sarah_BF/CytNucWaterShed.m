@@ -1,4 +1,4 @@
-function [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
+function [Cyt_WS,Cyt_WS_perim,Data] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
     cytsize=size(CytTopHat);
@@ -17,5 +17,6 @@ function [Cyt_WS,Cyt_WS_perim] = CytNucWaterShed(Nuc_bw4,CytTopHat,cyt_bw4)
     Cyt_WS=imfill((howdy),4,'holes');
     Cyt_WS_perim = imdilate(bwperim(Cyt_WS),strel('disk',1));
     
+    Data = {};
 end
 

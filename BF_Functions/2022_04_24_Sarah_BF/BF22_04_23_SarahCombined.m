@@ -40,14 +40,13 @@ LogFile=strcat(LogDirectory,'\');
 FileNameAndLocation=[mfilename('fullpath')]; %#ok<NBRAK>
 newbackup=sprintf('%sbackup_%s.m',LogFile,Version);
 Gitdir=fullfile(pwd,'RunLog\');
+if isfolder(Gitdir)
+    
 GitLog=sprintf('%sbackup_%s.m',Gitdir,Version);
-% GitLog=sprintf('%sbackup_%s.m',LogFolder,Version);
-% mkdir(RunLog);
+
 currentfile=strcat(FileNameAndLocation, '.m');
 copyfile(currentfile,newbackup);
 copyfile(currentfile,GitLog)
-
-
 
 %% Sizing/Resolution Parameters EDIT HERE ADVANCED
 MiPerPix=0.34;        

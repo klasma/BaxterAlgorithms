@@ -1,4 +1,4 @@
-function [Gal_bw_Perim,Gal8Quant3,Gal_Label] = Gal8(Img,AnaSettings,CytPos,MiPerPix)
+function [Gal_bw_Perim,Gal8Quant3,Gal_Label,Data] = Gal8(Img,AnaSettings,CytPos,MiPerPix)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
             Gal8TophatDisk=strel('disk',round(6*(0.34/MiPerPix)));% EditHere
@@ -23,11 +23,15 @@ GalPals=Img;
 GalPals(~Gal8Quant3)=0;
 
  NucOpenDisk= strel('disk',round(10*(0.34/MiPerPix)));
- Gal8Fuzz=imopen(Img,NucOpenDisk);
+%  Gal8Fuzz=imopen(Img,NucOpenDisk);
 GalConn=bwconncomp(Gal8Quant3);
        Gal_Label = labelmatrix(GalConn);
-Puncta=regionprops(Gal8Quant3,Img,'Area','Centroid','MeanIntensity');
-Background=regionprops(Gal8Quant3,Gal8Fuzz,'Area','Centroid','MeanIntensity'); %need to figure out way to subtract out surrounding brightness for each individual Point
+       
+       Data = {};
+% Puncta=regionprops(Gal8Quant3,Img,'Area','Centroid','MeanIntensity');
+% Background=regionprops(Gal8Quant3,Gal8Fuzz,'Area','Centroid','MeanIntensity'); %need to figure out way to subtract out surrounding brightness for each individual Point
+
+
 % RingMeanInt=2; %need to figure out way to subtract out surrounding brightness for each individual Point
 % Gal8Signal=sum((vertcat(Puncta.MeanIntensity).*vertcat(Puncta.Area)));
 % Gal8Signal=Gal8Signal';
