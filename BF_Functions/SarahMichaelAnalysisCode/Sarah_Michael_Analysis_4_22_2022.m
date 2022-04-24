@@ -114,8 +114,8 @@ well_names =   {'A01.1','A01.2','A01.3','A01.4'...
                 'E07.1','E07.2','E07.3','E07.4'...
                 'E08.1','E08.2','E08.3','E08.4'...
                 'E09.1','E09.2','E09.3','E09.4'};
-%timepoints = [1,4,7,10,13,16,19,22,25,28,31,34,37];
-timepoints = [1];
+timepoints = [1,4,7,10,13,16,19,22,25,28,31,34,37];
+%timepoints = [1];
 ExportParamNames = {'CytArea','CytDrug','ECDrug','NucArea','NucDrug','Gal8Area','Gal8Drug','Gal8Sum'};
 DataForExport = cell(length(wells),length(timepoints)+1,length(ExportParamNames));
 
