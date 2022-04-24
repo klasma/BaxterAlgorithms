@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 %% Gal8 Recruitment MATLAB Program
 %% Image Folder Location
 clc, clear, close all
