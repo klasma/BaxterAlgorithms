@@ -58,9 +58,9 @@ CellSize=1; %Scale as needed for different Cells. Not currently used but maybe i
    %of the program, and contained within each row is all the data needed for analysis.
    
     ImageAnalyses=    {
-                        {{'Nuc'},{1},{3 0.25},{3},{},{true},{}};
+                        {{'Nuc'},{1},{2 0.25},{3},{},{true},{}};
                         {{'Cyt'},{2},{1 0.25},{2},{},{true},{}};
-                        {{'Gal8'},{2},{0.1 2},{},{},{true},{}};
+                        {{'Gal8'},{2},{0.01 2},{},{},{true},{}};
                             };%Which Image analysis/functions to call. 
     
     %Here's a key to what each cell represents:
@@ -120,7 +120,7 @@ ParSplit=[1:nWorkers:NumSeries]; %This splits everything so that it can be parra
 
 %% Analysis Program 
 AllData4={}; %Blank for Parfor CompSci reasons
-    parfor nn = 1 : nWorkers % Initialize logging at INFO level
+    for nn = 1 : nWorkers % Initialize logging at INFO level
         bfInitLogging('INFO'); % Initialize a new reader per worker as Bio-Formats is not thread safe
         r2 = javaObject('loci.formats.Memoizer', bfGetReader(), 0); % Initialization should use the memo file cached before entering the parallel loop
         r2.setId(ImgFile);
