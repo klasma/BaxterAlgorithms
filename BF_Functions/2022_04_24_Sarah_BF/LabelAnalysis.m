@@ -3,10 +3,10 @@ function [SpotData] = LabelAnalysis(LiveData,Img2,Well,Timepoint)
 %   Detailed explanation goes here
 % Img2= LiveData{1, 4};   
 for stella=1:length(LiveData)
-        wellname=matlab.lang.makeValidName(strcat('w',Well));
-        timename=matlab.lang.makeValidName(strcat('t',Timepoint));
-        wellnum=str2num(Well);
-        timenum=str2num(Timepoint);
+%         wellname=matlab.lang.makeValidName(strcat('w',Well));
+%         timename=matlab.lang.makeValidName(strcat('t',Timepoint));
+%         wellnum=str2num(Well);
+%         timenum=str2num(Timepoint);
         
          area= nnz(LiveData{1,stella}.bw4);
          LabelMax=max(LiveData{1,stella}.Label,[],'all');
@@ -18,8 +18,9 @@ for stella=1:length(LiveData)
          
         for milo=1:length(Img2(1,1,:))
             DataImage=Img2(:,:,milo);
-            SumInt=sum(DataImage(LiveData{1,stella}.bw4));
-            InvInt=sum(DataImage(~LiveData{1,stella}.bw4));
+            DataMask=LiveData{1,stella}.bw4;
+            SumInt=sum(DataImage(DataMask));
+            InvInt=sum(DataImage(~DataMask));
             Place=4+milo*2;
             Place2=5+milo*2;
             SpotData(stella,Place)= SumInt;

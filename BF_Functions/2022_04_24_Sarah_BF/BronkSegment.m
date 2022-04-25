@@ -7,9 +7,6 @@ for k =1:length(ImageAnalyses)
                     AnaChan=ImageAnalyses{k,:}{2}{1};
                     AnaImage=Img2(:,:,AnaChan);
                     AnaSettings= ImageAnalyses{k,:}{3};
-%                     Storage
-%                         DataName{k} = matlab.lang.makeValidName(Analysis);
-%                         DataLoop=strcat(DataName{k},'_',num2str(k));
 
                     switch Analysis
                         case 'Nuc'
