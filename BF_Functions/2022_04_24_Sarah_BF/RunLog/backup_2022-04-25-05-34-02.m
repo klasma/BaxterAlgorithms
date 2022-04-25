@@ -120,7 +120,7 @@ ParSplit=[1:nWorkers:NumSeries]; %This splits everything so that it can be parra
 
 %% Analysis Program 
 AllData4={}; %Blank for Parfor CompSci reasons
-    parfor nn = 1 : nWorkers % Initialize logging at INFO level
+    for nn = 1 : nWorkers % Initialize logging at INFO level
         bfInitLogging('INFO'); % Initialize a new reader per worker as Bio-Formats is not thread safe
         r2 = javaObject('loci.formats.Memoizer', bfGetReader(), 0); % Initialization should use the memo file cached before entering the parallel loop
         r2.setId(ImgFile);

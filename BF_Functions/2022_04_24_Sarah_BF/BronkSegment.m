@@ -15,13 +15,15 @@ for k =1:length(ImageAnalyses)
                          [bw4,bw4_perim,Label,Data] = Cytosol(AnaImage,AnaSettings,MiPerPix);  
                         case 'CytWS'
                             NucChan=ImageAnalyses{k,:}{3}{1};
-                             CytChan=ImageAnalyses{k,:}{3}{2};
+                            CytChan=ImageAnalyses{k,:}{3}{2};
                             Cyt=LiveData{CytChan}.AnaImage;
                             Nuc_bw4=LiveData{NucChan}.bw4;
                             Cyt_bw4=LiveData{CytChan}.bw4;
                          [Label,bw4_perim,Data] = CytNucWaterShed(Nuc_bw4,Cyt,Cyt_bw4);                           
                         case 'Gal8'    
-                         [bw4_perim,bw4,Label,Data] = Gal8(AnaImage,AnaSettings,Cyt_bw4,MiPerPix);
+                            CytChan=ImageAnalyses{k,:}{3}{2};
+                            Cyt_bw4=LiveData{CytChan}.bw4;
+                            [bw4_perim,bw4,Label,Data] = Gal8(AnaImage,AnaSettings,Cyt_bw4,MiPerPix);
                      end
                     LiveData{k}.AnaImage = AnaImage;
                     LiveData{k}.bw4 = bw4;

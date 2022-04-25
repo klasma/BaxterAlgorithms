@@ -60,7 +60,7 @@ CellSize=1; %Scale as needed for different Cells. Not currently used but maybe i
     ImageAnalyses=    {
                         {{'Nuc'},{1},{4 0.25},{3},{},{true},{}};
                         {{'Cyt'},{2},{1 0.1},{2},{},{true},{}};
-                        {{'Gal8'},{2},{0.01 2},{},{},{true},{}};
+                        {{'Gal8'},{2},{0.01},{},{},{true},{}};
                             };%Which Image analysis/functions to call. 
     
     %Here's a key to what each cell represents:
@@ -144,10 +144,10 @@ AllData4={}; %Blank for Parfor CompSci reasons
 
                     AllData2={};%Clear because parfor 
                     for i=0:T_Value %For all of the time points in the series, should start at zero if T_Value has -1 built in, which it should
-                        Img2=zeros(SizeY,SizeX,numPlanes);  %Make a blank shell for the images  
+                        Img2=zeros(SizeX,SizeY,numPlanes);  %Make a blank shell for the images  
                                 iplane=r2.getIndex(0,0,i);
                                 for n=1:numPlanes             
-                                        Img2(:,:,n)= bfGetPlane(r2,iplane+n); %Creates a 3D matrix with every image color channel as a different layer. Matlab fast at matrixes
+                                                Img2(:,:,n)= bfGetPlane(r2,iplane+n); %Creates a 3D matrix with every image color channel as a different layer. Matlab fast at matrixes
                                 end
                                 Img2=uint16(Img2); %Converts Images to uint16 so they're always the same for downstream analysis.
         %##PROJECT: uint8 may be faster and better than uint16 because it would enable GPU integration.
