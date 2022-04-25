@@ -73,7 +73,7 @@ CellSize=1; %Scale as needed for different Cells
     
 %% Analysis Variables
     %Define Wells if Necessary
-    customrun=false;
+    customrun=true;
  FastRun=16;
 if customrun
 NumSeries=FastRun;
@@ -126,8 +126,8 @@ AllData4={};
                 r2.setSeries(CurrSeries); %##uses BioFormats function, can be swapped with something else (i forget what) if it's buggy with the GUI
                 fname = r2.getSeries; %gets the name of the series using BioFormats
                 Well=num2str(fname,'%05.f'); %Formats the well name for up to 5 decimal places of different wells, could increase but 5 already feels like overkill 
-                T_Value = r2.getSizeT()-1 %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
-%                 T_Value = 1
+        %         T_Value = r2.getSizeT()-1 %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
+                T_Value = 1
                 SizeX=r2.getSizeX();
                 SizeY=r2.getSizeY();
 
@@ -164,19 +164,18 @@ AllData4={};
 
                             %Get Area and Intensities
                             [SpotData] = LabelAnalysis(LiveData,Img2,Well,Timepoint);
-                            AllData2{i+1}=SpotData;
+                            AllData2{i+1}=SpotData
                     end
-            AllData3(j+1,:)=AllData2;
+            AllData3(j+1,:)=AllData2
             end
-        AllData4{nn}=AllData3;
+        AllData4{nn}=AllData3
     end
 %% Write Analysis Data to File
     for i=1:length(AllData4)
         AllData5=AllData4{i};
-        AllData5(all(cellfun(@isempty, AllData5),2),:) = [];
-        AllData6{i}=AllData5;
+        AllData5(all(cellfun(@isempty, AllData5),2),:) = []
+        AllData6{i}=AllData5
     end    
-    
 [TPs] = CumCell(AllData6);
 [ExportParamNames] = ParamNames(numPlanes);
 IntensityExport=array2table(TPs,'VariableNames',ExportParamNames);

@@ -1,6 +1,8 @@
 %% Gal8 Recruitment MATLAB Program
 %% Image Folder Location
 clc, clear, close all
+
+
 ImgFile=char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isa\2021-10-02-BigPRoteinScreen\20211002BigProteinScreen001.nd2");
 r = loci.formats.Memoizer(bfGetReader(),0);
 r.setId(ImgFile);
@@ -73,8 +75,8 @@ CellSize=1; %Scale as needed for different Cells
     
 %% Analysis Variables
     %Define Wells if Necessary
-    customrun=false;
- FastRun=16;
+    customrun=true;
+ FastRun=2;
 if customrun
 NumSeries=FastRun;
 
@@ -119,15 +121,15 @@ AllData4={};
         bfInitLogging('INFO'); % Initialize a new reader per worker as Bio-Formats is not thread safe
         r2 = javaObject('loci.formats.Memoizer', bfGetReader(), 0); % Initialization should use the memo file cached before entering the parallel loop
         r2.setId(ImgFile);
-        AllData3={};
+       
             for j=ParSplit+nn-2% Number of wells in ND2 File
                 %Prep Metadata
                 CurrSeries=j; %The current well that we're looking at
                 r2.setSeries(CurrSeries); %##uses BioFormats function, can be swapped with something else (i forget what) if it's buggy with the GUI
                 fname = r2.getSeries; %gets the name of the series using BioFormats
                 Well=num2str(fname,'%05.f'); %Formats the well name for up to 5 decimal places of different wells, could increase but 5 already feels like overkill 
-                T_Value = r2.getSizeT()-1 %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
-%                 T_Value = 1
+        %         T_Value = r2.getSizeT()-1 %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
+                T_Value = 1
                 SizeX=r2.getSizeX();
                 SizeY=r2.getSizeY();
 
@@ -164,19 +166,13 @@ AllData4={};
 
                             %Get Area and Intensities
                             [SpotData] = LabelAnalysis(LiveData,Img2,Well,Timepoint);
-                            AllData2{i+1}=SpotData;
+                            AllData2{i+1}=SpotData
                     end
-            AllData3(j+1,:)=AllData2;
+            AllData3(j+1,:)=AllData2
             end
-        AllData4{nn}=AllData3;
+        AllData4=AllData3
     end
 %% Write Analysis Data to File
-    for i=1:length(AllData4)
-        AllData5=AllData4{i};
-        AllData5(all(cellfun(@isempty, AllData5),2),:) = [];
-        AllData6{i}=AllData5;
-    end    
-    
-[TPs] = CumCell(AllData6);
+[TPs] = CumCell(AllData4);
 [ExportParamNames] = ParamNames(numPlanes);
 IntensityExport=array2table(TPs,'VariableNames',ExportParamNames);
