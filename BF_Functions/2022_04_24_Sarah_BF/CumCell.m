@@ -1,7 +1,7 @@
 function [TPs] = CumCell(AllData4)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-  for i=1:length(AllData4)
+    for i=1:length(AllData4)
         AllData5=AllData4{i};
         AllData5(all(cellfun(@isempty, AllData5),2),:) = [];
         AllData6{i}=AllData5;

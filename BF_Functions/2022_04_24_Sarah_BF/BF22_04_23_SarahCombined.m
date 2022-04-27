@@ -3,7 +3,7 @@
     %User Defines location of Image file and location of directory to
     %export to.
 clc, clear, close all
-ImgFile=char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-08\DoseResponse\Gal8\BF_Gal8Overnight_Test003.nd2");
+ImgFile=char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-08\DoseResponse\mTmG\mTmG24hr001DoseResponse.nd2");
 r = loci.formats.Memoizer(bfGetReader(),0);
 r.setId(ImgFile);
 exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Brock Fletcher\2021-09-08\DoseResponse\Gal8\2022-04-25-Analysis');
@@ -58,9 +58,9 @@ CellSize=1; %Scale as needed for different Cells. Not currently used but maybe i
    %of the program, and contained within each row is all the data needed for analysis.
    
     ImageAnalyses=    {
-                        {{'Nuc'},{1},{3 0.25},{3},{},{true},{}};
-                        {{'Cyt'},{2},{1 0.25},{2},{},{true},{}};
-                        {{'Gal8'},{2},{0.1 2},{},{},{true},{}};
+                        {{'Nuc'},{1},{2 0.1},{3},{},{true},{}};
+                        {{'Cyt'},{2},{1 0.0025},{2},{},{true},{}};
+                        {{'Gal8'},{2},{0.004 2},{},{},{true},{}};
                             };%Which Image analysis/functions to call. 
     
     %Here's a key to what each cell represents:
