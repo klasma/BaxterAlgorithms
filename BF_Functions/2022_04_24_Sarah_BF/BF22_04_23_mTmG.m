@@ -225,7 +225,7 @@ AllData4={}; %Blank for Parfor CompSci reasons
 %     TidyFeat
     
 %% Write Analysis Data to File    
-[TPs] = CumCell2(ParWell); %Custom Function to combine weird data format from parfor Loop
+[TPs] = CumCell2(AllData4); %Custom Function to combine weird data format from parfor Loop
 [ExportParamNames] = ParamNames(numPlanes); %Export the names of the parameters used for analysis
 IntensityExport=array2table(TPs,'VariableNames',ExportParamNames); %Make a table with all of the data
 ExcelName=fullfile(RunDirectory,strcat(run,'.xlsx')); %Prepare excel file name
