@@ -201,28 +201,23 @@ AllData4={}; %Blank for Parfor CompSci reasons
                                 % #PROJECT: LabelAnalysis was written
                                 % quickly and could likely be optimized to
                                 % run faster. It's relatively slow.
-%                              ParWell{nn,1}.AnaWell{j+1,1}.Time{i+1,1}=TidyFeat
-%                             VarTry={nn,{j+1,{i+1,TidyFeat}}}
-%                            VarTry={nn,j+1,i+1,TidyFeat}
+               
                            AllData2{i+1}=TidyFeat
                            
-%                             AllData2{i+1}={TidyFeat}; %Store Data in parfor-compatible way
+
                     end
-%                     VarTryyy{j+1}=VarTry;
+
                 AllData3{RunNum}=AllData2
-%                     AnaWell(j+1)=Time
-%             AllData3(j+1,:)=AllData2; %Store Data in parfor-compatible way
+
+
                 else
                 end    
             end
             RunNum=0
-%             VarTryyyy{nn}=VarTryyy
-%             ParWell(nn)=AnaWell
-%             TidyFeat=TidyFeat;
-%         AllData4{nn}=AllData3;
+
             AllData4{nn}=AllData3 %Store Data in parfor-compatible way
     end %end of all analysis
-%     TidyFeat
+
     
 %% Write Analysis Data to File    
 [TPs] = CumCell2(AllData4); %Custom Function to combine weird data format from parfor Loop
