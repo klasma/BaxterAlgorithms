@@ -13,7 +13,7 @@ end
 
 %% Directory Code
     %This section makes directories to export everything to
-run=char(datetime(clock),"yyyy-MM-dd-HH-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
+run=char(datetime(clock),"yyyy-MM-dd-hh-mm-ss");    % The Run number is used to track multiple runs of the software, and is used in
           
 readeromeMeta=r.getMetadataStore();
 RunDirectory= fullfile(exportdir,run);
