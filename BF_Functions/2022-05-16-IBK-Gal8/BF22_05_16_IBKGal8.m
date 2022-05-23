@@ -36,14 +36,14 @@ Version=run;
 LogFile=strcat(LogDirectory,'\');
 FileNameAndLocation=[mfilename('fullpath')]; %#ok<NBRAK>
 newbackup=sprintf('%sbackup_%s.m',LogFile,Version);
-Gitdir=fullfile(pwd,'RunLog\');
-    if ~isfolder(Gitdir)
-    mkdir(Gitdir);
-    end 
-GitLog=sprintf('%sbackup_%s.m',Gitdir,Version);
+% % % Gitdir=fullfile(pwd,'RunLog\');
+% % %     if ~isfolder(Gitdir)
+% % %     mkdir(Gitdir);
+% % %     end 
+% % % GitLog=sprintf('%sbackup_%s.m',Gitdir,Version);
 currentfile=strcat(FileNameAndLocation, '.m');
-copyfile(currentfile,newbackup);
-copyfile(currentfile,GitLog)
+copyfile(pwd,newbackup);
+% % % copyfile(currentfile,GitLog)
 
 %% Sizing/Resolution Parameters EDIT HERE ADVANCED
 MiPerPix=0.34; %The resolution of your microscopy, in Microns per pixel. A very important parameter. #PROJECT: I believe OME and BioFormats could pull this automagically        
