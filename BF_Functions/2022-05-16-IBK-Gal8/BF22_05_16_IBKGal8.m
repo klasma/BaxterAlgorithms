@@ -100,8 +100,8 @@ BitDepth=12;
     % The goal would be to have a simple way of either analyzing all the wells, 
     % a single well, or only a selected list of wells and timepoints.
     
-    customrun=false; %False analyzes all the wells, true analyzes only select few wells
- FastRun=16;
+    customrun=true; %False analyzes all the wells, true analyzes only select few wells
+ FastRun=8;
     if customrun
     NumSeries=FastRun; % #PROJECT: This will need to be modified to allow selected wells to run
 
@@ -163,8 +163,8 @@ AllData4={}; %Blank for Parfor CompSci reasons
                 r2.setSeries(CurrSeries); %##uses BioFormats function, can be swapped with something else (i forget what) if it's buggy with the GUI
                 fname = r2.getSeries; %gets the name of the series using BioFormats
                 Well=num2str(fname,'%05.f'); %Formats the well name for up to 5 decimal places of different wells, could increase but 5 already feels like overkill 
-                T_Value = r2.getSizeT()-1; %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
-%                 T_Value = 2
+%                 T_Value = r2.getSizeT()-1; %Very important, the timepoints of the images. Returns the total number of timepoints, the -1 is important.
+                T_Value = 1
                 SizeX=r2.getSizeX(); %Number of pixels in image in X dimension
                 SizeY=r2.getSizeY(); %Number of pixels in image in Y Dimension
                     
@@ -212,14 +212,18 @@ AllData4={}; %Blank for Parfor CompSci reasons
                             LabelInput={Well,Timepoint,CytosolicPass};
 %                             LiveData=gpuArray(LiveData);
                             
-                            [TidyFeat] = LabelAnalysis(LiveData,Img2,LabelInput);
+                            [TidyFeat] = LabelAnalysis2(LiveData,Img2,LabelInput);
                                 % #PROJECT: LabelAnalysis was written
                                 % quickly and could likely be optimized to
                                 % run faster. It's relatively slow.
-               
-                           AllData2{i+1}=TidyFeat
-                           
-                           
+%                            if i==0
+%                              AllData2=TidyFeat;
+%                            else 
+%                                  AllData2=vertcat(AllData2,TidyFeat);
+%                            end 
+                                AllData2(i+1)={TidyFeat}
+                            
+
                             if logical(BaxExport)    %Export Images for Baxter
                                     for n=1:numPlanes                        
                                         Img3=Img2(:,:,n);
@@ -233,15 +237,19 @@ AllData4={}; %Blank for Parfor CompSci reasons
                            
 %                     TidyFeat(pass,:)=Data;
                     end
-
+%                 if ~exist('AllData3','var')
+%                              AllData3=AllData2;
+%                 else 
+%                                  AllData3=vertcat(AllData3,AllData2);
+%                 end 
                 AllData3(:,RunNum)=AllData2
-
+%                 AllData3(:,RunNum,2)={fname}
 
                 else
                 end    
             end
             RunNum=0
-
+        
             AllData4{nn}=AllData3 %Store Data in parfor-compatible way
     end %end of all analysis
 
@@ -249,10 +257,12 @@ AllData4={}; %Blank for Parfor CompSci reasons
 %% Write Analysis Data to File    
 [TPs] = CumCell3(AllData4); %Custom Function to combine weird data format from parfor Loop
 [ExportParamNames] = ParamNames(numPlanes); %Export the names of the parameters used for analysis
-IntensityExport=array2table(TPs,'VariableNames',ExportParamNames); %Make a table with all of the data
-ExcelName=fullfile(RunDirectory,strcat(run,'.xlsx')); %Prepare excel file name
-StructName=fullfile(RunDirectory,strcat(run,'.mat'));
-StructOut=cell2struct(TPs,ExportParamNames,2);
-
-writetable(IntensityExport,ExcelName) %Write Excel file of all analysis Data
-save(StructName, 'StructOut','-v7.3')
+Test=vertcat(AllData4{1:end});
+Tablebig = sortrows(vertcat(Test{:}),[9,10,11,12,13]);
+% IntensityExport=array2table(TPs,'VariableNames',ExportParamNames); %Make a table with all of the data
+% ExcelName=fullfile(RunDirectory,strcat(run,'.xlsx')); %Prepare excel file name
+% StructName=fullfile(RunDirectory,strcat(run,'.mat'));
+% StructOut=cell2struct(TPs,ExportParamNames,2);
+% 
+% writetable(IntensityExport,ExcelName) %Write Excel file of all analysis Data
+% save(StructName, 'StructOut','-v7.3')
