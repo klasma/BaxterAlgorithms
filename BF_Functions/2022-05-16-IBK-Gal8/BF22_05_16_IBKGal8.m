@@ -3,10 +3,10 @@
     %User Defines location of Image file and location of directory to
     %export to.
 clc, clear, close all
-ImgFile=char("D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isom Kelly\Gal8 Overnight + Uptake VDB.nd2");
+ImgFile=char("D:\Dropbox (VU Basic Sciences)\LabConfocalOld\Duvall Lab\Isom Kelly\Gal8 Overnight + Uptake VDB.nd2");
 r = loci.formats.Memoizer(bfGetReader(),0);
 r.setId(ImgFile);
-exportdir=char('D:\Dropbox (VU Basic Sciences)\Duvall Confocal\Duvall Lab\Isom Kelly\2022-05-16-BF-Gal8Analysis');
+exportdir=char('D:\Dropbox (VU Basic Sciences)\LabConfocalOld\Duvall Lab\Isom Kelly\2022-05-16-BF-Gal8Analysis');
 if ~exist(exportdir,'file')
 mkdir(exportdir);
 end
@@ -100,8 +100,8 @@ BitDepth=12;
     % The goal would be to have a simple way of either analyzing all the wells, 
     % a single well, or only a selected list of wells and timepoints.
     
-    customrun=true; %False analyzes all the wells, true analyzes only select few wells
- FastRun=8;
+    customrun=false; %False analyzes all the wells, true analyzes only select few wells
+ FastRun=6;
     if customrun
     NumSeries=FastRun; % #PROJECT: This will need to be modified to allow selected wells to run
 
@@ -254,7 +254,7 @@ AllData4={}; %Blank for Parfor CompSci reasons
     end %end of all analysis
 
     
-%% Write Analysis Data to File    
+%% Write Analysis Data to File
 [TPs] = CumCell3(AllData4); %Custom Function to combine weird data format from parfor Loop
 [ExportParamNames] = ParamNames(numPlanes); %Export the names of the parameters used for analysis
 Test=vertcat(AllData4{1:end});
